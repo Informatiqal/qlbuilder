@@ -1,0 +1,58 @@
+{
+  "name": "qlbuilder",
+  "version": "1.4.4",
+  "description": "CLI helper tool for Qlik Sense developers to allow write script locally and update in remote app",
+  "author": {
+    "email": "info@informatiqal.com",
+    "name": "Informatiqal @informatiqal",
+    "url": "https://informatiqal.com"
+  },
+  "main": "./src/index.js",
+  "preferGlobal": true,
+  "bin": {
+    "qlbuilder": "./bin/qlbuilder.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified ... yet\" && exit 1"
+  },
+  "homepage": "https://github.com/countnazgul/qlbuilder",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/countnazgul/qlbuilder.git"
+  },
+  "keywords": [
+    "qlik",
+    "sense",
+    "build",
+    "script",
+    "reload"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "chalk": "^4.1.0",
+    "chokidar": "^3.4.1",
+    "cli-spinner": "^0.2.10",
+    "commander": "^6.0.0",
+    "compare-versions": "^3.6.0",
+    "enigma.js": "^2.7.1",
+    "filenamify": "^4.1.0",
+    "is-base64": "^1.1.0",
+    "js-yaml": "^3.14.0",
+    "natural-orderby": "^2.0.3",
+    "prompts": "^2.3.2",
+    "qlik-sense-authenticate": "^0.1.8",
+    "querystring": "^0.2.0",
+    "rimraf": "^3.0.2",
+    "ws": "^7.3.1"
+  },
+  "engines": {
+    "node": ">=8"
+  },
+  "devDependencies": {
+    "jest": "^26.1.0"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  }
+}
