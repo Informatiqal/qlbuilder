@@ -5,7 +5,7 @@ const common = require("./packages/common");
 const initialChecks = require("./packages/initialChecks");
 const currentVersion = require("../package.json").version;
 
-// process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
+process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 
 (async function () {
   program
