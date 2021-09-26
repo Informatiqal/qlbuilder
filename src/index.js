@@ -4,6 +4,7 @@ const helpers = require("./packages/helpers");
 const common = require("./packages/common");
 const initialChecks = require("./packages/initialChecks");
 const currentVersion = require("../package.json").version;
+const webServer = require("./packages/webServer");
 
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 
@@ -50,8 +51,26 @@ process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
     .option("-a", "Set the same script to all additional apps as well")
     .option("-d", "Debug. Write out enigma traffic messages")
     .action(async function (envName, options) {
-      let checks = initialChecks.combined(envName);
-      if (checks.error) common.writeLog("err", checks.message, true);
+      // let a = await webServer.start();
+      // console.log(a);
+
+      // let checks = initialChecks.combined(envName);
+      // if (checks.error) common.writeLog("err", checks.message, true);
+
+      const checks = {
+        message: {
+          env: {
+            name: "web",
+            host: "sense-apr-2019",
+            secure: true,
+            appId: "6cc271dd-0e19-4fb8-9a8f-4bb79f83d9fc",
+            authentication: {
+              type: "web",
+            },
+          },
+          variables: {},
+        },
+      };
 
       let setScript = await argsFunctions.setScript({
         environment: checks.message.env,

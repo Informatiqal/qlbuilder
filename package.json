@@ -40,6 +40,8 @@
     "is-base64": "^1.1.0",
     "js-yaml": "^3.14.0",
     "natural-orderby": "^2.0.3",
+    "open": "^8.2.1",
+    "portfinder": "^1.0.28",
     "prompts": "^2.3.2",
     "qlik-sense-authenticate": "^0.1.8",
     "querystring": "^0.2.0",
