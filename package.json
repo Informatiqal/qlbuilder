@@ -44,7 +44,7 @@
     "qlik-sense-authenticate": "^0.1.8",
     "querystring": "^0.2.0",
     "rimraf": "^3.0.2",
-    "ws": "^7.3.1"
+    "ws": "^8.0.0"
   },
   "engines": {
     "node": ">=8"
