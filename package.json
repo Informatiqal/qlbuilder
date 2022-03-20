@@ -50,7 +50,7 @@
     "node": ">=8"
   },
   "devDependencies": {
-    "jest": "^26.1.0"
+    "jest": "26.1.0"
   },
   "jest": {
     "testEnvironment": "node"
