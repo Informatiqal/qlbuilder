@@ -36,7 +36,7 @@
     "commander": "^6.0.0",
     "compare-versions": "^3.6.0",
     "enigma.js": "^2.7.1",
-    "filenamify": "^4.1.0",
+    "filenamify": "^5.0.0",
     "is-base64": "^1.1.0",
     "js-yaml": "^3.14.0",
     "natural-orderby": "^2.0.3",
