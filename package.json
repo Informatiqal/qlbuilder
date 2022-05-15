@@ -38,7 +38,7 @@
     "enigma.js": "^2.7.1",
     "filenamify": "^5.0.0",
     "is-base64": "^1.1.0",
-    "js-yaml": "^3.14.0",
+    "js-yaml": "^4.0.0",
     "natural-orderby": "^2.0.3",
     "prompts": "^2.3.2",
     "qlik-sense-authenticate": "^0.1.8",
