@@ -1,130 +1,173 @@
-const Spinner = require('cli-spinner').Spinner;
+import { Spinner } from "cli-spinner";
 Spinner.setDefaultSpinnerDelay(200);
 
-const fs = require('fs');
+import fs from "fs";
 
-const helpers = require('./helpers');
-const qlikComm = require('./qlik-comm');
-const common = require('./common');
+import { buildLoadScript, writeLoadScript } from "./helpers.js";
+import { reloadApp, checkScriptSyntax, setScript } from "./qlik-comm.js";
+import { writeLog } from "./common.js";
 
-const buildScript = async function () {
-    let loadScript = helpers.buildLoadScript()
+export const buildScript = async function () {
+  const loadScript = buildLoadScript();
 
-    let writeScript = helpers.writeLoadScript(loadScript)
-    if (writeScript.error) return writeScript
+  const writeScript = writeLoadScript(loadScript);
+  if (writeScript.error) return writeScript;
 
-    return ({ error: false, message: loadScript })
-}
+  return { error: false, message: loadScript };
+};
 
-const checkScript = async function ({ environment, variables, script, args }) {
-    let spinner = new Spinner('Checking for syntax errors ...');
-    spinner.setSpinnerString('☱☲☴');
-    spinner.start();
+export const checkScript = async function ({
+  environment,
+  variables,
+  script,
+  args,
+}) {
+  const spinner = new Spinner("Checking for syntax errors ...");
+  spinner.setSpinnerString("☱☲☴☲");
+  spinner.start();
 
-    let loadScript = ''
+  let loadScript = "";
 
-    if (script) {
-        let script = await buildScript()
-        if (script.error) return script
+  if (script) {
+    const script = await buildScript();
+    if (script.error) return script;
 
-        loadScript = script.message
+    loadScript = script.message;
+  }
+
+  const scriptResult = await checkScriptSyntax({
+    environment,
+    variables,
+    script: loadScript,
+    debug: args && args.debug ? args.debug : false,
+  });
+
+  if (scriptResult.error) {
+    spinner.stop(true);
+    return scriptResult;
+  }
+
+  spinner.stop(true);
+
+  if (scriptResult.message.length > 0) {
+    displayScriptErrors(scriptResult.message);
+    return { error: true, message: "Syntax errors found!" };
+  }
+
+  return { error: false, message: "No syntax errors were found" };
+};
+
+export const setScriptHelper = async function ({
+  environment,
+  variables,
+  args,
+}) {
+  const script = await buildScript();
+  if (script.error) return script;
+
+  const setScriptResponse = await setScript({
+    environment,
+    variables,
+    script: script.message,
+    debug: args.debug,
+  });
+  if (setScriptResponse.error) return setScriptResponse;
+
+  if (args.setAll) {
+    if (environment.otherApps && environment.otherApps.length > 0) {
+      await Promise.all(
+        environment.otherApps.map(async function (a) {
+          let tempEnvironment = environment;
+          tempEnvironment.appId = a;
+
+          writeLog({
+            error: "info",
+            message: `Setting script for ${a}`,
+            exit: false,
+          });
+
+          const additionalSetScript = await setScript({
+            environment: tempEnvironment,
+            variables,
+            script: script.message,
+          });
+
+          writeLog({
+            error: "false",
+            message: `Script set for ${a}`,
+            exit: false,
+          });
+
+          return additionalSetScript;
+        })
+      ).then(function () {
+        return { error: false, message: setScriptResponse.message };
+      });
     }
+  }
 
-    let scriptResult = await qlikComm.checkScriptSyntax({ environment, variables, script: loadScript, debug: args.debug })
-    if (scriptResult.error) {
-        spinner.stop(true)
-        return scriptResult
-    }
+  return { error: false, message: setScriptResponse.message };
+};
 
-    spinner.stop(true)
+export function displayScriptErrors(scriptResultObj) {
+  const scriptFiles = fs.readdirSync(`./src`).filter(function (f) {
+    return f.indexOf(".qvs") > -1;
+  });
 
-    if (scriptResult.message.length > 0) {
-        displayScriptErrors(scriptResult.message)
-        return { error: true, message: 'Syntax errors found!' }
-    }
+  const scriptErrorsPrimary = scriptResultObj.filter(function (e) {
+    return !e.qSecondaryFailure;
+  });
 
-    return { error: false, message: 'No syntax errors were found' }
-}
+  for (let scriptError of scriptErrorsPrimary) {
+    const tabScript = fs
+      .readFileSync(`./src/${scriptFiles[scriptError.qTabIx]}`)
+      .toString()
+      .split("\n");
 
-const setScript = async function ({ environment, variables, args }) {
-    let script = await buildScript()
-    if (script.error) return script
-
-    let setScript = await qlikComm.setScript({ environment, variables, script: script.message, debug: args.debug })
-    if (setScript.error) return setScript
-
-    if (args.setAll) {
-        if (environment.otherApps && environment.otherApps.length > 0) {
-            await Promise.all(environment.otherApps.map(async function (a) {
-                let tempEnvironment = environment
-                tempEnvironment.appId = a
-
-                common.write.log({ error: 'info', message: `Setting script for ${a}`, exit: false })
-                let additionalSetScript = await qlikComm.setScript({ environment: tempEnvironment, variables, script: script.message })
-                common.write.log({ error: 'false', message: `Script set for ${a}`, exit: false })
-
-                return additionalSetScript
-            }))
-                .then(function () {
-                    return { error: false, message: setScript.message }
-                })
-        }
-    }
-
-    return { error: false, message: setScript.message }
-}
-
-function displayScriptErrors(scriptResultObj) {
-    let scriptFiles = fs.readdirSync(`./src`).filter(function (f) {
-        return f.indexOf('.qvs') > -1
-    })
-
-    let scriptErrorsPrimary = scriptResultObj.filter(function (e) {
-        return !e.qSecondaryFailure
-    })
-
-    for (let scriptError of scriptErrorsPrimary) {
-        let tabScript = fs.readFileSync(`./src/${scriptFiles[scriptError.qTabIx]}`).toString().split('\n')
-
-        console.log(`
+    console.log(`
 Tab : ${scriptFiles[scriptError.qTabIx]} 
 Line: ${scriptError.qLineInTab} 
-Code: ${tabScript[scriptError.qLineInTab - 1]}`)
-    }
+Code: ${tabScript[scriptError.qLineInTab - 1]}`);
+  }
 }
 
-const onFileChange = async function ({ environment, variables, args }) {
-    let script = await buildScript()
-    if (script.error) return script
+export const onFileChange = async function ({ environment, variables, args }) {
+  const script = await buildScript();
+  if (script.error) return script;
 
-    let checkLoadScript = await checkScript({ environment, variables, script: script.message, args })
-    if (checkLoadScript.error) return checkLoadScript
+  const checkLoadScript = await checkScript({
+    environment,
+    variables,
+    script: script.message,
+    args,
+  });
+  if (checkLoadScript.error) return checkLoadScript;
 
-    // if only SetScript is set
-    if (!args.reload && args.setScript) {
-        let setScript = await qlikComm.setScript({ environment, variables, script: script.message, args })
-        if (setScript.error) return { error: true, message: setScript.message }
+  // if only SetScript is set
+  if (!args.reload && args.setScript) {
+    const setScript = await setScript({
+      environment,
+      variables,
+      script: script.message,
+      args,
+    });
+    if (setScript.error) return { error: true, message: setScript.message };
 
-        return { error: false, message: setScript.message }
-    }
+    return { error: false, message: setScript.message };
+  }
 
-    // if Reload is set AND/OR SetScript is set
-    if (args.reload) {
-        let reload = await qlikComm.reloadApp({ environment, variables, script: script.message, args })
-        if (reload.error) return { error: true, message: reload.message }
+  // if Reload is set AND/OR SetScript is set
+  if (args.reload) {
+    const reload = await reloadApp({
+      environment,
+      variables,
+      script: script.message,
+      args,
+    });
+    if (reload.error) return { error: true, message: reload.message };
 
-        return { error: false, message: reload.message }
-    }
+    return { error: false, message: reload.message };
+  }
 
-    return checkLoadScript
-}
-
-
-
-module.exports = {
-    buildScript,
-    checkScript,
-    displayScriptErrors,
-    setScript,
-    onFileChange
-}
+  return checkLoadScript;
+};

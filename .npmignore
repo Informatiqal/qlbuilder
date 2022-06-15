@@ -9,3 +9,7 @@ test3/
 TODO
 test.js
 test.yml
+src/
+renovate.json
+rollup.config.js
+tests/

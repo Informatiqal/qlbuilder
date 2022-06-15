@@ -1,3 +1,5 @@
 #!/usr/bin/env node
 
-var myLibrary = require('../src/index.js');
+import * as qlBuilder from "../dist/index.js";
+
+var myLibrary = qlBuilder;
