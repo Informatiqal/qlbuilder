@@ -24,7 +24,7 @@ export const setScript = async function ({
   if (session.error) return session;
 
   try {
-    const spinner = new Spinner("Setting script ..");
+    const spinner = new Spinner("Setting script ...");
     spinner.setSpinnerString("☱☲☴☲");
     spinner.start();
 
@@ -44,6 +44,7 @@ export const setScript = async function ({
     await session.message.close();
 
     spinnerSave.stop(true);
+    console.log("");
 
     return { error: false, message: "Script was set and document was saved" };
   } catch (e) {
@@ -61,7 +62,7 @@ export const getScriptFromApp = async function ({
   if (session.error) return session;
 
   try {
-    const spinner = new Spinner("Getting script ..");
+    const spinner = new Spinner("Getting script ...");
     spinner.setSpinnerString("☱☲☴☲");
     spinner.start();
 
@@ -69,11 +70,11 @@ export const getScriptFromApp = async function ({
     let doc = await global.openDoc(environment.appId);
     let qScript = await doc.getScript();
 
-    console.log("");
     writeLog("ok", "Script was received", false);
     await session.message.close();
 
     spinner.stop(true);
+    console.log("");
     return { error: false, message: qScript };
   } catch (e) {
     console.log("");
@@ -298,7 +299,7 @@ export async function createQlikSession({ environment, variables, debug }) {
   }
 }
 
-const handleAuthenticationType = {
+export const handleAuthenticationType = {
   desktop: async function () {
     return {};
   },
@@ -370,9 +371,7 @@ const handleAuthenticationType = {
 
     let sessionId = await qAuth.login(auth_config);
 
-    if (sessionId.error) {
-      return sessionId;
-    }
+    if (sessionId.error) return sessionId;
 
     return {
       error: false,

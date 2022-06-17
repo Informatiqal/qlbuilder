@@ -72,7 +72,10 @@ Run one of the following commands from CMD/PowerShell
   - `?` - print these commands
   - `x` - exit
 
-- `qlbuilder encode` - encode the provided string. To avoid storing passwords in plain text we can use this command to encode the windows password(s) and paste the returned string in `.qlbuilder.yml`. Also add `encoding: true` in the `config.yml` This is applied when authentication is `Windows` for `QLIK_PASSWORD` value. **Encoding QLIK_PASSWORD is not needed when using environment variables. Only for .qlbuilder.yml!**
+- `qlbuilder download [env]` - download the specified Qlik app. Optional parameter to include or exclude the data in the exported app/file
+
+  - `-p` or `--path` (**mandatory**) - path to the folder where the qvf will be downloaded
+  - `-nd` or `--nodata` - optional parameter indicating if the exported app should include the data or not. Default is `false`
 
 - `qlbuilder vscode` - creates the `.vscode` folder (inside the current folder) with the `tasks.json` and `settings.json` files. Please check the `create` command description above for more info
 

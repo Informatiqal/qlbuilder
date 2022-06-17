@@ -145,15 +145,16 @@ export const onFileChange = async function ({ environment, variables, args }) {
 
   // if only SetScript is set
   if (!args.reload && args.setScript) {
-    const setScript = await setScript({
+    const setScriptResponse = await setScript({
       environment,
       variables,
       script: script.message,
       args,
     });
-    if (setScript.error) return { error: true, message: setScript.message };
+    if (setScriptResponse.error)
+      return { error: true, message: setScriptResponse.message };
 
-    return { error: false, message: setScript.message };
+    return { error: false, message: setScriptResponse.message };
   }
 
   // if Reload is set AND/OR SetScript is set

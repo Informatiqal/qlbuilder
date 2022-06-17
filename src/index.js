@@ -1,4 +1,5 @@
 import { program } from "commander";
+import { writeLog } from "./packages/common.js";
 
 import {
   create,
@@ -12,8 +13,6 @@ import {
   version,
   vsCode,
 } from "./commands/index.js";
-
-// process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 
 (async function () {
   program
@@ -97,11 +96,26 @@ import {
     });
 
   program
-    .command("download")
-    .option("-nodata", "Download the qvf without data")
+    .command("download [env]")
+    .requiredOption("-p, --path <path>", "Location to save the file")
+    .option("-nd, --nodata <boolean>", "Download the qvf without data", "false")
     .description("Download the qvf")
-    .action(async function (projectName, options) {
-      await download();
+    .action(async function (envName, options) {
+      if (options.nodata != "false" && options.nodata != "true") {
+        writeLog(
+          "err",
+          `Invalid value for "-nodata" parameter. Provided "${options.nodata}" but expected "true" or "false"`
+        );
+        process.exit(0);
+      }
+
+      const downloadResponse = await download(envName, options);
+
+      writeLog(
+        downloadResponse.error ? "err" : "ok",
+        downloadResponse.message,
+        true
+      );
     });
 
   program.on("--help", function () {
@@ -112,6 +126,10 @@ import {
     console.log(" > qlbuilder reload desktop");
     console.log(" > qlbuilder watch desktop -r");
     console.log(" > qlbuilder watch desktop -s");
+    console.log(" > qlbuilder download desktop -p c:/path/to/folder");
+    console.log(
+      " > qlbuilder download desktop -p c:/path/to/folder --nodata true"
+    );
     console.log("");
     console.log("More info: https://github.com/informatiqal/qlBuilder");
     console.log("");
