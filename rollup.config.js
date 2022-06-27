@@ -1,15 +1,11 @@
+import typescript from "rollup-plugin-typescript2";
 import commonjs from "@rollup/plugin-commonjs";
 import del from "rollup-plugin-delete";
 import json from "@rollup/plugin-json";
 import pkg from "./package.json";
-// import path from "path";
-// const externalId = path.resolve(
-//   __dirname,
-//   "./node_modules/enigma.js/schemas/12.1306.0.json"
-// );
 
 export default {
-  input: "src/index.js",
+  input: "src/index.ts",
   output: {
     format: "es",
     dir: "dist",
@@ -20,10 +16,8 @@ export default {
     ...Object.keys(pkg.peerDependencies || {}),
     "fs",
     "os",
-    "path",
-    "url",
+    "https",
     "readline",
-    // externalId,
   ],
   plugins: [
     del({
@@ -31,5 +25,8 @@ export default {
     }),
     commonjs(),
     json(),
+    typescript({
+      typescript: require("typescript"),
+    }),
   ],
 };
