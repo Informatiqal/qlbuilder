@@ -5,6 +5,7 @@ export type DownloadOptionValues = {
 
 export type GetScriptOptionValues = {
   debug?: string;
+  y?: string;
 };
 
 export type WatchOptionValues = {

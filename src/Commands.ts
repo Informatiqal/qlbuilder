@@ -142,6 +142,8 @@ export class Commander {
       false
     );
 
+    comm.option("-y", "Do not ask for confirmation before overwrite");
+
     comm.action(async function (name, options: GetScriptOptionValues) {
       const checkScript = new CheckScript(name, options);
       await checkScript.run();

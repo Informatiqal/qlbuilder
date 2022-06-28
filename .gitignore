@@ -1,3 +1,4 @@
+.npmrc
 .mocharc.yml
 dist/
 temp/

@@ -32,7 +32,8 @@ export class GetScript {
   }
 
   async run() {
-    const overwrite = await this.askOverwrite();
+    let overwrite: Boolean = true;
+    if (!this.options.y) overwrite = await this.askOverwrite();
 
     this.spin.start();
     if (overwrite === true) {

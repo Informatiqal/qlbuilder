@@ -1,18 +1,17 @@
 {
     "compilerOptions": {
         "outDir": "./dist",
-        "target": "ES6",
+        "target": "ES2020",
         "declaration": true,
-        "declarationDir": "./dist",
-        "module": "CommonJS",
+        "module": "ES6",
         "noImplicitAny": false,
         "sourceMap": true,
         "moduleResolution": "node",
-        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "allowSyntheticDefaultImports": true
     },
     "include": [
-        "src/**/*",
-        "**/*.spec.ts"
+        "src/**/*"
     ],
     "exclude": [
         "node_modules"

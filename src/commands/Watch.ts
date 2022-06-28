@@ -68,7 +68,7 @@ export class Watch {
       "\n",
       "Commands during watch mode:\n",
       "    - set script: s or set\n",
-      "    - set script to all apps: sa or setall\n",
+      // "    - set script to all apps: sa or setall\n",
       "    - reload app: r or rl\n",
       "    - clear console: c or cls\n",
       "    - check for syntax errors: e or err\n",

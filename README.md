@@ -7,6 +7,7 @@
 - set the build script in Qlik app
 - reload app
 - check for syntax errors while developing without the need to save the whole app
+- download Qlik app(s) with or without data
 
 ## Installation
 
@@ -31,11 +32,11 @@ Run one of the following commands from CMD/PowerShell
 - `qlbuilder checkscript [env]`
 
   - builds the script (from `/src/*.qvs` files)
-  - connects to Qlik and checks the script for syntax errors - `env` is the environment name from `config.yml`
+  - connects to Qlik and checks the script for syntax errors - `env` is the environment name from `config.yml`. The check is performed against temporary session app.
 
 - `qlbuilder reload [env]`
 
-  - connects to Qlik and reload the app - `env` is the environment name from `config.yml`. Once the reload has started `qlbuilder` will display the progress in the same console (check the video below to see it in action)
+  - connects to Qlik and reload the app - `env` is the environment name from `config.yml`. Once the reload has started `qlbuilder` will display the progress in the same console.
 
 - `qlbuilder setscript [env]`
 
@@ -44,11 +45,9 @@ Run one of the following commands from CMD/PowerShell
   - sets the new script
   - saves the app
 
-- `qlbuilder setscript [env] -a` - same as `setscript` but in addition the same script is set to all other apps, defined in the `config.yml`
+- `qlbuilder getscript [env]` - (the opposite of `setscript`) get the remote script, splits it into tabs and save the files inside `scr` folder. `config.yml` should present to indicate from which env/app to extract the script
 
-- `qlbuilder getscript [env]` - (the opposite of `setscript`) get the remote script, split it to tabs and save the files to `scr` folder. `config.yml` should present to indicate from which env/app to extract the script
-
-  - `-y` - optional flag. If present will get the script and overwrite the local files without prompt (the default behavior is to ask if you are sure to overwrite)
+  - `-y` - optional flag. The `getscript` command will always ask for confirmation before overwrite the files into `src` folder. Passing `-y` will skip this confirmation and will directly execute `getscript` command.
 
   Steps:
 
@@ -65,7 +64,6 @@ Run one of the following commands from CMD/PowerShell
   Inside `watch` mode the console is active and the developer can perform additional actions. Just type one of the letters/commands below in the console to trigger them:
 
   - `s` or `set` - build, syntax check and set script
-  - `sa` or `setall` - build, syntax check and set the same script to the main app and all other apps
   - `r` or `rl` - build and set the script, reload the app and save. If any syntax error (during the build and set) the reload is not triggered
   - `c` or `clr` - clear console
   - `e` or `err` - check for syntax errors (**useful only if the watch mode is started with `-d` argument**)
@@ -219,12 +217,12 @@ Will result in the following tabs in Qlik
 
 Having the script files as local files allows to put them in version control. This will put the `src`, `dist` and `config.yml` files in the repository.
 
-In some cases the Prod environment app can be without the original (full) script and just include (via REST API call) the final load script (the one in `dist` folder) from Git master branch. This was technically you don't need to touch the Prod app in case of script change ... this is just an idea how to benefit from this approach
+In some cases the Prod environment app can be without the original (full) script and just includes (via REST API call) the final load script (the one in `dist` folder) from Git's master branch. This way, technically, there is no need to touch the `Prod` app in case of an script change ... this is just an idea how to benefit from this approach.
 
 ## Roadmap
 
 - Tests - proper tests should be written!
-- `include` and `must_include` - (option) parse the script and get the content of the script that are included and get the content of these files as a separate tabs. This way the script will not be dependant on external files
+- `include` and `must_include` - (option) parse the `include`/`must_include` scripts and get the content of the files that are specified. Create separate tabs for each file with its content. This way the script will not be dependant on external files. [#25](https://github.com/Informatiqal/qlbuilder/issues/25) for comments
 - different logic how to name the script files - instead of naming convention why not specify the order in the config file?
 
 ---
