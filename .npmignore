@@ -12,7 +12,9 @@ test.yml
 src/
 renovate.json
 rollup.config.js
+rollup.config.debug.js
 tests/
 .mocharc.yml
 tsconfig.json
 tsconfig.test.json
+tsconfig.debug.json
