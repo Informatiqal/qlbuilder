@@ -1,12 +1,12 @@
-[![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/T6T0148ZP)
+# qlBuilder
 
 ## Motivation
 
-`qlbuilder` is a CLI tool which is ran from command prompt. The tool allows Qlik Sense developers to write their Qlik scripts on the local machine and:
+`qlbuilder` is a CLI tool which is ran from the command prompt. The tool allows Qlik Sense developers to write their Qlik scripts locally and to communicate with Qlik instance to:
 
-- set the build script in Qlik app
-- reload app
-- check for syntax errors while developing without the need to save the whole app
+- set the reload script into configured Qlik app
+- reload app (the reload is performed from Qlik instance itself)
+- check for syntax errors while developing without the need to save the whole app (the syntax check is performed against temporary session app)
 - download Qlik app(s) with or without data
 
 ## Installation
@@ -151,7 +151,7 @@ By default `qlbuilder` will try and connect through `https`/`wss`. If the enviro
 
 For security reasons (mainly to avoid commit users and password) `qlbuilder` expects some environment variables to be set before start. The content of the variables can be pre-set using `.qlbuilder.yml` config file in the user home folder (see below)
 
-**Environment variables**
+### Environment variables
 
 - `Windows`
 
@@ -171,7 +171,7 @@ For security reasons (mainly to avoid commit users and password) `qlbuilder` exp
 - `Saas`
   - `QLIK_TOKEN` - the API key, generated from the user settings panel
 
-**Home config**
+### Home config
 
 `.qlbuilder.yml` config file - this file should be placed in your home folder (`c:\users\my-username`). The file contains the credentials for the Qlik environments. The name of the environments should match the ones in the local `config.yml`
 
@@ -201,7 +201,7 @@ To ensure alphabetical order the files should start with number followed by sepa
 
 For example having the following files:
 
-```
+```text
 1--Variables.qvs
 2--DBLoad.qvs
 3--Transformation.qvs
