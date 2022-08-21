@@ -7,11 +7,14 @@ export class Build {
   builtScript: string = "";
   private srcParentFolder: string;
   private spin: Spin;
-  constructor(srcFolder?: string) {
+  constructor(srcFolder?: string, isCreateCommand?: boolean) {
     this.srcParentFolder = srcFolder ? srcFolder : process.cwd();
     this.spin = new Spin("Building the script", "hamburger");
-    const checks = new Checks();
-    checks.srcAndDistExists();
+
+    if (!isCreateCommand) {
+      const checks = new Checks();
+      checks.srcAndDistExists();
+    }
   }
 
   run() {

@@ -26,6 +26,7 @@ export class Create {
     this.createInitScriptFiles();
     this.createInitConfig();
     this.createGitIgnore();
+    this.createReadMe();
     this.createVSCodeTasks();
   }
 
@@ -54,7 +55,7 @@ export class Create {
       rawScript.join("")
     );
 
-    const build = new Build(`${this.currentFolder}/${this.name}`);
+    const build = new Build(`${this.currentFolder}/${this.name}`, true);
     build.run();
   }
 
@@ -124,6 +125,43 @@ export class Create {
     writeFileSync(
       `${this.currentFolder}/${this.name}/.gitignore`,
       "session.txt"
+    );
+  }
+
+  private createReadMe() {
+    const readmeContent = `# qlBuilder
+
+## Config
+
+The first step is to edit \`config.yml\` file
+
+- initially it contains multiple example configurations. At the end it should contain only one. Remove the configurations that are not applied to the target environment
+- once only one configuration is available now is time to edit it:
+  - \`name\` - it should match a value from \`.qlbuilder.yml\` value
+  - \`host\` - without \`https://\` or \`http://\` prefix
+  - \`secure\` - \`true\` or \`false\`. Depends if the target environment is \`https\` or \`http\`
+  - \`appId\` - the target Qlik application id
+  - \`trustAllCerts\` - \`true\` or \`false\`. If \`true\` all certificate issues will be ignored e.g. self-signed certificates. Also if \`true\` a warning message will be shown that certificate issues are ignored
+  - \`authentication\` - depends on your environment. The important bit is if the environment is QSEoW and the connection is established via Virtual Proxy or the default VP session cookie is not the default one then include \`sessionHeaderName\` value. If \`sessionHeaderName\` is not provided then the default value is used \`X-Qlik-Session\`
+
+## Usage
+
+To view all commands just run \`qlbuilder\` command in the terminal/command prompt
+
+## Issues and Questions
+
+If you have any questions or issues then please open an [GitHub issue](https://github.com/Informatiqal/qlbuilder/issues)
+
+## Funding
+
+And if you find this project useful please consider donating ot its development [Ko-Fi](https://ko-fi.com/stefanstoichev)
+
+Thank you!
+`;
+
+    writeFileSync(
+      `${this.currentFolder}/${this.name}/README.md`,
+      readmeContent
     );
   }
 
