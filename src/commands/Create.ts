@@ -144,6 +144,10 @@ The first step is to edit \`config.yml\` file
   - \`trustAllCerts\` - \`true\` or \`false\`. If \`true\` all certificate issues will be ignored e.g. self-signed certificates. Also if \`true\` a warning message will be shown that certificate issues are ignored
   - \`authentication\` - depends on your environment. The important bit is if the environment is QSEoW and the connection is established via Virtual Proxy or the default VP session cookie is not the default one then include \`sessionHeaderName\` value. If \`sessionHeaderName\` is not provided then the default value is used \`X-Qlik-Session\`
 
+## Credentials
+
+All credentials are stored in user's folder inside \`.qlbuilder.yml\`. \`qlBuilder\` matches the name from \`config.yml\` with the name from \`.qlbuilder.yml\` to use the correct credentials.
+
 ## Usage
 
 To view all commands just run \`qlbuilder\` command in the terminal/command prompt
@@ -154,7 +158,7 @@ If you have any questions or issues then please open an [GitHub issue](https://g
 
 ## Funding
 
-And if you find this project useful please consider donating ot its development [Ko-Fi](https://ko-fi.com/stefanstoichev)
+And if you find this project useful please consider donating to its development [Ko-Fi](https://ko-fi.com/stefanstoichev)
 
 Thank you!
 `;
