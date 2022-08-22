@@ -1,0 +1,59 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "JSON Schema for qlBuilder config files",
+    "description": "Automatiqal qlBuilder JSON schema (@informatiqal)",
+    "type": "array",
+    "additionalProperties": false,
+    "items": {
+        "properties": {
+            "name": {
+                "description": "",
+                "type": "string"
+            },
+            "host": {
+                "description": "Qlik host name/fqdn/ip. Without https:// or http://",
+                "type": "string"
+            },
+            "secure": {
+                "description": "Is Qlik accessed through https (true) or http (false)",
+                "type": "boolean"
+            },
+            "trustAllCerts": {
+                "type": "boolean"
+            },
+            "appId": {
+                "type": "string"
+            },
+            "authentication": {
+                "type": "object",
+                "description": "What type of authentication shall be used when connecting to Qlik",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "description": "Authentication type",
+                        "enum": [
+                            "winform",
+                            "certificate",
+                            "jwt",
+                            "saas"
+                        ]
+                    },
+                    "sessionHeaderName": {
+                        "type": "string",
+                        "description": "What is the name of the VP cookie. If not specified X-Qlik-Session is assumed"
+                    }
+                },
+                "required": [
+                    "type"
+                ]
+            }
+        },
+        "required": [
+            "name",
+            "host",
+            "secure",
+            "trustAllCerts",
+            "appId"
+        ]
+    }
+}
