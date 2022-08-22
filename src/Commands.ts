@@ -75,7 +75,7 @@ export class Commander {
     comm.option(
       "-nd, --nodata <boolean>",
       "Download the qvf without data",
-      "false"
+      "true"
     );
     comm.requiredOption("-p, --path <path>", "Location to save the file");
 
@@ -86,7 +86,9 @@ export class Commander {
 
       _this.print.ok(
         `"${fileName}" was saved in "${options.path}" ${
-          options.nodata ? "(without data)" : ""
+          options.nodata && options.nodata == "true"
+            ? "(without data)"
+            : "(WITH data)"
         }`
       );
     });
