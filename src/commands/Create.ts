@@ -64,6 +64,7 @@ export class Create {
       {
         name: "desktop",
         host: "localhost:4848",
+        trustAllCerts: true,
         secure: false,
         appId: `C:/Users/${
           userInfo().username
@@ -115,10 +116,11 @@ export class Create {
       },
     ];
 
-    writeFileSync(
-      `${this.currentFolder}/${this.name}/config.yml`,
-      dump(defaultConfig)
-    );
+    let yamlContent = dump(defaultConfig);
+    yamlContent = `# yaml-language-server: $schema=https://github.com/Informatiqal/qlbuilder/blob/typescript/src/schema/config.json?raw=true
+${yamlContent}`;
+
+    writeFileSync(`${this.currentFolder}/${this.name}/config.yml`, yamlContent);
   }
 
   private createGitIgnore() {

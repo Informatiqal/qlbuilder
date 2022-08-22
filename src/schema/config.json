@@ -33,7 +33,7 @@
                         "description": "Authentication type",
                         "enum": [
                             "winform",
-                            "certificate",
+                            "certificates",
                             "jwt",
                             "saas"
                         ]

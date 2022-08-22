@@ -124,7 +124,6 @@ For `QSE` with Windows/Form the config will be:
   appId: 12345678-1234-1234-1234-12345678901a # app ID
   authentication:
     type: winform
-    encoding: true
     sessionHeaderName: X-Qlik-Session-Win # (optional) see below
 ```
 
