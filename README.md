@@ -73,11 +73,9 @@ Run one of the following commands from CMD/PowerShell
 - `qlbuilder download [env]` - download the specified Qlik app. Optional parameter to include or exclude the data in the exported app/file
 
   - `-p` or `--path` (**mandatory**) - path to the folder where the qvf will be downloaded
-  - `-nd` or `--nodata` - optional parameter indicating if the exported app should include the data or not. Default is `false`
+  - `-nd` or `--nodata` - optional parameter indicating if the exported app should include the data or not. Default is `true`
 
 - `qlbuilder vscode` - creates the `.vscode` folder (inside the current folder) with the `tasks.json` and `settings.json` files. Please check the `create` command description above for more info
-
-- `qlbuilder checkupdate` - compares the current version number to the remote one
 
 ## config.yml
 
@@ -90,9 +88,6 @@ The config file is in `yaml` format. The config below defines one environment (`
   host: localhost:4848
   secure: false
   appId: C:\Users\MyUserName\Documents\Qlik\Sense\Apps\qlbuilder Test.qvf
-  otherApps:
-    - C:\Users\MyUserName\Documents\Qlik\Sense\Apps\TestApp1.qvf
-    - C:\Users\MyUserName\Documents\Qlik\Sense\Apps\TestApp2.qvf
 ```
 
 (Take a look at the example above for how to specify `otherApps`. Used for setting the same script to additional apps)
@@ -221,9 +216,7 @@ In some cases the Prod environment app can be without the original (full) script
 
 ## Roadmap
 
-- Tests - proper tests should be written!
-- `include` and `must_include` - (option) parse the `include`/`must_include` scripts and get the content of the files that are specified. Create separate tabs for each file with its content. This way the script will not be dependant on external files. [#25](https://github.com/Informatiqal/qlbuilder/issues/25) for comments
-- different logic how to name the script files - instead of naming convention why not specify the order in the config file?
+Have a look at the issues labeled as an [enhancement](https://github.com/Informatiqal/qlbuilder/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement)
 
 ---
 
