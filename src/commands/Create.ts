@@ -117,7 +117,7 @@ export class Create {
     ];
 
     let yamlContent = dump(defaultConfig);
-    yamlContent = `# yaml-language-server: $schema=https://github.com/Informatiqal/qlbuilder/blob/typescript/src/schema/config.json?raw=true
+    yamlContent = `# yaml-language-server: $schema=https://github.com/Informatiqal/qlbuilder/blob/master/src/schema/config.json?raw=true
 ${yamlContent}`;
 
     writeFileSync(`${this.currentFolder}/${this.name}/config.yml`, yamlContent);
