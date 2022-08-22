@@ -113,7 +113,7 @@ For `QSE` with `JWT` the config will be:
     sessionHeaderName: X-Qlik-Session-jwt # (optional) see below
 ```
 
-When working with `jwt` port is not required. If `JWt` is not the main method for authentication then the Virtual Proxy prefix need to be provided. For more information how to set this please check this  
+When working with `jwt` port is not required. If `JWТ` is not the main method for authentication then the Virtual Proxy prefix need to be provided. For more information how to set this please check this  
 [Qlik Support article](https://support.qlik.com/articles/000034966)
 
 For `QSE` with Windows/Form the config will be:
