@@ -14,6 +14,7 @@ import { CheckScript } from "./commands/CheckScript";
 import { SetScript } from "./commands/SetScript";
 import { Reload } from "./commands/Reload";
 import { Watch } from "./commands/Watch";
+import { CredentialEnvironments } from "./commands/CredentialEnvironments";
 
 export class Commander {
   programs = program;
@@ -31,6 +32,7 @@ export class Commander {
     this.programs.addCommand(this.vsCode());
     this.programs.addCommand(this.reload());
     this.programs.addCommand(this.watch());
+    this.programs.addCommand(this.credentialEnvironments());
 
     this.onHelp();
     this.onUnknownArg();
@@ -296,6 +298,27 @@ export class Commander {
       );
       process.stdout.write("\n");
     });
+  }
+
+  private credentialEnvironments() {
+    const _this = this;
+    const comm = new Command("cred");
+    comm.description(
+      "List the name and type of all saved credential environments"
+    );
+    comm.action(function () {
+      try {
+        const credentialEnvironments = new CredentialEnvironments();
+        const result = credentialEnvironments.run();
+        console.table(result);
+        process.exit(0);
+      } catch (e) {
+        _this.print.error(e.message);
+        process.exit(1);
+      }
+    });
+
+    return comm;
   }
 
   private onUnknownArg() {
