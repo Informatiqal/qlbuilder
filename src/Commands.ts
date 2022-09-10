@@ -15,6 +15,7 @@ import { SetScript } from "./commands/SetScript";
 import { Reload } from "./commands/Reload";
 import { Watch } from "./commands/Watch";
 import { CredentialEnvironments } from "./commands/CredentialEnvironments";
+import { Section } from "./commands/Section";
 
 export class Commander {
   programs = program;
@@ -33,6 +34,7 @@ export class Commander {
     this.programs.addCommand(this.reload());
     this.programs.addCommand(this.watch());
     this.programs.addCommand(this.credentialEnvironments());
+    this.programs.addCommand(this.addSection());
 
     this.onHelp();
     this.onUnknownArg();
@@ -317,6 +319,37 @@ export class Commander {
         process.exit(1);
       }
     });
+
+    return comm;
+  }
+
+  private addSection() {
+    const _this = this;
+    const comm = new Command("section");
+    comm.description("Manage script sections");
+
+    const section = new Section();
+
+    const add = new Command("add");
+    add.description("Add new script section at specific position");
+    add.action(() => {
+      console.log("add");
+    });
+    comm.addCommand(add);
+
+    const remove = new Command("remove");
+    remove.description("Remove script section");
+    remove.action(() => {
+      console.log("remove");
+    });
+    comm.addCommand(remove);
+
+    const move = new Command("move");
+    move.description("Move specified script section up/down");
+    move.action(() => {
+      console.log("move");
+    });
+    comm.addCommand(move);
 
     return comm;
   }
