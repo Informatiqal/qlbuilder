@@ -234,6 +234,13 @@ Thank you!
                     "Start qlbuilder in watch mode. Upload (set) the script to the Qlik app on each file save and automatically trigger reload after this",
                   command: "qlbuilder watch  ${config:env} -r",
                 },
+                {
+                  label: "Credential environments",
+                  type: "shell",
+                  detail:
+                    "List the names and type of all saved credential environments (from .qlBuilder.yml)",
+                  command: "qlbuilder cred",
+                },
               ],
             },
             null,
