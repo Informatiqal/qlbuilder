@@ -330,26 +330,37 @@ export class Commander {
 
     const section = new Section();
 
+    // add new script section
     const add = new Command("add");
     add.description("Add new script section at specific position");
-    add.action(() => {
-      console.log("add");
+    add.action(async () => {
+      await section.add();
     });
     comm.addCommand(add);
 
+    // remove existing script section
     const remove = new Command("remove");
     remove.description("Remove script section");
-    remove.action(() => {
-      console.log("remove");
+    remove.action(async () => {
+      await section.remove();
     });
     comm.addCommand(remove);
 
+    // move existing script section up/down
     const move = new Command("move");
     move.description("Move specified script section up/down");
-    move.action(() => {
-      console.log("move");
+    move.action(async () => {
+      await section.move();
     });
     comm.addCommand(move);
+
+    // renumber existing sections
+    const renumber = new Command("renumber");
+    renumber.description("Re-number the existing sections");
+    renumber.action(async () => {
+      await section.renumber();
+    });
+    comm.addCommand(renumber);
 
     return comm;
   }
