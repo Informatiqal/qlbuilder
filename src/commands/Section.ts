@@ -2,12 +2,15 @@ import { readdirSync, renameSync, unlinkSync, writeFileSync } from "fs";
 import { orderBy } from "natural-orderby";
 import prompts from "prompts";
 import { Checks } from "../lib/Checks";
+import { Build } from "./Build";
 
 export class Section {
   private existingSections: string[] = [];
   private checks: Checks;
+  private build: Build;
   constructor() {
     this.checks = new Checks();
+    this.build = new Build();
   }
 
   init() {
@@ -16,7 +19,6 @@ export class Section {
     this.existingSections = orderBy(readdirSync(`${process.cwd()}/src`));
   }
 
-  // TODO: in the beginning and at the end to be tested
   async add(): Promise<boolean> {
     this.checks.srcFolderExists();
 
@@ -25,7 +27,7 @@ export class Section {
         {
           type: "text",
           name: "title",
-          message: "What will be the title?",
+          message: "What will be the title of the new section?",
         },
         {
           type: "select",
@@ -49,9 +51,6 @@ export class Section {
           console.log("");
           process.exit(0);
         },
-        onSubmit: (prompt, answer) => {
-          // process.exit(0);
-        },
       }
     );
 
@@ -60,11 +59,11 @@ export class Section {
       `// ${newSection.title}`
     );
     this.renumberInternal(newSection, true);
+    this.build.run();
 
     return true;
   }
 
-  //TODO: ask for confirmation before delete the file
   async remove(): Promise<boolean> {
     this.checks.srcFolderExists();
 
@@ -94,9 +93,6 @@ export class Section {
           console.log("");
           process.exit(0);
         },
-        onSubmit: (prompt, answer) => {
-          // process.exit(0);
-        },
       }
     );
 
@@ -106,6 +102,7 @@ export class Section {
       );
 
       this.renumberInternal({ index: section.index + 1 }, false);
+      this.build.run();
     }
 
     if (section.agree == false) {
@@ -173,6 +170,8 @@ export class Section {
       `${process.cwd()}/src/${newFileName}`
     );
 
+    this.build.run();
+
     return true;
   }
 
@@ -187,8 +186,9 @@ export class Section {
         `${process.cwd()}/src/${this.existingSections[i]}`,
         `${process.cwd()}/src/${newName}`
       );
-      // console.log(this.existingSections[i], newName);
     }
+
+    this.build.run();
   }
 
   private renumberInternal(
@@ -211,8 +211,6 @@ export class Section {
         `${process.cwd()}/src/${file}`,
         `${process.cwd()}/src/${newName}`
       );
-
-      // console.log(file, newName);
     }
   }
 }
