@@ -5,15 +5,21 @@ import { Checks } from "../lib/Checks";
 
 export class Section {
   private existingSections: string[] = [];
+  private checks: Checks;
   constructor() {
-    const checks = new Checks();
-    checks.srcFolderExists();
+    this.checks = new Checks();
+  }
+
+  init() {
+    this.checks.srcFolderExists();
 
     this.existingSections = orderBy(readdirSync(`${process.cwd()}/src`));
   }
 
   // TODO: in the beginning and at the end to be tested
   async add(): Promise<boolean> {
+    this.checks.srcFolderExists();
+
     const newSection: { index: number; title: string } = await prompts(
       [
         {
@@ -60,7 +66,9 @@ export class Section {
 
   //TODO: ask for confirmation before delete the file
   async remove(): Promise<boolean> {
-    const section: { index: number } = await prompts(
+    this.checks.srcFolderExists();
+
+    const section: { index: number; agree: boolean } = await prompts(
       [
         {
           type: "select",
@@ -69,6 +77,14 @@ export class Section {
           optionsPerPage: 15,
           message: "Which section to remove?",
           choices: this.existingSections.map((s) => ({ title: s })),
+        },
+        {
+          type: "toggle",
+          name: "agree",
+          message: "Are you sure you want to delete the section?",
+          initial: false,
+          active: "yes",
+          inactive: "no",
         },
       ],
       {
@@ -84,14 +100,27 @@ export class Section {
       }
     );
 
-    unlinkSync(`${process.cwd()}/src/${this.existingSections[section.index]}`);
+    if (section.agree == true) {
+      unlinkSync(
+        `${process.cwd()}/src/${this.existingSections[section.index]}`
+      );
 
-    this.renumberInternal({ index: section.index + 1 }, false);
+      this.renumberInternal({ index: section.index + 1 }, false);
+    }
+
+    if (section.agree == false) {
+      console.log("");
+      console.log("Aborted. Nothing was changed.");
+      console.log("");
+      process.exit(0);
+    }
 
     return true;
   }
 
   async move(): Promise<boolean> {
+    this.checks.srcFolderExists();
+
     const moveSection: { index1: number; index2: number } = await prompts(
       [
         {
@@ -148,6 +177,8 @@ export class Section {
   }
 
   async renumber() {
+    this.checks.srcFolderExists();
+
     for (let i = 0; i < this.existingSections.length; i++) {
       const fileComponents = this.existingSections[i].split("--");
       const newName = `${i + 1}--${fileComponents[1]}`;
