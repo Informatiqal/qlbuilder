@@ -70,6 +70,13 @@ Run one of the following commands from CMD/PowerShell
   - `?` - print these commands
   - `x` - exit
 
+- `qlBuilder section [sub-command]` - main commands for **interactive** section operations
+
+  - `add` - adds new script section at specified position
+  - `remove` - remove one or many script sections. Once the sections/files are removed the rest of the files are re-numbered (see `renumber` operation)
+  - `move` - move specific script section up/down. After the file is moved (in reality the file is actually renamed) the files are re-numbered
+  - `renumber` - ideally all files are prefixed with an index (`1--`, `2--`, `3--` etc.) if section/file is deleted/renamed manually this index can appear "broken". Executing `renumber` command will re-index the files so the prefix will be continous
+
 - `qlbuilder download [env]` - download the specified Qlik app. Optional parameter to include or exclude the data in the exported app/file
 
   - `-p` or `--path` (**mandatory**) - path to the folder where the qvf will be downloaded

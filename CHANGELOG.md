@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 - new set of commands:
   - `section add` - add new script section on a specific position
-  - `section remove` - remove script section
+  - `section remove` - remove one or many script sections. Once the operation is completed the existing sections are re-numbered
   - `section move` - move script section
   - `section renumber` - re-number all script section so their names are continuous
 - [fix] `setScript` saves the app at the end
