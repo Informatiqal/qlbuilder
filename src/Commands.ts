@@ -15,6 +15,7 @@ import { SetScript } from "./commands/SetScript";
 import { Reload } from "./commands/Reload";
 import { Watch } from "./commands/Watch";
 import { CredentialEnvironments } from "./commands/CredentialEnvironments";
+import { Section } from "./commands/Section";
 
 export class Commander {
   programs = program;
@@ -33,6 +34,7 @@ export class Commander {
     this.programs.addCommand(this.reload());
     this.programs.addCommand(this.watch());
     this.programs.addCommand(this.credentialEnvironments());
+    this.programs.addCommand(this.sectionOperations());
 
     this.onHelp();
     this.onUnknownArg();
@@ -317,6 +319,52 @@ export class Commander {
         process.exit(1);
       }
     });
+
+    return comm;
+  }
+
+  private sectionOperations() {
+    const _this = this;
+    const comm = new Command("section");
+    comm.description("Manage script sections");
+
+    const section = new Section();
+
+    // add new script section
+    const add = new Command("add");
+    add.description("Add new script section at specific position");
+    add.action(async () => {
+      section.init();
+      await section.add();
+    });
+    comm.addCommand(add);
+
+    // remove existing script section
+    const remove = new Command("remove");
+    remove.description("Remove script section");
+    remove.action(async () => {
+      section.init();
+      await section.remove();
+    });
+    comm.addCommand(remove);
+
+    // move existing script section up/down
+    const move = new Command("move");
+    move.description("Move specified script section up/down");
+    move.action(async () => {
+      section.init();
+      await section.move();
+    });
+    comm.addCommand(move);
+
+    // renumber existing sections
+    const renumber = new Command("renumber");
+    renumber.description("Re-number the existing sections");
+    renumber.action(async () => {
+      section.init();
+      await section.renumber();
+    });
+    comm.addCommand(renumber);
 
     return comm;
   }
