@@ -1,6 +1,6 @@
 {
   "name": "qlbuilder",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "CLI helper tool for Qlik Sense developers to allow write script locally and update in remote app",
   "author": {
     "email": "info@informatiqal.com",
@@ -73,8 +73,6 @@
     "dotenv": "16.0.2",
     "mocha": "10.0.0",
     "nyc": "15.1.0",
-    "rollup": "2.78.1",
-    "rollup-plugin-delete": "2.0.0",
     "rollup-plugin-terser": "7.0.2",
     "rollup-plugin-typescript2": "0.33.0",
     "ts-node": "10.9.1"
