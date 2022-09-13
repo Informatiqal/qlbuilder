@@ -60,6 +60,7 @@ export class SetScript {
       const global = await qlik.session.open<EngineAPI.IGlobal>();
       const app = await global.createSessionApp();
       await app.setScript(script);
+      await app.doSave();
       await qlik.session.close();
     } catch (e) {
       await qlik.session.close();

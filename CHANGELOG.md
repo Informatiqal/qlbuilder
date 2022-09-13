@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
   - `section remove` - remove script section
   - `section move` - move script section
   - `section renumber` - re-number all script section so their names are continuous
+- [fix] `setScript` saves the app at the end
 
 ## [2.1.0] - 2022-09-10
 
