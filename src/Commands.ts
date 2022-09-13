@@ -34,7 +34,7 @@ export class Commander {
     this.programs.addCommand(this.reload());
     this.programs.addCommand(this.watch());
     this.programs.addCommand(this.credentialEnvironments());
-    this.programs.addCommand(this.addSection());
+    this.programs.addCommand(this.sectionOperations());
 
     this.onHelp();
     this.onUnknownArg();
@@ -323,7 +323,7 @@ export class Commander {
     return comm;
   }
 
-  private addSection() {
+  private sectionOperations() {
     const _this = this;
     const comm = new Command("section");
     comm.description("Manage script sections");

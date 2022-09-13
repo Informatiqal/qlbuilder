@@ -15,7 +15,10 @@ export class Section {
 
   init() {
     this.checks.srcFolderExists();
+    this.existingScriptFiles();
+  }
 
+  private existingScriptFiles() {
     this.existingSections = orderBy(readdirSync(`${process.cwd()}/src`));
   }
 
@@ -54,12 +57,17 @@ export class Section {
       }
     );
 
-    writeFileSync(
-      `${process.cwd()}/src/${newSection.index + 1}--${newSection.title}.qvs`,
-      `// ${newSection.title}`
-    );
-    this.renumberInternal(newSection, true);
-    this.build.run();
+    try {
+      writeFileSync(
+        `${process.cwd()}/src/${newSection.index + 1}--${newSection.title}.qvs`,
+        `// ${newSection.title}`
+      );
+      this.renumberInternal(newSection, true);
+      this.build.run();
+    } catch (e) {
+      throw new Error(`Error while creating the section script:
+${e.message}`);
+    }
 
     return true;
   }
@@ -67,10 +75,10 @@ export class Section {
   async remove(): Promise<boolean> {
     this.checks.srcFolderExists();
 
-    const section: { index: number; agree: boolean } = await prompts(
+    const section: { index: number[]; agree: boolean } = await prompts(
       [
         {
-          type: "select",
+          type: "multiselect",
           name: "index",
           initial: 0,
           optionsPerPage: 15,
@@ -80,7 +88,7 @@ export class Section {
         {
           type: "toggle",
           name: "agree",
-          message: "Are you sure you want to delete the section?",
+          message: "Are you sure you want to delete the section(s)?",
           initial: false,
           active: "yes",
           inactive: "no",
@@ -97,11 +105,17 @@ export class Section {
     );
 
     if (section.agree == true) {
-      unlinkSync(
-        `${process.cwd()}/src/${this.existingSections[section.index]}`
-      );
+      try {
+        section.index.map((i) => {
+          unlinkSync(`${process.cwd()}/src/${this.existingSections[i]}`);
+        });
+      } catch (e) {
+        throw new Error(`Error whole removing the script section:
+${e.message}`);
+      }
 
-      this.renumberInternal({ index: section.index + 1 }, false);
+      this.existingScriptFiles();
+      this.renumber();
       this.build.run();
     }
 
@@ -165,52 +179,71 @@ export class Section {
       moveSection.index2
     );
 
-    renameSync(
-      `${process.cwd()}/src/${this.existingSections[moveSection.index1]}`,
-      `${process.cwd()}/src/${newFileName}`
-    );
+    try {
+      renameSync(
+        `${process.cwd()}/src/${this.existingSections[moveSection.index1]}`,
+        `${process.cwd()}/src/${newFileName}`
+      );
 
-    this.build.run();
+      this.build.run();
+    } catch (e) {
+      throw new Error(`Error while renaming the section scripts:
+${e.message}`);
+    }
 
     return true;
   }
 
-  async renumber() {
+  async renumber(): Promise<boolean> {
     this.checks.srcFolderExists();
 
-    for (let i = 0; i < this.existingSections.length; i++) {
-      const fileComponents = this.existingSections[i].split("--");
-      const newName = `${i + 1}--${fileComponents[1]}`;
+    try {
+      for (let i = 0; i < this.existingSections.length; i++) {
+        const fileComponents = this.existingSections[i].split("--");
+        const newName = `${i + 1}--${fileComponents[1]}`;
 
-      renameSync(
-        `${process.cwd()}/src/${this.existingSections[i]}`,
-        `${process.cwd()}/src/${newName}`
-      );
+        renameSync(
+          `${process.cwd()}/src/${this.existingSections[i]}`,
+          `${process.cwd()}/src/${newName}`
+        );
+      }
+
+      this.build.run();
+    } catch (e) {
+      throw new Error(`Error while renaming the script sections:
+${e.message}`);
     }
 
-    this.build.run();
+    return true;
   }
 
   private renumberInternal(
     newSection: { index: number; title?: string },
     increment: boolean,
     stopIndex?: number
-  ) {
+  ): boolean {
     const filesToRename = this.existingSections.slice(
       newSection.index,
       stopIndex
     );
 
-    for (let file of filesToRename) {
-      const fileComponents = file.split("--");
-      const newName = `${parseInt(fileComponents[0]) + (increment ? 1 : -1)}--${
-        fileComponents[1]
-      }`;
+    try {
+      for (let file of filesToRename) {
+        const fileComponents = file.split("--");
+        const newName = `${
+          parseInt(fileComponents[0]) + (increment ? 1 : -1)
+        }--${fileComponents[1]}`;
 
-      renameSync(
-        `${process.cwd()}/src/${file}`,
-        `${process.cwd()}/src/${newName}`
-      );
+        renameSync(
+          `${process.cwd()}/src/${file}`,
+          `${process.cwd()}/src/${newName}`
+        );
+      }
+    } catch (e) {
+      throw new Error(`Error while renaming the script sections:
+${e.message}`);
     }
+
+    return true;
   }
 }
