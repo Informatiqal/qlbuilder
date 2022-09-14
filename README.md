@@ -23,7 +23,9 @@ Run one of the following commands from CMD/PowerShell
 
 - `qlbuilder create [name]` - create the initial folders and files in the current folder. `name` is used as root folder name
 
-  - `-t` (optional) - supplying this argument will create `VSCode` specific files inside `.vscode` folder as well. The `tasks.json` file describe all tasks that can be ran with `qlbuilder`. Change the environment name in `settings.json` file and use `VSCode` to start the tasks. (`tasks.json` can be left as it is. No need for editing there)
+  - `-t --task` (optional) - supplying this argument will create `VSCode` specific files inside `.vscode` folder as well. The `tasks.json` file describe all tasks that can be ran with `qlbuilder`. Change the environment name in `settings.json` file and use `VSCode` to start the tasks. (`tasks.json` can be left as it is. No need for editing there)
+  - `-s --script` (optional) - the creation process will copy the script files from the specified template folder [using Templates](#templates)
+  - `-c --config` (optional) - the creation process will copy the template yml from the template folder as `config.yml` into the current folder [using Templates](#templates)
 
 - `qlbuilder build`
 
@@ -81,6 +83,9 @@ Run one of the following commands from CMD/PowerShell
 
   - `-p` or `--path` (**mandatory**) - path to the folder where the qvf will be downloaded
   - `-nd` or `--nodata` - optional parameter indicating if the exported app should include the data or not. Default is `true`
+
+- `qlbuilder templates` - list all available script and config templates
+  `-c --create` (optional) - creates empty templates folder structure (if it doesn't exists) [using Templates](#templates)
 
 - `qlbuilder vscode` - creates the `.vscode` folder (inside the current folder) with the `tasks.json` and `settings.json` files. Please check the `create` command description above for more info
 
@@ -219,6 +224,60 @@ Will result in the following tabs in Qlik
 Having the script files as local files allows to put them in version control. This will put the `src`, `dist` and `config.yml` files in the repository.
 
 In some cases the Prod environment app can be without the original (full) script and just includes (via REST API call) the final load script (the one in `dist` folder) from Git's master branch. This way, technically, there is no need to touch the `Prod` app in case of an script change ... this is just an idea how to benefit from this approach.
+
+## Templates
+
+New projects can be initialized with predefined scripts and/or configs. In order to do this `qlBuilder` will search for templates in `C:\<USER>\qlbuilder_templates` folder. By default this folder (and its sub-folders) do not exists and can be created either manually or with:
+
+```shell
+qlBuilder templates create
+```
+
+There are two types of templates - config and script. Check the sections below for more information. Both Script and config template arguments are optional and if used can be provided independently to each other or both at the same time.
+
+### Config
+
+Under `qlbuilder_templates` folder create a folder named `config`. The `config` folder is where the config templates will be stored. Each template config should be valid `qlBuilder` config (`yml` file). There are no limitations on what the template file name should be (as long as is a valid file name).
+
+For example: if there are 3 config template files: `dev_config.yml`, `uat_config.yml` and `test.yml`. Each template can be invoked with the following commands:
+
+```shell
+qlBuilder create my-project-name -c dev_config
+```
+
+```shell
+qlBuilder create my-project-name -c uat_config
+```
+
+```shell
+qlBuilder create my-project-name -c test
+```
+
+As seen when specifying config in the command the file extension (`.yml`) is omitted.
+
+> **Note**
+> Only files with `yml` extension are valid config templates
+
+## Script
+
+Under `qlbuilder_templates` folder create a folder named `script`. This folder will contain the folders with the script templates. Each template folder will contain the `qvs` script files that will be copied across when `create` command is used (if `-s` argument is provided). The script files should be prefixed (`1--xxx`, `2-xxx`, `3--xxx` etc).
+
+For example: if there are 3 config template folders: `dev-env`, `uat-env` and `test`. Each template can be invoked with the following commands:
+
+```shell
+qlBuilder create my-project-name -s dev_env
+```
+
+```shell
+qlBuilder create my-project-name -s uat_env
+```
+
+```shell
+qlBuilder create my-project-name -s test
+```
+
+> **Note**
+> Only files with `qvs` extension will be copied to the result folder
 
 ## Roadmap
 
