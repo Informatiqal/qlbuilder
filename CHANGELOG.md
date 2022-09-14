@@ -2,7 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
-## [2.2.2] - 2022-09-XX
+## [2.2.4] - 2022-09-14
+
+- new command `templates` - list the available script and config templates
+  - `create` - optional sub-command that will create an empty templates folder structure
+- new **optional** arguments for `create` command
+  - `-s` or `--script` - the creation process will copy the script files from the specified template folder
+  - `-c` or `--config` - the creation process will copy the template yml from the template folder as `config.yml` into the current folder
+
+## [2.2.2] - 2022-09-13
 
 - new set of commands:
   - `section add` - add new script section on a specific position
@@ -13,7 +21,7 @@ All notable changes to this project will be documented in this file.
 
 ## [2.1.0] - 2022-09-10
 
-- new command `cred1` - list the names of all saved credential environments (from `.qlBuilder.yml`)
+- new command `cred` - list the names of all saved credential environments (from `.qlBuilder.yml`)
 
 ## [2.0.0] - 2022-08-22
 
