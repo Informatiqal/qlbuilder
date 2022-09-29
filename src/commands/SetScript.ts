@@ -33,7 +33,8 @@ export class SetScript {
     const build = new Build();
     build.run();
 
-    await this.auth[this.environment.authentication.type]();
+    const auth = this.authMethod();
+    await auth();
 
     this.spin.start();
 
@@ -45,6 +46,21 @@ export class SetScript {
     print.ok("Load script was set");
 
     return;
+  }
+
+  private authMethod() {
+    // QS desktop. Ignore any auth props (present or not)
+    if (this.environment.host.indexOf(":4848")) return this.auth.desktop;
+
+    // for anything else raise an error
+    if (!this.auth[this.environment.authentication.type])
+      throw new CustomError(
+        `Invalid authentication method - ${this.environment.authentication.type}`,
+        "error",
+        true
+      );
+
+    return this.auth[this.environment.authentication.type];
   }
 
   private async setScript(script: string) {

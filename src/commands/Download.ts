@@ -44,7 +44,8 @@ export class Download {
   async run() {
     this.spin.start();
 
-    await this.auth[this.environment.authentication.type]();
+    const auth = this.authMethod();
+    await auth();
 
     const exportRequest = await this.getExportRequest(this.auth.data.headers);
 
@@ -52,6 +53,26 @@ export class Download {
 
     this.spin.stop();
     return exportRequest.fileName;
+  }
+
+  private authMethod() {
+    // QS desktop. Ignore any auth props (present or not)
+    if (this.environment.host.indexOf(":4848"))
+      throw new CustomError(
+        `"Download" command is not available for QS Desktop. Copy the file from QS Apps folder`,
+        "error",
+        true
+      );
+
+    // for anything else raise an error
+    if (!this.auth[this.environment.authentication.type])
+      throw new CustomError(
+        `Invalid authentication method - ${this.environment.authentication.type}`,
+        "error",
+        true
+      );
+
+    return this.auth[this.environment.authentication.type];
   }
 
   private async getExportRequest(headers?: {
