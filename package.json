@@ -70,7 +70,7 @@
     "@types/qlik-engineapi": "12.67.12",
     "@types/ws": "8.5.3",
     "chai": "4.3.6",
-    "dotenv": "16.0.2",
+    "dotenv": "16.0.3",
     "mocha": "10.0.0",
     "nyc": "15.1.0",
     "rollup-plugin-terser": "7.0.2",
