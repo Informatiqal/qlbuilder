@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.2.5] - 2022-09-30
+
+- [fix] [#55](https://github.com/Informatiqal/qlbuilder/issues/55) additional check if the auth method in `config.yml` is a valid method name.
+  - for QS Desktop not auth method is required. If the url have `:4848` all auth checks are skipped
+- [fix] [#54](https://github.com/Informatiqal/qlbuilder/issues/54) Qlik comm errors for `getScript` are now captured. eg section access `Access denied`
+
 ## [2.2.4] - 2022-09-14
 
 - new command `templates` - list the available script and config templates
