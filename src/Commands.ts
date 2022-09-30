@@ -393,7 +393,7 @@ export class Commander {
 
   private listTemplates() {
     const _this = this;
-    const templateFolder = `${homedir()}/qlBuilder_templates1`;
+    const templateFolder = `${homedir()}/qlBuilder_templates`;
 
     const comm = new Command("templates");
     comm.description("List the available config and script templates");
