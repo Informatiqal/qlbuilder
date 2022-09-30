@@ -37,7 +37,8 @@ export class GetScript {
 
     this.spin.start();
     if (overwrite === true) {
-      await this.auth[this.environment.authentication.type]();
+      const auth = this.authMethod();
+      await auth();
 
       const loadScript = await this.retrieveQlikScript();
       await this.clearLocalFiles();
@@ -51,6 +52,21 @@ export class GetScript {
 
     this.spin.stop();
     return false;
+  }
+
+  private authMethod() {
+    // QS desktop. Ignore any auth props (present or not)
+    if (this.environment.host.indexOf(":4848")) return this.auth.desktop;
+
+    // for anything else raise an error
+    if (!this.auth[this.environment.authentication.type])
+      throw new CustomError(
+        `Invalid authentication method - ${this.environment.authentication.type}`,
+        "error",
+        true
+      );
+
+    return this.auth[this.environment.authentication.type];
   }
 
   private async askOverwrite() {
@@ -84,9 +100,17 @@ export class GetScript {
 
     this.session = qlik.session;
 
-    const global = await qlik.session.open<EngineAPI.IGlobal>();
-    const doc = await global.openDoc(this.environment.appId);
-    const loadScript = await doc.getScript();
+    let loadScript = "";
+
+    try {
+      const global = await qlik.session.open<EngineAPI.IGlobal>();
+      const doc = await global.openDoc(this.environment.appId);
+      loadScript = await doc.getScript();
+    } catch (e) {
+      await qlik.session.close();
+      this.spin.stop();
+      throw new CustomError(e.message, "error", true);
+    }
 
     try {
       await this.session.close();

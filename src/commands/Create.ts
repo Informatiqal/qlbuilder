@@ -1,17 +1,34 @@
-import { userInfo } from "os";
-import { mkdirSync, writeFileSync, existsSync } from "fs";
+import { userInfo, homedir } from "os";
+import {
+  mkdirSync,
+  writeFileSync,
+  existsSync,
+  readdirSync,
+  copyFileSync,
+} from "fs";
 import { dump } from "js-yaml";
 import { CustomError } from "../lib/CustomError";
 import { Build } from "./Build";
+import { Print } from "../lib/Print";
 
 export class Create {
   private name: string;
   private currentFolder = process.cwd();
+  private homeFolder = homedir();
   private createVSCodeStructure = false;
-  constructor(name: string, createVSCodeStructure: boolean) {
+  private useTemplateScript: string = undefined;
+  private useTemplateConfig: string = undefined;
+  constructor(
+    name: string,
+    createVSCodeStructure: boolean,
+    useTemplateScript: string,
+    useTemplateConfig: string
+  ) {
     this.name = name;
 
     this.createVSCodeStructure = createVSCodeStructure;
+    this.useTemplateScript = useTemplateScript;
+    this.useTemplateConfig = useTemplateConfig;
   }
 
   run() {
@@ -22,11 +39,43 @@ export class Create {
         true
       );
 
+    if (this.useTemplateScript) {
+      if (
+        !existsSync(
+          `${this.homeFolder}/qlBuilder_templates/script/${this.useTemplateScript}`
+        )
+      )
+        throw new CustomError(
+          `Template "${this.useTemplateScript}" not found`,
+          "error",
+          true
+        );
+    }
+
+    if (this.useTemplateConfig) {
+      if (
+        !existsSync(
+          `${this.homeFolder}/qlBuilder_templates/config/${this.useTemplateConfig}.yml`
+        )
+      )
+        throw new CustomError(
+          `Template "${this.useTemplateConfig}" not found`,
+          "error",
+          true
+        );
+    }
+
     this.createInitFolders();
-    this.createInitScriptFiles();
-    this.createInitConfig();
+    this.useTemplateScript
+      ? this.copyTemplateScripts()
+      : this.createInitScriptFiles();
+    this.useTemplateConfig
+      ? this.copyTemplateConfig()
+      : this.createInitConfig();
     this.createGitIgnore();
     this.createReadMe();
+
+    // TODO: handle this with the template params
     this.createVSCodeTasks();
   }
 
@@ -171,6 +220,44 @@ Thank you!
     );
   }
 
+  private copyTemplateScripts() {
+    const templateFolder = `${this.homeFolder}/qlBuilder_templates/script/${this.useTemplateScript}`;
+    const templateFiles = readdirSync(templateFolder);
+
+    if (templateFiles.length == 0) {
+      this.createInitScriptFiles();
+
+      const print = new Print();
+      print.warn(
+        `Template folder "${this.useTemplateScript}" was found but its empty. Initialized with the default script content`
+      );
+
+      return;
+    }
+
+    const scriptFiles = templateFiles.filter(
+      (f) => f.toLowerCase().split(".").pop() == "qvs"
+    );
+
+    for (let scriptFile of scriptFiles) {
+      copyFileSync(
+        `${templateFolder}/${scriptFile}`,
+        `${this.currentFolder}/${this.name}/src/${scriptFile}`
+      );
+    }
+
+    const build = new Build(`${this.currentFolder}/${this.name}`, true);
+    build.run();
+  }
+
+  private copyTemplateConfig() {
+    const templateFolder = `${this.homeFolder}/qlBuilder_templates/config`;
+    copyFileSync(
+      `${templateFolder}/${this.useTemplateConfig}.yml`,
+      `${this.currentFolder}/${this.name}/config.yml`
+    );
+  }
+
   createVSCodeTasks() {
     if (this.createVSCodeStructure == true) {
       const vscode = {
@@ -233,6 +320,13 @@ Thank you!
                   detail:
                     "Start qlbuilder in watch mode. Upload (set) the script to the Qlik app on each file save and automatically trigger reload after this",
                   command: "qlbuilder watch  ${config:env} -r",
+                },
+                {
+                  label: "Credential environments",
+                  type: "shell",
+                  detail:
+                    "List the names and type of all saved credential environments (from .qlBuilder.yml)",
+                  command: "qlbuilder cred",
                 },
               ],
             },

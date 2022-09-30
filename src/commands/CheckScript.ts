@@ -38,7 +38,8 @@ export class CheckScript {
     build.run();
     this.script = build.builtScript;
 
-    await this.auth[this.environment.authentication.type]();
+    const auth = this.authMethod();
+    await auth();
 
     await this.setScriptAndCheckSyntax(build.builtScript);
 
@@ -53,6 +54,21 @@ export class CheckScript {
 
     this.spin.stop();
     return this.scriptErrors.length;
+  }
+
+  private authMethod() {
+    // QS desktop. Ignore any auth props (present or not)
+    if (this.environment.host.indexOf(":4848")) return this.auth.desktop;
+
+    // for anything else raise an error
+    if (!this.auth[this.environment.authentication.type])
+      throw new CustomError(
+        `Invalid authentication method - ${this.environment.authentication.type}`,
+        "error",
+        true
+      );
+
+    return this.auth[this.environment.authentication.type];
   }
 
   private async setScriptAndCheckSyntax(script: string) {

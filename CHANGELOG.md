@@ -1,0 +1,41 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+## [2.3.0] - 2022-09-30
+
+- [add] [#48](https://github.com/Informatiqal/qlbuilder/issues/48) post install and uninstall scripts
+  - post install will create templates folder and `qlBuilder.yml` file (populates with sample data)
+  - uninstall will delete `qlBuilder.yml` file only! Templates folder will be left.
+
+## [2.2.6] - 2022-09-30
+
+- [fix] [#55](https://github.com/Informatiqal/qlbuilder/issues/55) additional check if the auth method in `config.yml` is a valid method name.
+  - for QS Desktop not auth method is required. If the url have `:4848` all auth checks are skipped
+- [fix] [#54](https://github.com/Informatiqal/qlbuilder/issues/54) Qlik comm errors for `getScript` are now captured. eg section access `Access denied`
+
+## [2.2.4] - 2022-09-14
+
+- [add] [#49](https://github.com/Informatiqal/qlbuilder/issues/49) new command `templates` - list the available script and config templates
+  - `create` - optional sub-command that will create an empty templates folder structure
+- [add] [#38](https://github.com/Informatiqal/qlbuilder/issues/38) new **optional** arguments for `create` command
+  - `-s` or `--script` - the creation process will copy the script files from the specified template folder
+  - `-c` or `--config` - the creation process will copy the template yml from the template folder as `config.yml` into the current folder
+
+## [2.2.2] - 2022-09-13
+
+- [add] [#40](https://github.com/Informatiqal/qlbuilder/issues/40) new set of commands:
+  - `section add` - add new script section on a specific position
+  - `section remove` - remove one or many script sections. Once the operation is completed the existing sections are re-numbered
+  - `section move` - move script section
+  - `section renumber` - re-number all script section so their names are continuous
+- [fix] `setScript` saves the app at the end
+
+## [2.1.0] - 2022-09-10
+
+- [add] [#39](https://github.com/Informatiqal/qlbuilder/issues/39) new command `cred` - list the names of all saved credential environments (from `.qlBuilder.yml`)
+
+## [2.0.0] - 2022-08-22
+
+- codebase is TypeScript
+- new command `download` - download the specified appid with or without data at user specified location

@@ -29,7 +29,8 @@ export class Reload {
   }
 
   async run() {
-    await this.auth[this.environment.authentication.type]();
+    const auth = this.authMethod();
+    await auth();
 
     const checkScript = new CheckScript(this.name, this.options);
     const errorsCount = await checkScript.run();
@@ -54,6 +55,21 @@ export class Reload {
     } catch (e) {}
 
     return true;
+  }
+
+  private authMethod() {
+    // QS desktop. Ignore any auth props (present or not)
+    if (this.environment.host.indexOf(":4848")) return this.auth.desktop;
+
+    // for anything else raise an error
+    if (!this.auth[this.environment.authentication.type])
+      throw new CustomError(
+        `Invalid authentication method - ${this.environment.authentication.type}`,
+        "error",
+        true
+      );
+
+    return this.auth[this.environment.authentication.type];
   }
 
   private async globalAndSetScript(script: string) {

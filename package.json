@@ -1,6 +1,6 @@
 {
   "name": "qlbuilder",
-  "version": "2.0.1",
+  "version": "2.3.0",
   "description": "CLI helper tool for Qlik Sense developers to allow write script locally and update in remote app",
   "author": {
     "email": "info@informatiqal.com",
@@ -19,7 +19,9 @@
     "start": "node out/app.js",
     "prestart": "npm run build",
     "build:tsc": "tsc",
-    "test": "mocha --require ts-node/esm test/**/*.spec.js"
+    "test": "mocha --require ts-node/esm test/**/*.spec.js",
+    "postinstall": "",
+    "uninstall": ""
   },
   "homepage": "https://github.com/informatiqal/qlbuilder",
   "repository": {
@@ -44,6 +46,7 @@
     "filenamify": "^5.1.1",
     "js-yaml": "^4.1.0",
     "natural-orderby": "^2.0.3",
+    "prompts": "^2.4.2",
     "qlik-sense-authenticate": "^0.1.13",
     "rimraf": "^3.0.2",
     "ws": "^8.8.1"
@@ -54,7 +57,6 @@
   "devDependencies": {
     "@rollup/plugin-commonjs": "22.0.2",
     "@rollup/plugin-json": "4.1.0",
-    "jest": "29.0.2",
     "rollup": "2.79.1",
     "rollup-plugin-delete": "2.0.0",
     "@types/axios": "0.14.0",
@@ -65,8 +67,8 @@
     "@types/commander": "2.12.2",
     "@types/enigma.js": "2.2.2",
     "@types/js-yaml": "4.0.5",
+    "@types/node": "^18.7.16",
     "@types/mocha": "10.0.0",
-    "@types/node": "18.7.9",
     "@types/qlik-engineapi": "12.67.12",
     "@types/ws": "8.5.3",
     "chai": "4.3.6",

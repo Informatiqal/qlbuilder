@@ -14,6 +14,10 @@ import { CheckScript } from "./commands/CheckScript";
 import { SetScript } from "./commands/SetScript";
 import { Reload } from "./commands/Reload";
 import { Watch } from "./commands/Watch";
+import { CredentialEnvironments } from "./commands/CredentialEnvironments";
+import { Section } from "./commands/Section";
+import { homedir } from "os";
+import { existsSync, mkdirSync, readdirSync } from "fs";
 
 export class Commander {
   programs = program;
@@ -31,6 +35,9 @@ export class Commander {
     this.programs.addCommand(this.vsCode());
     this.programs.addCommand(this.reload());
     this.programs.addCommand(this.watch());
+    this.programs.addCommand(this.credentialEnvironments());
+    this.programs.addCommand(this.listTemplates());
+    this.programs.addCommand(this.sectionOperations());
 
     this.onHelp();
     this.onUnknownArg();
@@ -186,13 +193,30 @@ export class Commander {
       "-t, --tasks",
       "Create .vscode folder with pre-setup VSCods tasks"
     );
+    comm.option(
+      "-s, --script <template>",
+      `Copy the content of a template script file(s) to newly created "src" folder`
+    );
+    comm.option(
+      "-c, --config <template>",
+      `Copy the content of a config template file to newly created folder`
+    );
     comm.description("Create new project structure in the current directory");
     comm.action(function (name: string, options: any) {
       const createVSCodeStructure =
         options && options.tasks == true ? true : false;
+      const copyTemplateScript: string =
+        options && options.script ? options.script : undefined;
+      const copyTemplateConfig: string =
+        options && options.config ? options.config : undefined;
 
       try {
-        const create = new Create(name, createVSCodeStructure);
+        const create = new Create(
+          name,
+          createVSCodeStructure,
+          copyTemplateScript,
+          copyTemplateConfig
+        );
         create.run();
 
         _this.print.ok("All set");
@@ -213,7 +237,7 @@ export class Commander {
     );
 
     comm.action(async function () {
-      const create = new Create("", true);
+      const create = new Create("", true, undefined, undefined);
       create.createVSCodeTasks();
 
       _this.print.ok(".vscode folder was created");
@@ -296,6 +320,170 @@ export class Commander {
       );
       process.stdout.write("\n");
     });
+  }
+
+  private credentialEnvironments() {
+    const _this = this;
+    const comm = new Command("cred");
+    comm.description(
+      "List the name and type of all saved credential environments"
+    );
+    comm.action(function () {
+      try {
+        const credentialEnvironments = new CredentialEnvironments();
+        const result = credentialEnvironments.run();
+        console.table(result);
+        process.exit(0);
+      } catch (e) {
+        _this.print.error(e.message);
+        process.exit(1);
+      }
+    });
+
+    return comm;
+  }
+
+  private sectionOperations() {
+    const _this = this;
+    const comm = new Command("section");
+    comm.description("Manage script sections");
+
+    // add new script section
+    const add = new Command("add");
+    add.description("Add new script section at specific position");
+    add.action(async () => {
+      const section = new Section();
+      section.init();
+      await section.add();
+    });
+    comm.addCommand(add);
+
+    // remove existing script section
+    const remove = new Command("remove");
+    remove.description("Remove script section");
+    remove.action(async () => {
+      const section = new Section();
+      section.init();
+      await section.remove();
+    });
+    comm.addCommand(remove);
+
+    // move existing script section up/down
+    const move = new Command("move");
+    move.description("Move specified script section up/down");
+    move.action(async () => {
+      const section = new Section();
+      section.init();
+      await section.move();
+    });
+    comm.addCommand(move);
+
+    // renumber existing sections
+    const renumber = new Command("renumber");
+    renumber.description("Re-number the existing sections");
+    renumber.action(async () => {
+      const section = new Section();
+      section.init();
+      await section.renumber();
+    });
+    comm.addCommand(renumber);
+
+    return comm;
+  }
+
+  private listTemplates() {
+    const _this = this;
+    const templateFolder = `${homedir()}/qlBuilder_templates`;
+
+    const comm = new Command("templates");
+    comm.description("List the available config and script templates");
+
+    const create = new Command("create");
+    create.description(
+      "Create the required qlBuilder template folder structure"
+    );
+    create.action(async () => {
+      if (!existsSync(`${templateFolder}`)) {
+        mkdirSync(templateFolder);
+        mkdirSync(`${templateFolder}/config`);
+        mkdirSync(`${templateFolder}/script`);
+
+        _this.print.ok(`Templates folder structure created. ${templateFolder}`);
+        process.exit(0);
+      }
+
+      if (
+        existsSync(`${templateFolder}`) &&
+        !existsSync(`${templateFolder}/config`)
+      ) {
+        mkdirSync(`${templateFolder}/config`);
+        _this.print.ok(
+          `Base templates folder exists. Config sub-folder was missing and now is created. ${templateFolder}/config`
+        );
+      }
+
+      if (
+        existsSync(`${templateFolder}`) &&
+        !existsSync(`${templateFolder}/script`)
+      ) {
+        _this.print.ok(
+          `Base templates folder exists. Script sub-folder was missing and now is created. ${templateFolder}/script`
+        );
+        mkdirSync(`${templateFolder}/script`);
+        process.exit(0);
+      }
+
+      _this.print.ok(
+        `Templates folder structure already exists. Nothing was changed ${templateFolder}`
+      );
+    });
+    comm.addCommand(create);
+
+    comm.action(function () {
+      try {
+        let templates: { name: string; type: string }[] = [];
+
+        if (existsSync(`${templateFolder}/script`)) {
+          templates.push(
+            ...readdirSync(`${templateFolder}/script`, {
+              withFileTypes: true,
+            })
+              .filter((dirent) => dirent.isDirectory())
+              .map((dirent) => ({ name: dirent.name, type: "SCRIPT" }))
+          );
+        }
+
+        if (existsSync(`${templateFolder}/config`)) {
+          templates.push(
+            ...readdirSync(`${templateFolder}/config`, {
+              withFileTypes: true,
+            })
+              .filter(
+                (dirent) =>
+                  dirent.isFile &&
+                  dirent.name.toLowerCase().split(".").pop() == "yml"
+              )
+              .map((dirent) => ({
+                name: dirent.name.replace(".yml", ""),
+                type: "CONFIG",
+              }))
+          );
+        }
+
+        if (templates.length == 0)
+          _this.print.warn(
+            "Template folder exists but no templates were found"
+          );
+        if (templates.length > 1) console.table(templates);
+
+        process.exit(0);
+      } catch (e) {
+        _this.print.error(e.message);
+        process.exit(1);
+      }
+    });
+
+    return comm;
   }
 
   private onUnknownArg() {
