@@ -68,7 +68,7 @@ export class CheckScript {
         true
       );
 
-    return this.auth[this.environment.authentication.type];
+    return () => this.auth[this.environment.authentication.type]();
   }
 
   private async setScriptAndCheckSyntax(script: string) {

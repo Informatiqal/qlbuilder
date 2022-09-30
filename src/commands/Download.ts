@@ -72,7 +72,7 @@ export class Download {
         true
       );
 
-    return this.auth[this.environment.authentication.type];
+    return () => this.auth[this.environment.authentication.type]();
   }
 
   private async getExportRequest(headers?: {

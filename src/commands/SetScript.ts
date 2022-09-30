@@ -60,7 +60,7 @@ export class SetScript {
         true
       );
 
-    return this.auth[this.environment.authentication.type];
+    return () => this.auth[this.environment.authentication.type]();
   }
 
   private async setScript(script: string) {

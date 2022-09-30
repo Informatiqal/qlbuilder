@@ -69,7 +69,7 @@ export class Reload {
         true
       );
 
-    return this.auth[this.environment.authentication.type];
+    return () => this.auth[this.environment.authentication.type]();
   }
 
   private async globalAndSetScript(script: string) {

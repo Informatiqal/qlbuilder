@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.3.1] - 2022-09-30
+
+- [fix] [#59](https://github.com/Informatiqal/qlbuilder/issues/59) authentication method is called correctly
+
 ## [2.3.0] - 2022-09-30
 
 - [add] [#48](https://github.com/Informatiqal/qlbuilder/issues/48) post install and uninstall scripts
