@@ -8,7 +8,7 @@ const configPath = `${homeDir}/.qlBuilder.yml`;
 function configYaml() {
   if (existsSync(configPath)) {
     try {
-      unlink(`${homeDir}/.qlBuilder.yml`, yamlString);
+      unlink(`${homeDir}/.qlBuilder.yml`);
     } catch (e) {}
   }
 }

@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
-## [2.2.5] - 2022-09-30
+## [2.3.0] - 2022-09-30
+
+- [add] [#48](https://github.com/Informatiqal/qlbuilder/issues/48) post install and uninstall scripts
+  - post install will create templates folder and `qlBuilder.yml` file (populates with sample data)
+  - uninstall will delete `qlBuilder.yml` file only! Templates folder will be left.
+
+## [2.2.6] - 2022-09-30
 
 - [fix] [#55](https://github.com/Informatiqal/qlbuilder/issues/55) additional check if the auth method in `config.yml` is a valid method name.
   - for QS Desktop not auth method is required. If the url have `:4848` all auth checks are skipped
