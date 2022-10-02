@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.4.0] - 2022-10-02
+
+- [add] [#60](https://github.com/Informatiqal/qlbuilder/issues/60) new command `createApp` - creates brand new app in the targeted environment. Once the app is created the `config.yml` is updated and the target environment appId is updated with the new app id.
+
 ## [2.3.1] - 2022-09-30
 
 - [fix] [#59](https://github.com/Informatiqal/qlbuilder/issues/59) authentication method is called correctly

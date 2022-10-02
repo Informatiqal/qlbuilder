@@ -10,6 +10,7 @@ import {
   WatchOptionValues,
 } from "./types/types";
 import { GetScript } from "./commands/GetScript";
+import { CreateApp } from "./commands/CreateApp";
 import { CheckScript } from "./commands/CheckScript";
 import { SetScript } from "./commands/SetScript";
 import { Reload } from "./commands/Reload";
@@ -38,6 +39,7 @@ export class Commander {
     this.programs.addCommand(this.credentialEnvironments());
     this.programs.addCommand(this.listTemplates());
     this.programs.addCommand(this.sectionOperations());
+    this.programs.addCommand(this.createApp());
 
     this.onHelp();
     this.onUnknownArg();
@@ -218,6 +220,36 @@ export class Commander {
           copyTemplateConfig
         );
         create.run();
+
+        _this.print.ok("All set");
+      } catch (e) {
+        _this.print.error(e.message);
+        process.exit(1);
+      }
+    });
+
+    return comm;
+  }
+
+  private createApp() {
+    const _this = this;
+    const comm = new Command("createApp");
+    comm.argument("<name>");
+    comm.argument("<env>");
+    comm.option(
+      "-d, --debug",
+      "Debug. Write out enigma traffic messages",
+      false
+    );
+    comm.description("Create new empty app and update the config.yml");
+    comm.action(async function (
+      name: string,
+      env: string,
+      options: GetScriptOptionValues
+    ) {
+      try {
+        const create = new CreateApp(name, env, options);
+        await create.run();
 
         _this.print.ok("All set");
       } catch (e) {
