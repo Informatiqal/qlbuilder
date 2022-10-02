@@ -89,6 +89,10 @@ Run one of the following commands from CMD/PowerShell
 
 - `qlbuilder vscode` - creates the `.vscode` folder (inside the current folder) with the `tasks.json` and `settings.json` files. Please check the `create` command description above for more info
 
+- `qlBuilder appDetails [env]` - display info about the configured app
+
+- `qlBuilder createApp [env]` - creates brand new (empty) app on the specified environment. Updates `config.yml` appId for the environment
+
 ## config.yml
 
 The `create` command will create few folders and `config.yml` file. The config file is pre-populated with example values. This file specifies Qlik environments (dev, test, prod etc.)
