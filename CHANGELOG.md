@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.5.0] - 2022-10-02
+
+- [add] [#61](https://github.com/Informatiqal/qlbuilder/issues/61) new command `appDetails` - display details for the configured app
+  - id
+  - name
+  - size
+  - published
+    - stream id
+    - stream name
+    - publish time
+  - created date
+  - last modified date
+  - last reload date
+  - description
+
 ## [2.4.0] - 2022-10-02
 
 - [add] [#60](https://github.com/Informatiqal/qlbuilder/issues/60) new command `createApp` - creates brand new app in the targeted environment. Once the app is created the `config.yml` is updated and the target environment appId is updated with the new app id.

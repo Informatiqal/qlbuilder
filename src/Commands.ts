@@ -11,6 +11,7 @@ import {
 } from "./types/types";
 import { GetScript } from "./commands/GetScript";
 import { CreateApp } from "./commands/CreateApp";
+import { AppDetails } from "./commands/AppDetails";
 import { CheckScript } from "./commands/CheckScript";
 import { SetScript } from "./commands/SetScript";
 import { Reload } from "./commands/Reload";
@@ -40,6 +41,7 @@ export class Commander {
     this.programs.addCommand(this.listTemplates());
     this.programs.addCommand(this.sectionOperations());
     this.programs.addCommand(this.createApp());
+    this.programs.addCommand(this.appDetails());
 
     this.onHelp();
     this.onUnknownArg();
@@ -234,6 +236,7 @@ export class Commander {
   private createApp() {
     const _this = this;
     const comm = new Command("createApp");
+    comm.alias("createapp");
     comm.argument("<name>");
     comm.argument("<env>");
     comm.option(
@@ -252,6 +255,31 @@ export class Commander {
         await create.run();
 
         _this.print.ok("All set");
+      } catch (e) {
+        _this.print.error(e.message);
+        process.exit(1);
+      }
+    });
+
+    return comm;
+  }
+
+  private appDetails() {
+    const _this = this;
+    const comm = new Command("appDetails");
+    comm.alias("appdetails");
+    comm.alias("details");
+    comm.argument("<env>");
+    comm.option(
+      "-d, --debug",
+      "Debug. Write out enigma traffic messages",
+      false
+    );
+    comm.description("Print details for the configured app");
+    comm.action(async function (env: string, options: GetScriptOptionValues) {
+      try {
+        const create = new AppDetails(env, options);
+        await create.run();
       } catch (e) {
         _this.print.error(e.message);
         process.exit(1);
