@@ -7,7 +7,7 @@ export class Print {
   }
 
   error(message: string) {
-    console.log(`\n${this.chalk.red("✖")} ${message}`);
+    console.error(`\n${this.chalk.red("✖")} ${message}`);
   }
 
   info(message: string) {
