@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.5.1] - 2022-10-03
+
+- [fix] - re-appearance of an issue where the auth was stuck on QS Desktop
+
 ## [2.5.0] - 2022-10-02
 
 - [add] [#61](https://github.com/Informatiqal/qlbuilder/issues/61) new command `appDetails` - display details for the configured app
