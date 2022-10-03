@@ -57,7 +57,7 @@ describe("Build command", function () {
       expect(builtScriptResult.stderr.length).to.be.equal(1) &&
       expect(builtScriptResult.stdout.length).to.be.equal(0) &&
       expect(
-        builtScriptResult.stderr[0].indexOf('✖ "src" folder was not found')
+        builtScriptResult.stderr[0].indexOf('"src" folder was not found')
       ).to.be.greaterThan(-1);
   });
 });
