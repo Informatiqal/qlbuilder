@@ -57,7 +57,7 @@ export class Download {
 
   private authMethod() {
     // QS desktop. Ignore any auth props (present or not)
-    if (this.environment.host.indexOf(":4848"))
+    if (this.environment.host.indexOf(":4848") > -1)
       throw new CustomError(
         `"Download" command is not available for QS Desktop. Copy the file from QS Apps folder`,
         "error",
