@@ -4,6 +4,12 @@ import { prepareEnvironment } from "@gmrchk/cli-testing-library";
 const expect = chai.expect;
 describe("Create command", function () {
   this.timeout(30000);
+  this.beforeEach(function (done) {
+    setTimeout(function () {
+      console.log("waiting");
+      done();
+    }, 1000);
+  });
 
   it("Create empty project", async function () {
     const { execute, ls, cleanup } = await prepareEnvironment();

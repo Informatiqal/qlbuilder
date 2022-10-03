@@ -6,6 +6,12 @@ const expect = chai.expect;
 
 describe("Help and list commands", function () {
   this.timeout(30000);
+  this.beforeEach(function (done) {
+    setTimeout(function () {
+      console.log("waiting");
+      done();
+    }, 1000);
+  });
 
   it("Version", async function () {
     const { execute, cleanup } = await prepareEnvironment();

@@ -5,6 +5,12 @@ const expect = chai.expect;
 
 describe("Unknown command", function () {
   this.timeout(30000);
+  this.beforeEach(function (done) {
+    setTimeout(function () {
+      console.log("waiting");
+      done();
+    }, 1000);
+  });
 
   it("Unknown command", async function () {
     const { execute, ls, cleanup } = await prepareEnvironment();

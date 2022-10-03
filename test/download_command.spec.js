@@ -7,6 +7,12 @@ import { prepareEnvironment } from "@gmrchk/cli-testing-library";
 const expect = chai.expect;
 describe("Download command", function () {
   this.timeout(30000);
+  this.beforeEach(function (done) {
+    setTimeout(function () {
+      console.log("waiting");
+      done();
+    }, 1000);
+  });
 
   it("Download command", async function () {
     const { execute, cleanup, makeDir, ls, path, readFile } =
