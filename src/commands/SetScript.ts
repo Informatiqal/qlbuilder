@@ -50,7 +50,7 @@ export class SetScript {
 
   private authMethod() {
     // QS desktop. Ignore any auth props (present or not)
-    if (this.environment.host.indexOf(":4848")) return this.auth.desktop;
+    if (this.environment.host.indexOf(":4848") > -1) return this.auth.desktop;
 
     // for anything else raise an error
     if (!this.auth[this.environment.authentication.type])
@@ -74,7 +74,7 @@ export class SetScript {
 
     try {
       const global = await qlik.session.open<EngineAPI.IGlobal>();
-      const app = await global.createSessionApp();
+      const app = await global.openDoc(this.environment.appId);
       await app.setScript(script);
       await app.doSave();
       await qlik.session.close();

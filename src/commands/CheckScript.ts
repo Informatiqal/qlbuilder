@@ -58,7 +58,7 @@ export class CheckScript {
 
   private authMethod() {
     // QS desktop. Ignore any auth props (present or not)
-    if (this.environment.host.indexOf(":4848")) return this.auth.desktop;
+    if (this.environment.host.indexOf(":4848") > -1) return this.auth.desktop;
 
     // for anything else raise an error
     if (!this.auth[this.environment.authentication.type])

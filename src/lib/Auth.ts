@@ -39,6 +39,13 @@ export class Auth {
   async certificates() {
     const credentials: CertificatesCredentials = this.credentials();
 
+    if (!credentials.QLIK_USER || !credentials.QLIK_CERTS)
+      throw new CustomError(
+        "QLIK_USER or QLIK_CERTS are missing/not set",
+        "error",
+        true
+      );
+
     if (credentials.QLIK_USER.indexOf("\\") == -1)
       throw new CustomError(
         "The username should be in format DOMAIN\\USER",
@@ -67,6 +74,9 @@ export class Auth {
   async jwt() {
     const credentials: TokenCredentials = this.credentials();
 
+    if (!credentials.QLIK_TOKEN)
+      throw new CustomError("QLIK_TOKEN is missing/not set", "error", true);
+
     this.data.headers = { Authorization: `Bearer ${credentials.QLIK_TOKEN}` };
   }
 
@@ -77,6 +87,13 @@ export class Auth {
       .sessionHeaderName
       ? (this.config.authentication as any).sessionHeaderName
       : "X-Qlik-Session";
+
+    if (!credentials.QLIK_USER || !credentials.QLIK_PASSWORD)
+      throw new CustomError(
+        "QLIK_USER or QLIK_PASSWORD are missing/not set",
+        "error",
+        true
+      );
 
     if (credentials.QLIK_USER.indexOf("\\") == -1)
       throw new CustomError(
@@ -119,6 +136,9 @@ export class Auth {
 
   async saas() {
     const credentials: TokenCredentials = this.credentials();
+
+    if (!credentials.QLIK_TOKEN)
+      throw new CustomError("QLIK_TOKEN is missing/not set", "error", true);
 
     this.data.headers = { Authorization: `Bearer ${credentials.QLIK_TOKEN}` };
   }
