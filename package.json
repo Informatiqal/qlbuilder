@@ -13,6 +13,13 @@
   "bin": {
     "qlbuilder": "./bin/qlbuilder.js"
   },
+  "files": [
+    "!.env",
+    "dist",
+    "funding.yml",
+    "CHANGELOG.md",
+    "README.md"
+  ],
   "scripts": {
     "build": "rollup -c",
     "build-debug": "rollup -c rollup.config.debug.js",
