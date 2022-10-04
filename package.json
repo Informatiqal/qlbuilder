@@ -1,6 +1,6 @@
 {
   "name": "qlbuilder",
-  "version": "2.5.1",
+  "version": "2.5.2",
   "description": "CLI helper tool for Qlik Sense developers to allow write script locally and update in remote app",
   "author": {
     "email": "info@informatiqal.com",
@@ -13,6 +13,13 @@
   "bin": {
     "qlbuilder": "./bin/qlbuilder.js"
   },
+  "files": [
+    "!.env",
+    "dist",
+    "funding.yml",
+    "CHANGELOG.md",
+    "README.md"
+  ],
   "scripts": {
     "build": "rollup -c",
     "build-debug": "rollup -c rollup.config.debug.js",

@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.5.2] - 2022-10-04
+
+- [fix] missed typo that was leading to auth issue (again)
+
 ## [2.5.1] - 2022-10-03
 
 - [fix] - re-appearance of an issue where the auth was stuck on QS Desktop
