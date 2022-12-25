@@ -64,7 +64,7 @@
   "devDependencies": {
     "@gmrchk/cli-testing-library": "0.1.2",
     "@rollup/plugin-commonjs": "24.0.0",
-    "@rollup/plugin-json": "5.0.2",
+    "@rollup/plugin-json": "6.0.0",
     "@types/axios": "0.14.0",
     "@types/chai": "4.3.4",
     "@types/chalk": "2.2.0",
