@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.5.3] - 2022-10-XX
+
+- dependency updates
+
 ## [2.5.2] - 2022-10-04
 
 - [fix] missed typo that was leading to auth issue (again)
