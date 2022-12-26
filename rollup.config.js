@@ -1,16 +1,17 @@
-import { terser } from "rollup-plugin-terser";
-import typescript from "rollup-plugin-typescript2";
-import commonjs from "@rollup/plugin-commonjs";
+import typescript from "@rollup/plugin-typescript";
 import del from "rollup-plugin-delete";
 import json from "@rollup/plugin-json";
-import pkg from "./package.json";
+import replace from "@rollup/plugin-replace";
+import { readFileSync } from "fs";
+
+const pkg = JSON.parse(readFileSync("./package.json"));
 
 export default {
   input: "src/index.ts",
   output: {
+    file: pkg.module,
     format: "es",
-    dir: "dist",
-    sourcemap: false,
+    sourcemap: true,
   },
   external: [
     ...Object.keys(pkg.dependencies || {}),
@@ -24,11 +25,13 @@ export default {
     del({
       targets: "dist/*",
     }),
-    commonjs(),
-    terser(),
     json(),
-    typescript({
-      typescript: require("typescript"),
+    typescript(),
+    replace({
+      values: {
+        __VERSION: pkg.version,
+      },
+      preventAssignment: true,
     }),
   ],
 };
