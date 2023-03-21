@@ -1,6 +1,5 @@
 import { program, Command, createArgument } from "commander";
 import { Print } from "./lib/Print";
-import { version } from "../package.json";
 import { Build } from "./commands/Build";
 import { Create } from "./commands/Create";
 import { Download } from "./commands/Download";
@@ -51,7 +50,7 @@ export class Commander {
     this.programs.name("qlbuilder");
     this.programs.usage("command [environment name]");
     this.programs.version(
-      version,
+      "__VERSION",
       "-v, --version",
       "Output the current version"
     );

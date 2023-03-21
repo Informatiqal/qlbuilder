@@ -2,7 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
-## [2.5.3] - 2022-10-XX
+## [2.6.0] - 2023-03-21
+
+- dependency updates
+- enigma schema is bundled in the release
+
+## [2.5.3] - 2022-12-26
 
 - dependency updates
 
