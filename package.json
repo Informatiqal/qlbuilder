@@ -50,7 +50,7 @@
     "cli-spinner": "^0.2.10",
     "commander": "^10.0.0",
     "enigma.js": "^2.11.0",
-    "filenamify": "^5.1.1",
+    "filenamify": "^6.0.0",
     "js-yaml": "^4.1.0",
     "natural-orderby": "^3.0.2",
     "prompts": "^2.4.2",
