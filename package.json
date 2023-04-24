@@ -55,7 +55,7 @@
     "natural-orderby": "^3.0.2",
     "prompts": "^2.4.2",
     "qlik-sense-authenticate": "^0.1.13",
-    "rimraf": "^4.4.0",
+    "rimraf": "^5.0.0",
     "ws": "^8.13.0"
   },
   "engines": {
