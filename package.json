@@ -76,7 +76,7 @@
     "@types/enigma.js": "2.2.2",
     "@types/js-yaml": "4.0.5",
     "@types/mocha": "10.0.1",
-    "@types/node": "18.16.5",
+    "@types/node": "18.16.7",
     "@types/qlik-engineapi": "12.67.12",
     "@types/ws": "8.5.4",
     "chai": "4.3.7",
