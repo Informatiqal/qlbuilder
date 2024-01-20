@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.7.0] - 2024-01-20
+
+- `download` command works with Qlik Cloud as well [#146](https://github.com/Informatiqal/qlbuilder/issues/146)
+- dependency updates
+
 ## [2.6.0] - 2023-03-21
 
 - dependency updates

@@ -8,6 +8,11 @@ import { generateXrfkey, uuid } from "../lib/common";
 import { Spin } from "../lib/Spinner";
 import { DownloadExportRequest, DownloadOptionValues } from "../types/types";
 
+export interface ISaaSItem {
+  name: string;
+  id: string;
+}
+
 export class Download {
   private name: string;
   private environment: IConfig;
@@ -47,12 +52,22 @@ export class Download {
     const auth = this.authMethod();
     await auth();
 
-    const exportRequest = await this.getExportRequest(this.auth.data.headers);
+    let appName: string = "";
 
-    await this.downloadFile(exportRequest.fileName, exportRequest.path);
+    if (this.environment.authentication.type == "saas") {
+      appName = await this.getSaaSAppName(this.environment.appId);
+      await this.downloadSaaSFile(appName, this.environment.appId);
+    }
+
+    if (this.environment.authentication.type !== "saas") {
+      const exportRequest = await this.getExportRequest(this.auth.data.headers);
+
+      appName = exportRequest.fileName;
+      await this.downloadFile(appName, exportRequest.path);
+    }
 
     this.spin.stop();
-    return exportRequest.fileName;
+    return appName;
   }
 
   private authMethod() {
@@ -138,6 +153,58 @@ export class Download {
       .catch((e) => {
         this.spin.stop();
         throw new CustomError(e.message, "error", true);
+      });
+  }
+
+  private async downloadSaaSFile(fileName: string, appId: string) {
+    const writer = createWriteStream(`${this.options.path}/${fileName}.qvf`);
+
+    await axios
+      .post(
+        `${this.environment.host}/api/v1/apps/${appId}/export`,
+        {},
+        {
+          headers: { ...this.auth.data.headers },
+          // withCredentials: true,
+          responseType: "stream",
+        }
+      )
+      .then((res) => {
+        return new Promise((resolve, reject) => {
+          res.data.pipe(writer);
+          let error = null;
+          writer.on("error", (err) => {
+            writer.close();
+            this.spin.stop();
+            throw new CustomError(err.message, "error", true);
+          });
+          writer.on("close", () => {
+            if (!error) resolve(true);
+          });
+        });
+      })
+      .catch((e) => {
+        this.spin.stop();
+        throw new CustomError(e.message, "error", true);
+      });
+  }
+
+  private async getSaaSAppName(appId: string) {
+    return await axios
+      .get<{ data: ISaaSItem[] }>(
+        `${this.environment.host}/api/v1/items?resourceType=app&resourceId=${appId}`,
+        {
+          headers: { ...this.auth.data.headers },
+        }
+      )
+      .then((res) => {
+        if (!res.data || !res.data.data || res.data.data.length == 0)
+          throw new CustomError(
+            `App with id "${appId}" do not exists`,
+            "error",
+            true
+          );
+        return res.data.data[0].name;
       });
   }
 }

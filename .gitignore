@@ -20,6 +20,7 @@ yarn-debug.log*
 yarn-error.log*
 .npmrc
 src/schema/test.yml
+*.qvf
 
 # Runtime data
 pids
