@@ -7,6 +7,7 @@ export type GetScriptOptionValues = {
   debug?: string;
   y?: string;
   reloadOutput?: string;
+  reloadOutputOverwrite?: string;
 };
 
 export type WatchOptionValues = {

@@ -18,6 +18,7 @@ export class Reload {
   constructor(name: string, options: GetScriptOptionValues) {
     this.name = name;
     this.options = options;
+
     this.spin = new Spin("Saving ...", "circle");
 
     const checks = new Checks();
@@ -43,7 +44,7 @@ export class Reload {
     );
     const reloadLogComplete = await this.reloadAndGetProgress(global, doc);
 
-    if (this.options.reloadOutput)
+    if (this.options.reloadOutput || this.options.reloadOutputOverwrite)
       this.saveReloadLog(reloadLogComplete.message.reloadLog);
 
     if (reloadLogComplete.error == true) {
@@ -236,13 +237,23 @@ export class Reload {
    * Save the reload log once the app is reloaded
    */
   private async saveReloadLog(log: string[]) {
-    const logPath = path.resolve(this.options.reloadOutput);
+    const logPath = path.resolve(
+      this.options.reloadOutput || this.options.reloadOutputOverwrite
+    );
     const currentTime = new Date()
       .toISOString()
       .replace(/[^0-9]/g, "")
       .slice(0, -3);
 
-    const fileName = `${this.environment.appId}_${currentTime}.txt`;
+    let fileName = "";
+
+    // if --reload-output is used then add the current timestamp to the filename
+    if (this.options.reloadOutput)
+      fileName = `${this.environment.appId}_${currentTime}.txt`;
+
+    // if --reload-output-overwrite is used then use the appid only as filename
+    if (this.options.reloadOutputOverwrite)
+      fileName = `${this.environment.appId}.txt`;
 
     try {
       writeFileSync(`${logPath}\\${fileName}`, log.join("\n"));

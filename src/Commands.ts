@@ -324,11 +324,22 @@ export class Commander {
 
     comm.option(
       "-ro, --reload-output <LOCATION>",
-      "Path. Save the reload log into the provided folder",
-      "./"
+      "Path. Save the reload log into the provided folder"
+    );
+
+    comm.option(
+      "-roo, --reload-output-overwrite <LOCATION>",
+      "Path. Save the reload log into the provided folder by overwriting the existing log"
     );
 
     comm.action(async function (name, options: GetScriptOptionValues) {
+      if (options.reloadOutput && options.reloadOutputOverwrite)
+        throw new CustomError(
+          "Both reload-output and reload-output-overwrite options provided. Please provide only one",
+          "error",
+          true
+        );
+
       // check if reload output path exists
       // before run anything else
       if (options.reloadOutput) {
@@ -338,6 +349,21 @@ export class Commander {
         if (!isPathExists) {
           throw new CustomError(
             `Provided reload output path do not exists - "${options.reloadOutput}" `,
+            "error",
+            true
+          );
+        }
+      }
+
+      // check if reload output overwrite path exists
+      // before run anything else
+      if (options.reloadOutputOverwrite) {
+        const p = path.resolve(options.reloadOutputOverwrite);
+
+        const isPathExists = existsSync(p);
+        if (!isPathExists) {
+          throw new CustomError(
+            `Provided reload output path do not exists - "${options.reloadOutputOverwrite}" `,
             "error",
             true
           );
