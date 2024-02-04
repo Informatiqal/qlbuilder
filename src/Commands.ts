@@ -335,7 +335,7 @@ export class Commander {
     comm.action(async function (name, options: GetScriptOptionValues) {
       if (options.reloadOutput && options.reloadOutputOverwrite)
         throw new CustomError(
-          "Both reload-output and reload-output-overwrite options provided. Please provide only one",
+          "Both --reload-output and --reload-output-overwrite options are provided. Please provide only one of them",
           "error",
           true
         );
