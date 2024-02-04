@@ -39,7 +39,7 @@ export class Download {
     if (!existsSync(downloadFolder)) {
       this.spin.stop();
       throw new CustomError(
-        `Specified download path do now exists: ${downloadFolder}`,
+        `Specified download path do not exists: ${downloadFolder}`,
         "error",
         true
       );
@@ -165,7 +165,6 @@ export class Download {
         {},
         {
           headers: { ...this.auth.data.headers },
-          // withCredentials: true,
           responseType: "stream",
         }
       )

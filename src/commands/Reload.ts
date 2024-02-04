@@ -1,3 +1,5 @@
+import path from "path";
+import { writeFileSync, existsSync } from "fs";
 import { Auth } from "../lib/Auth";
 import { Checks } from "../lib/Checks";
 import { Config, IConfig } from "../lib/Config";
@@ -40,11 +42,18 @@ export class Reload {
     const { global, doc, qlik } = await this.globalAndSetScript(
       checkScript.script
     );
-    await this.reloadAndGetProgress(global, doc).catch(async (e) => {
-      await qlik.session.close();
+    const reloadLogComplete = await this.reloadAndGetProgress(global, doc);
+
+    if (this.options.reloadOutput || this.options.reloadOutputOverwrite)
+      this.saveReloadLog(reloadLogComplete.message.reloadLog);
+
+    if (reloadLogComplete.error == true) {
+      try {
+        qlik.session.close();
+      } catch (e) {}
 
       throw new CustomError("Error during reload", "error", false);
-    });
+    }
 
     this.spin.start();
     await doc.doSave();
@@ -89,7 +98,16 @@ export class Reload {
   }
 
   private async reloadAndGetProgress(global, doc) {
-    return new Promise(function (resolve, reject) {
+    return new Promise<{
+      error: boolean;
+      message: {
+        success: boolean;
+        reloadLog: string[];
+        log: string;
+        script: string[];
+        scriptError: boolean;
+      };
+    }>(function (resolve, reject) {
       console.log("");
       console.log("--------------- RELOAD STARTED ---------------");
       console.log("");
@@ -97,6 +115,7 @@ export class Reload {
       let reloaded = false;
       let scriptError = false;
       let scriptResult = [];
+      let reloadLog: string[] = [];
 
       let persistentProgress = "";
 
@@ -107,7 +126,17 @@ export class Reload {
           console.log("--------------- RELOAD COMPLETED ---------------");
           console.log("");
 
-          if (scriptError == true) reject(scriptError);
+          if (scriptError == true)
+            resolve({
+              error: scriptError,
+              message: {
+                success: false,
+                log: result.qScriptLogFile,
+                script: scriptResult,
+                scriptError: scriptError,
+                reloadLog,
+              },
+            });
 
           resolve({
             error: scriptError,
@@ -116,6 +145,7 @@ export class Reload {
               log: result.qScriptLogFile,
               script: scriptResult,
               scriptError: scriptError,
+              reloadLog,
             },
           });
         }, 1000);
@@ -157,37 +187,43 @@ export class Reload {
             if (msg.qPersistentProgress && msg.qTransientProgress) {
               persistentProgress = msg.qPersistentProgress;
               if (persistentProgress.split("\n").length > 1) {
-                console.log(
-                  `${timestamp}: ${persistentProgress.split("\n")[0]}`
-                );
-                console.log(
-                  `${timestamp}: ${persistentProgress.split("\n")[1]} <-- ${
-                    msg.qTransientProgress
-                  }`
-                );
+                const msg1 = `${timestamp}: ${
+                  persistentProgress.split("\n")[0]
+                }`;
+                console.log(msg1);
+                reloadLog.push(msg1);
+
+                const msg2 = `${timestamp}: ${
+                  persistentProgress.split("\n")[1]
+                } <-- ${msg.qTransientProgress}`;
+                console.log(msg2);
+                reloadLog.push(msg2);
               } else {
-                console.log(
-                  `${timestamp}: ${msg.qPersistentProgress} <-- ${msg.qTransientProgress}`
-                );
+                const msg3 = `${timestamp}: ${msg.qPersistentProgress} <-- ${msg.qTransientProgress}`;
+                console.log(msg3);
+                reloadLog.push(msg3);
               }
             }
 
             if (!msg.qPersistentProgress && msg.qTransientProgress) {
               if (persistentProgress.split("\n").length > 1) {
-                console.log(
-                  `${timestamp}: ${persistentProgress.split("\n")[1]} <-- ${
-                    msg.qTransientProgress
-                  }`
-                );
+                const msg4 = `${timestamp}: ${
+                  persistentProgress.split("\n")[1]
+                } <-- ${msg.qTransientProgress}`;
+
+                console.log(msg4);
+                reloadLog.push(msg4);
               } else {
-                console.log(
-                  `${timestamp}: ${persistentProgress} <-- ${msg.qTransientProgress}`
-                );
+                const msg5 = `${timestamp}: ${persistentProgress} <-- ${msg.qTransientProgress}`;
+                console.log(msg5);
+                reloadLog.push(msg5);
               }
             }
 
             if (msg.qPersistentProgress && !msg.qTransientProgress) {
-              console.log(`${timestamp}: ${msg.qPersistentProgress}`);
+              const msg6 = `${timestamp}: ${msg.qPersistentProgress}`;
+              console.log(msg6);
+              reloadLog.push(msg6);
             }
           });
         } else {
@@ -195,5 +231,38 @@ export class Reload {
         }
       }, 500);
     });
+  }
+
+  /**
+   * Save the reload log once the app is reloaded
+   */
+  private async saveReloadLog(log: string[]) {
+    const logPath = path.resolve(
+      this.options.reloadOutput || this.options.reloadOutputOverwrite
+    );
+    const currentTime = new Date()
+      .toISOString()
+      .replace(/[^0-9]/g, "")
+      .slice(0, -3);
+
+    let fileName = "";
+
+    // if --reload-output is used then add the current timestamp to the filename
+    if (this.options.reloadOutput)
+      fileName = `${this.environment.appId}_${currentTime}.txt`;
+
+    // if --reload-output-overwrite is used then use the appid only as filename
+    if (this.options.reloadOutputOverwrite)
+      fileName = `${this.environment.appId}.txt`;
+
+    try {
+      writeFileSync(`${logPath}\\${fileName}`, log.join("\n"));
+    } catch (e) {
+      throw new CustomError(
+        `Error while saving the reload log:\n\n${e.message}`,
+        "error",
+        false
+      );
+    }
   }
 }
