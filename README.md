@@ -39,6 +39,8 @@ Run one of the following commands from CMD/PowerShell
 - `qlbuilder reload [env]`
 
   - connects to Qlik and reload the app - `env` is the environment name from `config.yml`. Once the reload has started `qlbuilder` will display the progress in the same console.
+  - `-ro, --reload-output <LOCATION>` - after the app is reload (with or without errors) the reload log will be saved in `<LOCATION>` folder. The reload log file name will be in `appId_timestamp.txt` format.
+  - `-roo, --reload-output-overwrite <LOCATION>` - similar functionality to `--reload-output` but the file name will be `appId.txt`. With this option only the last reload log will be kept.
 
 - `qlbuilder setscript [env]`
 

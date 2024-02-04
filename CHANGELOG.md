@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.7.0] - 2024-02-04
+
+- two new arguments for `reload` command
+  - `-ro, --reload-output <LOCATION>` - after reload is complete (ok or with errors) the reload log is saved inside `<LOCATION>` folder
+  - `-roo, --reload-output-overwrite <LOCATION>` - similar to the above command but the reload log will overwrite any existing reload log (for the same app)
+- dependency updates
+
 ## [2.7.0] - 2024-01-20
 
 - `download` command works with Qlik Cloud as well [#146](https://github.com/Informatiqal/qlbuilder/issues/146)
