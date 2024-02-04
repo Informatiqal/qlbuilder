@@ -19,6 +19,8 @@ import { CredentialEnvironments } from "./commands/CredentialEnvironments";
 import { Section } from "./commands/Section";
 import { homedir } from "os";
 import { existsSync, mkdirSync, readdirSync } from "fs";
+import path from "path";
+import { CustomError } from "./lib/CustomError";
 
 export class Commander {
   programs = program;
@@ -320,7 +322,28 @@ export class Commander {
       "false"
     );
 
+    comm.option(
+      "-ro, --reload-output <LOCATION>",
+      "Path. Save the reload log into the provided folder",
+      "./"
+    );
+
     comm.action(async function (name, options: GetScriptOptionValues) {
+      // check if reload output path exists
+      // before run anything else
+      if (options.reloadOutput) {
+        const p = path.resolve(options.reloadOutput);
+
+        const isPathExists = existsSync(p);
+        if (!isPathExists) {
+          throw new CustomError(
+            `Provided reload output path do not exists - "${options.reloadOutput}" `,
+            "error",
+            true
+          );
+        }
+      }
+
       const reload = new Reload(name, options);
       await reload.run().catch((e) => process.exit(1));
 
