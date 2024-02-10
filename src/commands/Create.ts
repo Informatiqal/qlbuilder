@@ -86,22 +86,30 @@ export class Create {
   }
 
   private createInitScriptFiles() {
-    const rawScript = [
-      `SET ThousandSep=',';\n`,
-      `SET DecimalSep='.';\n`,
-      `SET MoneyThousandSep=',';\n`,
-      `SET MoneyDecimalSep='.';\n`,
-      `SET MoneyFormat='$#,##0.00;($#,##0.00)';\n`,
-      `SET TimeFormat='h:mm:ss TT';\n`,
-      `SET DateFormat='M/D/YYYY';\n`,
-      `SET TimestampFormat='M/D/YYYY h:mm:ss[.fff] TT';\n`,
-      `SET MonthNames='Jan;Feb;Mar;Apr;May;Jun;Jul;Aug;Sep;Oct;Nov;Dec';\n`,
-      `SET DayNames='Mon;Tue;Wed;Thu;Fri;Sat;Sun';\n`,
-    ];
+    const rawScript = `SET ThousandSep=',';
+SET DecimalSep='.';
+SET MoneyThousandSep=',';
+SET MoneyDecimalSep='.';
+SET MoneyFormat='£#,##0.00;-£#,##0.00';
+SET TimeFormat='hh:mm:ss';
+SET DateFormat='DD/MM/YYYY';
+SET TimestampFormat='DD/MM/YYYY hh:mm:ss[.fff]';
+SET FirstWeekDay=0;
+SET BrokenWeeks=0;
+SET ReferenceDay=4;
+SET FirstMonthOfYear=1;
+SET CollationLocale='en-GB';
+SET CreateSearchIndexOnReload=0;
+SET MonthNames='Jan;Feb;Mar;Apr;May;Jun;Jul;Aug;Sep;Oct;Nov;Dec';
+SET LongMonthNames='January;February;March;April;May;June;July;August;September;October;November;December';
+SET DayNames='Mon;Tue;Wed;Thu;Fri;Sat;Sun';
+SET LongDayNames='Monday;Tuesday;Wednesday;Thursday;Friday;Saturday;Sunday';
+SET NumericalAbbreviation='3:k;6:M;9:G;12:T;15:P;18:E;21:Z;24:Y;-3:m;-6:μ;-9:n;-12:p;-15:f;-18:a;-21:z;-24:y';
+`;
 
     writeFileSync(
       `${this.currentFolder}/${this.name}/src/0--Main.qvs`,
-      rawScript.join("")
+      rawScript
     );
 
     const build = new Build(`${this.currentFolder}/${this.name}`, true);

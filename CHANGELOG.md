@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.8.2] - 2024-02-10
+
+- updated initial script (`create` command) to be in sync with QS's initial script. At the moment the initial script is GB specific. Please use the template functionality to change the initial script for your region
+
 ## [2.8.1] - 2024-02-10
 
 - printing the reload progress is now handled by [mGetReloadProgress (enigma-mixin)](https://github.com/countnazgul/enigma-mixin?tab=readme-ov-file#global)
