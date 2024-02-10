@@ -94,11 +94,30 @@ export class Reload {
     const doc = await global.openDoc(this.environment.appId);
     await doc.setScript(script);
 
+    try {
+      await global.configureReload(true, true, false);
+    } catch (e) {}
+
     return { global, doc, qlik };
   }
 
   private async reloadAndGetProgress(global, doc) {
-    return new Promise<{
+    let scriptError = false;
+    let scriptResult = [];
+    let reloadLog: string[] = [];
+
+    const reloadProgress = global.mGetReloadProgress();
+
+    reloadProgress.emitter.on("progress", (msg) => {
+      reloadLog.push(msg);
+      console.log(msg);
+    });
+
+    reloadProgress.emitter.on("error", (msg) => {
+      scriptError = true;
+    });
+
+    const reloadApp: {
       error: boolean;
       message: {
         success: boolean;
@@ -107,130 +126,40 @@ export class Reload {
         script: string[];
         scriptError: boolean;
       };
-    }>(function (resolve, reject) {
+    } = await new Promise(function (resolve, reject) {
       console.log("");
       console.log("--------------- RELOAD STARTED ---------------");
       console.log("");
 
-      let reloaded = false;
-      let scriptError = false;
-      let scriptResult = [];
-      let reloadLog: string[] = [];
-
-      let persistentProgress = "";
-
-      doc.doReloadEx().then(function (result) {
+      doc.doReloadEx().then((result) => {
         setTimeout(function () {
-          reloaded = true;
+          reloadProgress.stop();
+
           console.log("");
           console.log("--------------- RELOAD COMPLETED ---------------");
           console.log("");
 
-          if (scriptError == true)
-            resolve({
-              error: scriptError,
-              message: {
-                success: false,
-                log: result.qScriptLogFile,
-                script: scriptResult,
-                scriptError: scriptError,
-                reloadLog,
-              },
-            });
-
           resolve({
             error: scriptError,
             message: {
-              success: result.qSuccess,
+              success: false,
               log: result.qScriptLogFile,
               script: scriptResult,
               scriptError: scriptError,
               reloadLog,
             },
           });
-        }, 1000);
+        }, 300);
       });
 
-      const progress = setInterval(function () {
-        if (reloaded != true) {
-          global.getProgress(-1).then(function (msg) {
-            const timestampOptions: Intl.DateTimeFormatOptions = {
-              year: "numeric",
-              month: "2-digit",
-              day: "2-digit",
-              hour: "2-digit",
-              minute: "2-digit",
-              second: "2-digit",
-              hour12: false,
-            };
-
-            const timestamp = new Date().toLocaleString(
-              "en-GB",
-              timestampOptions
-            );
-
-            let loadError = false;
-
-            try {
-              loadError =
-                msg.qPersistentProgress.toLowerCase().indexOf("script error.") >
-                -1
-                  ? true
-                  : false;
-            } catch (e) {}
-
-            if (msg.qErrorData.length > 0 || loadError == true) {
-              reloaded = true;
-              scriptError = true;
-            }
-
-            if (msg.qPersistentProgress && msg.qTransientProgress) {
-              persistentProgress = msg.qPersistentProgress;
-              if (persistentProgress.split("\n").length > 1) {
-                const msg1 = `${timestamp}: ${
-                  persistentProgress.split("\n")[0]
-                }`;
-                console.log(msg1);
-                reloadLog.push(msg1);
-
-                const msg2 = `${timestamp}: ${
-                  persistentProgress.split("\n")[1]
-                } <-- ${msg.qTransientProgress}`;
-                console.log(msg2);
-                reloadLog.push(msg2);
-              } else {
-                const msg3 = `${timestamp}: ${msg.qPersistentProgress} <-- ${msg.qTransientProgress}`;
-                console.log(msg3);
-                reloadLog.push(msg3);
-              }
-            }
-
-            if (!msg.qPersistentProgress && msg.qTransientProgress) {
-              if (persistentProgress.split("\n").length > 1) {
-                const msg4 = `${timestamp}: ${
-                  persistentProgress.split("\n")[1]
-                } <-- ${msg.qTransientProgress}`;
-
-                console.log(msg4);
-                reloadLog.push(msg4);
-              } else {
-                const msg5 = `${timestamp}: ${persistentProgress} <-- ${msg.qTransientProgress}`;
-                console.log(msg5);
-                reloadLog.push(msg5);
-              }
-            }
-
-            if (msg.qPersistentProgress && !msg.qTransientProgress) {
-              const msg6 = `${timestamp}: ${msg.qPersistentProgress}`;
-              console.log(msg6);
-              reloadLog.push(msg6);
-            }
-          });
-        } else {
-          clearInterval(progress);
-        }
-      }, 500);
+      reloadProgress.start({
+        skipTransientMessages: false,
+        trimLeadingMessage: false,
+        includeTimeStamp: true,
+      });
     });
+
+    return reloadApp;
   }
 
   /**

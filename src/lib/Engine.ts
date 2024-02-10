@@ -3,6 +3,7 @@ import { homedir, EOL } from "os";
 import { WebSocket } from "ws";
 import enigma from "enigma.js";
 import schema from "enigma.js/schemas/12.1306.0.json";
+import { globalMixin } from "enigma-mixin";
 
 export class Engine {
   session: enigmaJS.ISession;
@@ -12,6 +13,7 @@ export class Engine {
     this.trafficFile = `${homedir}\\qlBuilder\\traffic_${name}.txt`;
     this.session = enigma.create({
       schema,
+      mixins: globalMixin,
       url: `${engineHost}/app/${appId}/identity/${+new Date()}`,
       createSocket: (url) =>
         new WebSocket(url, {

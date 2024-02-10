@@ -2,7 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
-## [2.7.0] - 2024-02-04
+## [2.8.1] - 2024-02-10
+
+- printing the reload progress is now handled by [mGetReloadProgress (enigma-mixin)](https://github.com/countnazgul/enigma-mixin?tab=readme-ov-file#global)
+- dependency updates
+
+## [2.8.0] - 2024-02-04
 
 - two new arguments for `reload` command
   - `-ro, --reload-output <LOCATION>` - after reload is complete (ok or with errors) the reload log is saved inside `<LOCATION>` folder
