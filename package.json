@@ -81,7 +81,7 @@
     "@types/qlik-engineapi": "12.67.16",
     "@types/ws": "8.5.10",
     "chai": "5.0.3",
-    "dotenv": "16.4.1",
+    "dotenv": "16.4.5",
     "mocha": "10.3.0",
     "node-fetch": "^3.3.2",
     "nyc": "15.1.0",
