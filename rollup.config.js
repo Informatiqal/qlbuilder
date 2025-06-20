@@ -32,7 +32,9 @@ export default {
       },
       preventAssignment: true,
     }),
-    nodeResolve(),
+    nodeResolve({
+      preferBuiltins: true
+    }),
     typescript(),
     json({
       compact: true,
