@@ -14,6 +14,8 @@ import { AppDetails } from "./commands/AppDetails";
 import { CheckScript } from "./commands/CheckScript";
 import { SetScript } from "./commands/SetScript";
 import { Reload } from "./commands/Reload";
+import { encryptConfig } from "./commands/Encrypt";
+import { decryptConfig } from "./commands/Decrypt";
 import { Watch } from "./commands/Watch";
 import { CredentialEnvironments } from "./commands/CredentialEnvironments";
 import { Section } from "./commands/Section";
@@ -43,6 +45,8 @@ export class Commander {
     this.programs.addCommand(this.sectionOperations());
     this.programs.addCommand(this.createApp());
     this.programs.addCommand(this.appDetails());
+    this.programs.addCommand(this.encrypt());
+    this.programs.addCommand(this.decrypt());
 
     this.onHelp();
     this.onUnknownArg();
@@ -589,6 +593,40 @@ export class Commander {
         _this.print.error(e.message);
         process.exit(1);
       }
+    });
+
+    return comm;
+  }
+
+  private encrypt() {
+    const comm = new Command("encrypt");
+    comm.description("Encrypt .qlBuilder.yml");
+
+    comm.option(
+      "-p, --password <password>",
+      "Provide the password with the command itself"
+    );
+
+    comm.action(async function (options: { password: string }) {
+      await encryptConfig(options?.password || undefined);
+      console.log("Config file is now ENCRYPTED");
+    });
+
+    return comm;
+  }
+
+  private decrypt() {
+    const comm = new Command("decrypt");
+    comm.description("decrypt .qlBuilder.yml");
+
+    comm.option(
+      "-p, --password <password>",
+      "Provide the password with the command itself"
+    );
+
+    comm.action(async function (options: { password: string }) {
+      await decryptConfig(options?.password || undefined);
+      console.log("Config file is now DECRYPTED");
     });
 
     return comm;
