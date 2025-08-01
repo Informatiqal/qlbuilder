@@ -20,7 +20,7 @@ import { Watch } from "./commands/Watch";
 import { CredentialEnvironments } from "./commands/CredentialEnvironments";
 import { Section } from "./commands/Section";
 import { homedir } from "os";
-import { existsSync, mkdirSync, readdirSync } from "fs";
+import { existsSync, mkdirSync, readdirSync, writeFileSync } from "fs";
 import path from "path";
 import { CustomError } from "./lib/CustomError";
 
@@ -440,10 +440,10 @@ export class Commander {
     comm.description(
       "List the name and type of all saved credential environments"
     );
-    comm.action(function () {
+    comm.action(async function () {
       try {
         const credentialEnvironments = new CredentialEnvironments();
-        const result = credentialEnvironments.run();
+        const result = await credentialEnvironments.run();
         console.table(result);
         process.exit(0);
       } catch (e) {
@@ -617,7 +617,7 @@ export class Commander {
 
   private decrypt() {
     const comm = new Command("decrypt");
-    comm.description("decrypt .qlBuilder.yml");
+    comm.description("Decrypt .qlBuilder.yml");
 
     comm.option(
       "-p, --password <password>",
@@ -625,7 +625,10 @@ export class Commander {
     );
 
     comm.action(async function (options: { password: string }) {
-      await decryptConfig(options?.password || undefined);
+      const decryptedContent = await decryptConfig(
+        options?.password || undefined
+      );
+      writeFileSync(`${homedir}/.qlbuilder.yml`, decryptedContent);
       console.log("Config file is now DECRYPTED");
     });
 

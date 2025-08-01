@@ -1,8 +1,10 @@
+import { homedir } from "os";
+import { readFileSync } from "fs";
 import crypto from "crypto";
 
 export const marker = "111111";
 
-export async function encryptText(text: string, secret: string) {
+export function encryptText(text: string, secret: string) {
   const key = crypto.scryptSync(secret, "salt", 24);
   const iv = crypto.randomBytes(16);
   const cipher = crypto.createCipheriv("aes-192-cbc", key, iv);
@@ -20,7 +22,7 @@ export async function encryptText(text: string, secret: string) {
   return encryptedData.trim();
 }
 
-export async function decryptText(encrypted: string, secret: string) {
+export function decryptText(encrypted: string, secret: string) {
   const encryptedSplit = encrypted.split(".");
 
   if (encryptedSplit.length != 3) {
@@ -45,4 +47,18 @@ export async function decryptText(encrypted: string, secret: string) {
   const decrypted = decipher.update(encryptedData);
 
   return decrypted.toString().trim();
+}
+
+export function isEncrypted(): boolean {
+  const configPath = `${homedir}/.qlbuilder.yml`;
+  const configContent = readFileSync(configPath).toString();
+
+  const potentialMarker = Buffer.from(
+    configContent.slice(-12),
+    "hex"
+  ).toString();
+
+  if (potentialMarker == marker) return true;
+
+  return false;
 }

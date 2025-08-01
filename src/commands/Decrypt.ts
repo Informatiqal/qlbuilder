@@ -1,12 +1,18 @@
 import { homedir } from "os";
-import { readFileSync, writeFileSync } from "fs";
+import { readFileSync } from "fs";
 import prompts from "prompts";
 import { load as yamlLoad } from "js-yaml";
 
-import { decryptText } from "../lib/EncryptDecrypt";
+import { decryptText, isEncrypted } from "../lib/EncryptDecrypt";
 
-export async function decryptConfig(key: string) {
+export async function decryptConfig(key?: string): Promise<string> {
   const configPath = `${homedir}/.qlbuilder.yml`;
+  const configIsEncrypted = isEncrypted();
+
+  if (configIsEncrypted == false) {
+    console.log("Seems that the config is already decrypted");
+    process.exit(0);
+  }
 
   if (!key) {
     const prompt: { key: string } = await prompts(
@@ -31,7 +37,7 @@ export async function decryptConfig(key: string) {
   }
 
   const configContent = readFileSync(configPath).toString();
-  const decryptedContent = await decryptText(configContent, key);
+  const decryptedContent = decryptText(configContent, key);
   try {
     yamlLoad(decryptedContent);
   } catch (e) {
@@ -41,5 +47,18 @@ export async function decryptConfig(key: string) {
     process.exit(1);
   }
 
-  writeFileSync(configPath, decryptedContent);
+  return decryptedContent;
+}
+
+export async function configDecryptedOrNot() {
+  const configIsEncrypted = isEncrypted();
+  let configContent = "";
+
+  if (configIsEncrypted) {
+    configContent = await decryptConfig();
+  } else {
+    configContent = readFileSync(`${homedir}/.qlbuilder.yml`).toString();
+  }
+
+  return configContent;
 }

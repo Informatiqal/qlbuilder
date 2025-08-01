@@ -1,6 +1,5 @@
 import { readFileSync } from "fs";
 import { Agent } from "https";
-import { homedir } from "os";
 import qAuth from "qlik-sense-authenticate";
 import { load as yamlLoad } from "js-yaml";
 import chalk from "chalk";
@@ -12,6 +11,7 @@ import {
   TokenCredentials,
   WinFormCredentials,
 } from "../types/types";
+import { configDecryptedOrNot } from "../commands/Decrypt";
 
 export class Auth {
   private auth_config = {
@@ -37,7 +37,7 @@ export class Auth {
   async desktop() {}
 
   async certificates() {
-    const credentials: CertificatesCredentials = this.credentials();
+    const credentials: CertificatesCredentials = await this.credentials();
 
     if (!credentials.QLIK_USER || !credentials.QLIK_CERTS)
       throw new CustomError(
@@ -72,7 +72,7 @@ export class Auth {
   }
 
   async jwt() {
-    const credentials: TokenCredentials = this.credentials();
+    const credentials: TokenCredentials = await this.credentials();
 
     if (!credentials.QLIK_TOKEN)
       throw new CustomError("QLIK_TOKEN is missing/not set", "error", true);
@@ -81,7 +81,7 @@ export class Auth {
   }
 
   async winform(): Promise<void> {
-    const credentials: WinFormCredentials = this.credentials();
+    const credentials: WinFormCredentials = await this.credentials();
 
     const sessionHeaderName = (this.config.authentication as any)
       .sessionHeaderName
@@ -135,7 +135,7 @@ export class Auth {
   }
 
   async saas() {
-    const credentials: TokenCredentials = this.credentials();
+    const credentials: TokenCredentials = await this.credentials();
 
     if (!credentials.QLIK_TOKEN)
       throw new CustomError("QLIK_TOKEN is missing/not set", "error", true);
@@ -143,12 +143,14 @@ export class Auth {
     this.data.headers = { Authorization: `Bearer ${credentials.QLIK_TOKEN}` };
   }
 
-  private localConfig() {
+  private async localConfig() {
     const envName = this.config.name;
+
+    const configContent = await configDecryptedOrNot();
 
     let configs: any = {};
     try {
-      configs = yamlLoad(readFileSync(`${homedir}/.qlbuilder.yml`).toString());
+      configs = yamlLoad(configContent);
     } catch (e) {
       throw new Error(e.message);
     }
@@ -176,7 +178,7 @@ export class Auth {
     return reqVariablesValues;
   }
 
-  private credentials<T>(): T {
+  private async credentials<T>(): Promise<T> {
     let isYmlFileOk = true;
     let isEnvVarsOk = true;
 
@@ -187,7 +189,7 @@ export class Auth {
     let envVarError = "";
 
     try {
-      ymlFileCredentials = this.localConfig();
+      ymlFileCredentials = await this.localConfig();
     } catch (e) {
       isYmlFileOk = false;
       ymlFileError = e.message;
