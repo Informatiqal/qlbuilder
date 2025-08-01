@@ -623,13 +623,24 @@ export class Commander {
       "-p, --password <password>",
       "Provide the password with the command itself"
     );
+    comm.option("--view", "Preview the config content in the console");
 
-    comm.action(async function (options: { password: string }) {
-      const decryptedContent = await decryptConfig(
-        options?.password || undefined
-      );
-      writeFileSync(`${homedir}/.qlbuilder.yml`, decryptedContent);
-      console.log("Config file is now DECRYPTED");
+    const defaultOptions = {
+      password: undefined,
+      view: false,
+    };
+
+    comm.action(async function (options: { password: string; view: boolean }) {
+      const opt = { ...defaultOptions, ...options };
+
+      const decryptedContent = await decryptConfig(opt.password);
+
+      if (opt.view == false) {
+        writeFileSync(`${homedir}/.qlbuilder.yml`, decryptedContent);
+        console.log("Config file is now DECRYPTED");
+      } else {
+        console.log(decryptedContent);
+      }
     });
 
     return comm;
