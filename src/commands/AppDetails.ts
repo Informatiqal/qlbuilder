@@ -49,9 +49,10 @@ export class AppDetails {
   }
 
   async run() {
-    this.spin.start();
     const auth = this.authMethod();
     await auth();
+
+    this.spin.start();
 
     const details = await this.getAppDetails();
     this.printDetails(details);

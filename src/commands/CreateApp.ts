@@ -40,9 +40,10 @@ export class CreateApp {
   }
 
   async run() {
-    this.spin.start();
     const auth = this.authMethod();
     await auth();
+
+    this.spin.start();
 
     const newApp = await this.createNewApp();
     this.print.ok(`App "${this.name}" was created with ID "${newApp.qAppId}"`);
