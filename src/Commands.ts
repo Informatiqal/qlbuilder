@@ -427,6 +427,11 @@ export class Commander {
         " > qlbuilder download desktop -p c:/path/to/folder --nodata true\n"
       );
       process.stdout.write("\n");
+      process.stdout.write("To get additional info for a specific command:\n");
+      process.stdout.write(
+        " > qlbuilder some-command --help\n"
+      );
+      process.stdout.write("\n");
       process.stdout.write(
         "More info: https://github.com/informatiqal/qlBuilder\n"
       );
@@ -600,11 +605,11 @@ export class Commander {
 
   private encrypt() {
     const comm = new Command("encrypt");
-    comm.description("Encrypt .qlBuilder.yml");
+    comm.description("Encrypt C:\\Users\\<USERNAME>\\.qlBuilder.yml");
 
     comm.option(
       "-p, --password <password>",
-      "Provide the password with the command itself"
+      "WARNING! The password will stay in the shell history until cleared"
     );
 
     comm.action(async function (options: { password: string }) {
@@ -617,7 +622,7 @@ export class Commander {
 
   private decrypt() {
     const comm = new Command("decrypt");
-    comm.description("Decrypt .qlBuilder.yml");
+    comm.description("Decrypt C:\\Users\\<USERNAME>\\.qlBuilder.yml");
 
     comm.option(
       "-p, --password <password>",
