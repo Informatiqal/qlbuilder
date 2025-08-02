@@ -14,33 +14,11 @@ export async function encryptConfig(key: string) {
   ).toString();
 
   // check if the file is already encrypted
-  // and if it is - ask for confirmation before continue
+  // and if it is - exit
   if (potentialMarker == marker) {
-    const prompt: { reEncrypt: boolean } = await prompts(
-      [
-        {
-          type: "toggle",
-          name: "reEncrypt",
-          message: "Config file is already encrypted. Double encrypt it?",
-          initial: false,
-          active: "yes",
-          inactive: "no",
-        },
-      ],
-      {
-        onCancel: () => {
-          console.log("");
-          console.log("Aborted");
-          console.log("");
-          process.exit(0);
-        },
-      }
-    );
-
-    if (prompt.reEncrypt == false) {
-      console.log("Aborted");
-      process.exit(0);
-    }
+    console.log("Config file is already encrypted.");
+    console.log("Aborted");
+    process.exit(0);
   }
 
   if (!key) {
