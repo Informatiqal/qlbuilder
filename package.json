@@ -1,6 +1,6 @@
 {
   "name": "qlbuilder",
-  "version": "2.8.3",
+  "version": "2.9.0-beta.1",
   "description": "CLI helper tool for Qlik Sense developers to allow write script locally and update in remote app",
   "author": {
     "email": "info@informatiqal.com",

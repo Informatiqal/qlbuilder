@@ -94,6 +94,8 @@ Run one of the following commands from CMD/PowerShell
 - `qlBuilder appDetails [env]` - display info about the configured app
 
 - `qlBuilder createApp [env]` - creates brand new (empty) app on the specified environment. Updates `config.yml` appId for the environment
+- `qlBuilder encrypt` - encrypts `C:\Users\<USERNAME>\.qlBuilder.yml` file with user provided password
+- `qlBuilder decrypt` - decrypts `C:\Users\<USERNAME>\.qlBuilder.yml` file with the user provided password used in `encrypt` command
 
 ## config.yml
 
@@ -281,6 +283,12 @@ qlBuilder create my-project-name -s uat_env
 ```shell
 qlBuilder create my-project-name -s test
 ```
+
+## Encrypt/Decrypt
+
+The home folder config is not encrypted by default and its not necessary to be encrypted. But if there is a need to be encrypted then `qlBuilder encrypt` command can be used. Once encrypted the file cannot be modified until `qlBuilder decrypt` command is ran. Both commands will ask for a user specified password.
+
+If the home config is encrypted then any command that require the file will first ask for the decrypt key before its ran.
 
 > **Note**
 > Only files with `qvs` extension will be copied to the result folder
