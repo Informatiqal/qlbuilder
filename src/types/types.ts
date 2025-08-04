@@ -37,3 +37,56 @@ export interface CertificatesCredentials {
 export interface TokenCredentials {
   QLIK_TOKEN: string;
 }
+
+export interface RepoApp {
+  id: string;
+  createdDate: string;
+  modifiedDate: string;
+  modifiedByUserName: string;
+  customProperties: {
+    id: string;
+    createdDate: string;
+    modifiedDate: string;
+    modifiedByUserName: string;
+    value: string;
+    definition: {
+      id: string;
+      name: string;
+      valueType: string;
+      choiceValues: string[];
+    };
+    schemaPath: string;
+  }[];
+  owner: {
+    id: string;
+    userId: string;
+    userDirectory: string;
+    userDirectoryConnectorName: string;
+    name: string;
+  };
+  name: string;
+  appId: string;
+  sourceAppId: string;
+  targetAppId: string;
+  publishTime: string;
+  published: boolean;
+  tags: {
+    id: string;
+    name: string;
+  }[];
+  description: "";
+  stream: {
+    id: string;
+    name: string;
+  };
+  fileSize: number;
+  lastReloadTime: string;
+  thumbnail: string;
+  savedInProductVersion: string;
+  migrationHash: string;
+  dynamicColor: string;
+  availabilityStatus: number;
+  lastDataDistribution: string;
+  staticByteSize: number;
+  schemaPath: string;
+}

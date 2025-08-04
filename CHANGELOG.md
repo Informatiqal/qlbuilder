@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.9.0-beta.2] - 2025-08-03
+
+- `appDetails` command to source its data from the Repository API instead of Engine API [#173](https://github.com/Informatiqal/qlbuilder/issues/173)
+
 ## [2.9.0-beta.1] - 2025-08-03
 
 - dependency updates
