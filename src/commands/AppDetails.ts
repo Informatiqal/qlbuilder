@@ -111,6 +111,11 @@ export class AppDetails {
 
     consoleMessages.push(["ID", details.id]);
     consoleMessages.push(["Name", details.name]);
+    consoleMessages.push([
+      "Owner",
+      `${details.owner.userDirectory}\\${details.owner.userId}`,
+    ]);
+    consoleMessages.push(["File size", this.formatBytes(details.fileSize)]);
     consoleMessages.push(["Published", `${details.published}`]);
 
     if (details.published == true) {
@@ -121,13 +126,8 @@ export class AppDetails {
     consoleMessages.push(["Created at", details.createdDate]);
     consoleMessages.push(["Modified at", details.modifiedDate]);
     consoleMessages.push(["Modified by", details.modifiedByUserName]);
-    consoleMessages.push(["Last reloaded at", details.lastReloadTime]);
+    consoleMessages.push(["Last reload at", details.lastReloadTime]);
     consoleMessages.push(["Saved in version", details.savedInProductVersion]);
-    consoleMessages.push([
-      "Owner",
-      `${details.owner.userDirectory}\\${details.owner.userId}`,
-    ]);
-    consoleMessages.push(["File size", this.formatBytes(details.fileSize)]);
 
     if (details.tags) {
       if (details.tags.length > 0) {
@@ -211,6 +211,6 @@ export class AppDetails {
 
     const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))}${sizes[i]}`;
   }
 }
