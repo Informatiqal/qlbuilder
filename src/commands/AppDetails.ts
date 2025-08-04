@@ -3,11 +3,7 @@ import { Checks } from "../lib/Checks";
 import { Config, IConfig } from "../lib/Config";
 import { CustomError } from "../lib/CustomError";
 import { Spin } from "../lib/Spinner";
-import {
-  GetScriptOptionValues,
-  RepoApp,
-  RepoAppResponse,
-} from "../types/types";
+import { GetScriptOptionValues, RepoApp } from "../types/types";
 import { Print } from "../lib/Print";
 import { generateXrfkey } from "../lib/common";
 import axios, { AxiosRequestConfig } from "axios";
