@@ -50,6 +50,13 @@ export class AppDetails {
   }
 
   async run() {
+    if (this.environment.host.indexOf("qlikcloud") > -1) {
+      console.log(
+        "This command is only supported for On-prem ... for now. More development to follow."
+      );
+      process.exit(0);
+    }
+
     const auth = this.authMethod();
     await auth();
 
@@ -124,7 +131,10 @@ export class AppDetails {
 
     if (details.tags) {
       if (details.tags.length > 0) {
-        const tags = details.tags.map((t) => t.name).join(", ");
+        const tags = details.tags
+          .map((t) => t.name)
+          .sort()
+          .join(", ");
         consoleMessages.push(["Tags", tags]);
       } else {
         consoleMessages.push(["Tags", "-"]);
@@ -136,18 +146,39 @@ export class AppDetails {
         const maxPropNameLength = Math.max(
           ...details.customProperties.map((cp) => cp.definition.name.length)
         );
-        consoleMessages.push([
-          "Custom properties",
-          `${details.customProperties[0].definition.name.padEnd(
-            maxPropNameLength
-          )} -> ${details.customProperties[0].value}`,
-        ]);
 
-        details.customProperties.forEach((cp, i) => {
-          if (i > 0) {
+        // add the cp name to the main object (grouping and sorting is easier like that)
+        details.customProperties = details.customProperties.map((cp) => {
+          cp["name"] = cp.definition.name;
+          return cp;
+        });
+
+        // sort the CP by the cp name
+        details.customProperties = details.customProperties.sort((a, b) => {
+          if (a.name.toUpperCase() < b.name.toUpperCase()) return -1;
+          if (a.name.toUpperCase() > b.name.toUpperCase()) return 1;
+          return 0;
+        });
+
+        // group the CPs by their name
+        const cpGrouped = details.customProperties.reduce((hash, obj) => {
+          if (obj["name"] === undefined) return hash;
+          return Object.assign(hash, {
+            [obj["name"]]: (hash[obj["name"]] || []).concat(obj.value),
+          });
+        }, {});
+
+        // loop through the newly formed keys and print what is needed
+        Object.entries(cpGrouped).forEach((cp: [string, [string]], i) => {
+          if (i == 0) {
+            consoleMessages.push([
+              "Custom properties",
+              `${cp[0].padEnd(maxPropNameLength)}-> ${cp[1].sort().join(", ")}`,
+            ]);
+          } else {
             consoleMessages.push([
               "",
-              `${cp.definition.name.padEnd(maxPropNameLength)}: ${cp.value}`,
+              `${cp[0].padEnd(maxPropNameLength)}-> ${cp[1].sort().join(", ")}`,
             ]);
           }
         });

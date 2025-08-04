@@ -44,6 +44,7 @@ export interface RepoApp {
   modifiedDate: string;
   modifiedByUserName: string;
   customProperties: {
+    name?: string;
     id: string;
     createdDate: string;
     modifiedDate: string;
