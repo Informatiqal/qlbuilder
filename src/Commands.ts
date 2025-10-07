@@ -89,7 +89,7 @@ export class Commander {
     comm.argument("<env>");
 
     comm.option(
-      "-nd, --nodata <boolean>",
+      "--nd, --nodata <boolean>",
       "Download the qvf without data",
       "true"
     );
@@ -327,12 +327,12 @@ export class Commander {
     );
 
     comm.option(
-      "-ro, --reload-output <LOCATION>",
+      "--ro, --reload-output <LOCATION>",
       "Path. Save the reload log into the provided folder"
     );
 
     comm.option(
-      "-roo, --reload-output-overwrite <LOCATION>",
+      "--roo, --reload-output-overwrite <LOCATION>",
       "Path. Save the reload log into the provided folder by overwriting the existing log"
     );
 
@@ -392,7 +392,7 @@ export class Commander {
 
     comm.option("-r, --reload", "Reload and save on each file change");
     comm.option("-s, --set", "Set script and save app on each file change");
-    comm.option("-de, --disable", "Disable the auto syntax error check");
+    comm.option("--di, --disable", "Disable the auto syntax error check");
     comm.option(
       "-d, --debug",
       "Debug. Write out enigma traffic messages",

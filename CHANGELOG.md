@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.9.0-beta.3] - 2025-10-07
+
+- BREAKING: short flags with more than one letter  have to be used with `--` instead of `-`. For example `--nd` instead of `-nd`
+- dependency updates
+  - `qlik-sense-authenticate` now uses `httpsAgent` when making requests. This is to address the change in Node.js v20+
+
 ## [2.9.0-beta.2] - 2025-08-04
 
 - `appDetails` command to source its data from the Repository API instead of Engine API [#173](https://github.com/Informatiqal/qlbuilder/issues/173)
