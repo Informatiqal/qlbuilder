@@ -46,7 +46,7 @@
   "dependencies": {
     "axios": "^1.12.2",
     "chalk": "^5.6.2",
-    "chokidar": "^4.0.3",
+    "chokidar": "^5.0.0",
     "cli-spinner": "^0.2.10",
     "commander": "^14.0.1",
     "enigma-mixin": "^1.8.0",
