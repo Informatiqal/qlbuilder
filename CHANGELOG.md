@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.9.0] - 2026-01-08
+
+- promote the changes out of beta
+- dependency updates
+
 ## [2.9.0-beta.3] - 2025-10-07
 
 - BREAKING: short flags with more than one letter  have to be used with `--` instead of `-`. For example `--nd` instead of `-nd`
