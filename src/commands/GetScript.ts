@@ -35,10 +35,11 @@ export class GetScript {
     let overwrite: Boolean = true;
     if (!this.options.y) overwrite = await this.askOverwrite();
 
-    this.spin.start();
     if (overwrite === true) {
       const auth = this.authMethod();
       await auth();
+
+      this.spin.start();
 
       const loadScript = await this.retrieveQlikScript();
       await this.clearLocalFiles();

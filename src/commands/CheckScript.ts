@@ -32,14 +32,14 @@ export class CheckScript {
   }
 
   async run() {
-    this.spin.start();
-
     const build = new Build();
     build.run();
     this.script = build.builtScript;
 
     const auth = this.authMethod();
     await auth();
+
+    this.spin.start();
 
     await this.setScriptAndCheckSyntax(build.builtScript);
 

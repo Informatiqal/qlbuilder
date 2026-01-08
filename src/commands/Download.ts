@@ -47,10 +47,10 @@ export class Download {
   }
 
   async run() {
-    this.spin.start();
-
     const auth = this.authMethod();
     await auth();
+
+    this.spin.start();
 
     let appName: string = "";
 

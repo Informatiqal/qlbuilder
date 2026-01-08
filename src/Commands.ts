@@ -14,11 +14,13 @@ import { AppDetails } from "./commands/AppDetails";
 import { CheckScript } from "./commands/CheckScript";
 import { SetScript } from "./commands/SetScript";
 import { Reload } from "./commands/Reload";
+import { encryptConfig } from "./commands/Encrypt";
+import { decryptConfig } from "./commands/Decrypt";
 import { Watch } from "./commands/Watch";
 import { CredentialEnvironments } from "./commands/CredentialEnvironments";
 import { Section } from "./commands/Section";
 import { homedir } from "os";
-import { existsSync, mkdirSync, readdirSync } from "fs";
+import { existsSync, mkdirSync, readdirSync, writeFileSync } from "fs";
 import path from "path";
 import { CustomError } from "./lib/CustomError";
 
@@ -43,6 +45,8 @@ export class Commander {
     this.programs.addCommand(this.sectionOperations());
     this.programs.addCommand(this.createApp());
     this.programs.addCommand(this.appDetails());
+    this.programs.addCommand(this.encrypt());
+    this.programs.addCommand(this.decrypt());
 
     this.onHelp();
     this.onUnknownArg();
@@ -85,7 +89,7 @@ export class Commander {
     comm.argument("<env>");
 
     comm.option(
-      "-nd, --nodata <boolean>",
+      "--nd, --nodata <boolean>",
       "Download the qvf without data",
       "true"
     );
@@ -323,12 +327,12 @@ export class Commander {
     );
 
     comm.option(
-      "-ro, --reload-output <LOCATION>",
+      "--ro, --reload-output <LOCATION>",
       "Path. Save the reload log into the provided folder"
     );
 
     comm.option(
-      "-roo, --reload-output-overwrite <LOCATION>",
+      "--roo, --reload-output-overwrite <LOCATION>",
       "Path. Save the reload log into the provided folder by overwriting the existing log"
     );
 
@@ -388,7 +392,7 @@ export class Commander {
 
     comm.option("-r, --reload", "Reload and save on each file change");
     comm.option("-s, --set", "Set script and save app on each file change");
-    comm.option("-de, --disable", "Disable the auto syntax error check");
+    comm.option("--di, --disable", "Disable the auto syntax error check");
     comm.option(
       "-d, --debug",
       "Debug. Write out enigma traffic messages",
@@ -423,6 +427,11 @@ export class Commander {
         " > qlbuilder download desktop -p c:/path/to/folder --nodata true\n"
       );
       process.stdout.write("\n");
+      process.stdout.write("To get additional info for a specific command:\n");
+      process.stdout.write(
+        " > qlbuilder some-command --help\n"
+      );
+      process.stdout.write("\n");
       process.stdout.write(
         "More info: https://github.com/informatiqal/qlBuilder\n"
       );
@@ -436,10 +445,10 @@ export class Commander {
     comm.description(
       "List the name and type of all saved credential environments"
     );
-    comm.action(function () {
+    comm.action(async function () {
       try {
         const credentialEnvironments = new CredentialEnvironments();
-        const result = credentialEnvironments.run();
+        const result = await credentialEnvironments.run();
         console.table(result);
         process.exit(0);
       } catch (e) {
@@ -588,6 +597,54 @@ export class Commander {
       } catch (e) {
         _this.print.error(e.message);
         process.exit(1);
+      }
+    });
+
+    return comm;
+  }
+
+  private encrypt() {
+    const comm = new Command("encrypt");
+    comm.description("Encrypt C:\\Users\\<USERNAME>\\.qlBuilder.yml");
+
+    comm.option(
+      "-p, --password <password>",
+      "WARNING! The password will stay in the shell history until cleared"
+    );
+
+    comm.action(async function (options: { password: string }) {
+      await encryptConfig(options?.password || undefined);
+      console.log("Config file is now ENCRYPTED");
+    });
+
+    return comm;
+  }
+
+  private decrypt() {
+    const comm = new Command("decrypt");
+    comm.description("Decrypt C:\\Users\\<USERNAME>\\.qlBuilder.yml");
+
+    comm.option(
+      "-p, --password <password>",
+      "Provide the password with the command itself"
+    );
+    comm.option("--view", "Preview the config content in the console");
+
+    const defaultOptions = {
+      password: undefined,
+      view: false,
+    };
+
+    comm.action(async function (options: { password: string; view: boolean }) {
+      const opt = { ...defaultOptions, ...options };
+
+      const decryptedContent = await decryptConfig(opt.password);
+
+      if (opt.view == false) {
+        writeFileSync(`${homedir}/.qlbuilder.yml`, decryptedContent);
+        console.log("Config file is now DECRYPTED");
+      } else {
+        console.log(decryptedContent);
       }
     });
 

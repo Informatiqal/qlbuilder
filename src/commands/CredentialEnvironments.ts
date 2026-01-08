@@ -1,15 +1,16 @@
-import { homedir } from "os";
 import { load as yamlLoad } from "js-yaml";
-import { readFileSync } from "fs";
+import { configDecryptedOrNot, decryptConfig } from "./Decrypt";
 
 export class CredentialEnvironments {
   constructor() {}
 
-  run(): { name: string; type: string }[] {
+  async run(): Promise<{ name: string; type: string }[]> {
+    const configContent = await configDecryptedOrNot();
+
     try {
-      const credentials: { [k: string]: any } = yamlLoad(
-        readFileSync(`${homedir}/.qlbuilder.yml`).toString()
-      ) as { [k: string]: any };
+      const credentials: { [k: string]: any } = yamlLoad(configContent) as {
+        [k: string]: any;
+      };
 
       if (Object.entries(credentials).length == 0)
         throw new Error("No credentials environments are setup");
