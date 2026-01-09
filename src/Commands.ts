@@ -133,6 +133,12 @@ export class Commander {
       false
     );
 
+    comm.option(
+      "-c, --config [config_file_name]",
+      "Optional. Name of the config file to use. The file sill have to be in the current folder",
+      "config.yml"
+    );
+
     comm.action(async function (name, options: GetScriptOptionValues) {
       const getScript = new GetScript(name, options);
       const res = await getScript.run();
@@ -160,6 +166,12 @@ export class Commander {
       false
     );
 
+    comm.option(
+      "-c, --config [config_file_name]",
+      "Optional. Name of the config file to use. The file sill have to be in the current folder",
+      "config.yml"
+    );
+
     comm.option("-y", "Do not ask for confirmation before overwrite");
 
     comm.action(async function (name, options: GetScriptOptionValues) {
@@ -183,6 +195,12 @@ export class Commander {
       "-d, --debug",
       "Debug. Write out enigma traffic messages",
       false
+    );
+
+    comm.option(
+      "-c, --config [config_file_name]",
+      "Optional. Name of the config file to use. The file sill have to be in the current folder",
+      "config.yml"
     );
 
     comm.action(async function (name, options: GetScriptOptionValues) {
@@ -249,6 +267,13 @@ export class Commander {
       "Debug. Write out enigma traffic messages",
       false
     );
+
+    comm.option(
+      "-c, --config [config_file_name]",
+      "Optional. Name of the config file to use. The file sill have to be in the current folder",
+      "config.yml"
+    );
+
     comm.description("Create new empty app and update the config.yml");
     comm.action(async function (
       name: string,
@@ -280,6 +305,13 @@ export class Commander {
       "Debug. Write out enigma traffic messages",
       false
     );
+
+    comm.option(
+      "-c, --config [config_file_name]",
+      "Optional. Name of the config file to use. The file sill have to be in the current folder",
+      "config.yml"
+    );
+
     comm.description("Print details for the configured app");
     comm.action(async function (env: string, options: GetScriptOptionValues) {
       try {
@@ -334,6 +366,12 @@ export class Commander {
     comm.option(
       "--roo, --reload-output-overwrite <LOCATION>",
       "Path. Save the reload log into the provided folder by overwriting the existing log"
+    );
+
+    comm.option(
+      "-c, --config [config_file_name]",
+      "Optional. Name of the config file to use. The file sill have to be in the current folder",
+      "config.yml"
     );
 
     comm.action(async function (name, options: GetScriptOptionValues) {
@@ -399,6 +437,12 @@ export class Commander {
       "false"
     );
 
+    comm.option(
+      "-c, --config [config_file_name]",
+      "Optional. Name of the config file to use. The file sill have to be in the current folder",
+      "config.yml"
+    );
+
     comm.argument("<env>");
 
     comm.action(async function (name, options: WatchOptionValues) {
@@ -428,9 +472,7 @@ export class Commander {
       );
       process.stdout.write("\n");
       process.stdout.write("To get additional info for a specific command:\n");
-      process.stdout.write(
-        " > qlbuilder some-command --help\n"
-      );
+      process.stdout.write(" > qlbuilder some-command --help\n");
       process.stdout.write("\n");
       process.stdout.write(
         "More info: https://github.com/informatiqal/qlBuilder\n"
