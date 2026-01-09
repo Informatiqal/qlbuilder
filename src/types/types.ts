@@ -1,6 +1,7 @@
 export type DownloadOptionValues = {
   path: string;
   nodata?: "true" | "false";
+  config: string;
 };
 
 export type GetScriptOptionValues = {
@@ -8,6 +9,7 @@ export type GetScriptOptionValues = {
   y?: string;
   reloadOutput?: string;
   reloadOutputOverwrite?: string;
+  config: string;
 };
 
 export type WatchOptionValues = {
@@ -15,6 +17,7 @@ export type WatchOptionValues = {
   reload?: string;
   disable?: string;
   set?: string;
+  config: string;
 };
 
 export interface DownloadExportRequest {

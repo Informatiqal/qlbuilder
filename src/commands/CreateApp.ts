@@ -33,7 +33,7 @@ export class CreateApp {
     checks.configFileExists();
     checks.environmentExists();
 
-    const config = new Config(env);
+    const config = new Config(env, options.config.trim());
     this.environment = config.envDetails;
 
     this.auth = new Auth(this.environment);

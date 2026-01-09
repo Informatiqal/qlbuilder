@@ -29,7 +29,7 @@ export class Download {
 
     this.downloadFolderExists(options.path);
 
-    const config = new Config(this.name);
+    const config = new Config(this.name, options.config.trim());
     this.environment = config.envDetails;
 
     this.auth = new Auth(this.environment);

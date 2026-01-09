@@ -140,13 +140,17 @@ export class Watch {
   private async checkScript() {
     const checkScript = new CheckScript(this.name, {
       debug: this.options.debug,
+      config: this.options.config.trim(),
     });
 
     await checkScript.run().catch((e) => console.log(e.message));
   }
 
   private async setScript() {
-    const setScript = new SetScript(this.name, { debug: this.options.debug });
+    const setScript = new SetScript(this.name, {
+      debug: this.options.debug,
+      config: this.options.config.trim(),
+    });
 
     await setScript.run().catch((e) => console.log(e));
   }
@@ -156,7 +160,10 @@ export class Watch {
   }
 
   private async reload() {
-    const reload = new Reload(this.name, { debug: this.options.debug });
+    const reload = new Reload(this.name, {
+      debug: this.options.debug,
+      config: this.options.config.trim(),
+    });
 
     await reload.run().catch((e) => console.log(e.message));
   }

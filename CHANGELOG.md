@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.10.0] - 2026-01-09
+
+- ability to pass different config file name (optional) [#177](https://github.com/Informatiqal/qlbuilder/issues/177)
+
 ## [2.9.0] - 2026-01-08
 
 - promote the changes out of beta

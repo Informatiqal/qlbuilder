@@ -22,11 +22,11 @@ export interface IConfigExtended extends IConfig {
 export class Config {
   private envName: string;
   envDetails: IConfig;
-  constructor(envName: string) {
+  constructor(envName: string, configFileName: string) {
     this.envName = envName;
     try {
       const config = yamlLoad(
-        readFileSync(`${process.cwd()}/config.yml`).toString()
+        readFileSync(`${configFileName}`).toString()
       ) as IConfig[];
 
       if (config.length == 0)
