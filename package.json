@@ -76,7 +76,7 @@
     "@types/node": "25.0.3",
     "@types/qlik-engineapi": "12.67.16",
     "@types/ws": "8.18.1",
-    "dotenv": "17.2.3",
+    "dotenv": "17.4.2",
     "node-fetch": "^3.3.2",
     "nyc": "17.1.0",
     "rollup": "^4.55.1",
