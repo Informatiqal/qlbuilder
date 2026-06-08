@@ -1,31 +1,32 @@
 import { readFileSync, readdirSync } from "fs";
-import { Auth } from "../lib/Auth";
-import { Checks } from "../lib/Checks";
-import { Config, IConfig } from "../lib/Config";
-import { CustomError } from "../lib/CustomError";
-import { Engine } from "../lib/Engine";
-import { Print } from "../lib/Print";
-import { GetScriptOptionValues } from "../types/types";
-import { Build } from "./Build";
-import { Spin } from "../lib/Spinner";
+import { Auth } from "../lib/Auth.js";
+import { Checks } from "../lib/Checks.js";
+import { Config, IConfig } from "../lib/Config.js";
+import { CustomError } from "../lib/CustomError.js";
+import { Engine } from "../lib/Engine.js";
+import { Print } from "../lib/Print.js";
+import { GetScriptOptionValues } from "../types/types.js";
+import { Build } from "./Build.js";
+import { Spin } from "../lib/Spinner.js";
 
 export class CheckScript {
   private auth: Auth;
   private name: string;
   private environment: IConfig;
   private options: GetScriptOptionValues;
+  //@ts-ignore
   private scriptErrors: EngineAPI.IScriptSyntaxError[];
   private spin: Spin;
-  script: string;
+  script: string = "";
   constructor(name: string, options?: GetScriptOptionValues) {
     this.name = name;
-    this.options = options;
+    this.options = options ?? {} as GetScriptOptionValues;
     this.spin = new Spin("Checking for syntax errors ...", "hamburger");
 
     const checks = new Checks();
     checks.all();
 
-    const config = new Config(this.name, options.config.trim());
+    const config = new Config(this.name, this.options.config.trim());
     this.environment = config.envDetails;
 
     this.auth = new Auth(this.environment);
@@ -87,7 +88,7 @@ export class CheckScript {
       const checkSyntax = await app.checkScriptSyntax();
       await qlik.session.close();
       this.scriptErrors = checkSyntax;
-    } catch (e) {
+    } catch (e: any) {
       await qlik.session.close();
       this.spin.stop();
       throw new CustomError(e.message, "error", true);

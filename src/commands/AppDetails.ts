@@ -1,11 +1,12 @@
-import { Auth } from "../lib/Auth";
-import { Checks } from "../lib/Checks";
-import { Config, IConfig } from "../lib/Config";
-import { CustomError } from "../lib/CustomError";
-import { Spin } from "../lib/Spinner";
-import { GetScriptOptionValues, RepoApp } from "../types/types";
-import { Print } from "../lib/Print";
-import { generateXrfkey } from "../lib/common";
+import { writeFileSync } from "fs";
+import { Auth } from "../lib/Auth.js";
+import { Checks } from "../lib/Checks.js";
+import { Config, IConfig } from "../lib/Config.js";
+import { CustomError } from "../lib/CustomError.js";
+import { Spin } from "../lib/Spinner.js";
+import { AppDetailsOptions, RepoApp } from "../types/types.js";
+import { Print } from "../lib/Print.js";
+import { generateXrfkey } from "../lib/common.js";
 import axios, { AxiosRequestConfig } from "axios";
 
 export interface ICreateAppResponse {
@@ -30,11 +31,10 @@ export interface qMeta {
 export class AppDetails {
   private auth: Auth;
   private environment: IConfig;
-  private options: GetScriptOptionValues;
-  private session: enigmaJS.ISession;
+  private options: AppDetailsOptions;
   private spin: Spin;
   private print: Print;
-  constructor(env: string, options: GetScriptOptionValues) {
+  constructor(env: string, options: AppDetailsOptions) {
     this.print = new Print();
     this.options = options;
     this.spin = new Spin("Getting app metadata ...", "arc");
@@ -52,7 +52,7 @@ export class AppDetails {
   async run() {
     if (this.environment.host.indexOf("qlikcloud") > -1) {
       console.log(
-        "This command is only supported for On-prem ... for now. More development to follow."
+        "This command is only supported for On-prem ... for now. More development to follow.",
       );
       process.exit(0);
     }
@@ -63,9 +63,18 @@ export class AppDetails {
     this.spin.start();
 
     const details = await this.getAppDetailsRepo();
-    this.printDetails(details.data);
-
+    details.data["host"] = this.environment.host
     this.spin.stop();
+    const formattedDetails = this.printDetails(details.data);
+
+    if (this.options.output) {
+      try {
+        writeFileSync(this.options.output, formattedDetails);
+      } catch (e: any) {
+        throw new Error(e.message);
+      }
+    }
+
     return true;
   }
 
@@ -78,7 +87,7 @@ export class AppDetails {
       throw new CustomError(
         `Invalid authentication method - ${this.environment.authentication.type}`,
         "error",
-        true
+        true,
       );
 
     return () => this.auth[this.environment.authentication.type]();
@@ -109,6 +118,7 @@ export class AppDetails {
   printDetails(details: RepoApp) {
     const consoleMessages: string[][] = [];
 
+    consoleMessages.push(["Host", details["host"]]);
     consoleMessages.push(["ID", details.id]);
     consoleMessages.push(["Name", details.name]);
     consoleMessages.push([
@@ -144,7 +154,7 @@ export class AppDetails {
     if (details.customProperties) {
       if (details.customProperties.length > 0) {
         const maxPropNameLength = Math.max(
-          ...details.customProperties.map((cp) => cp.definition.name.length)
+          ...details.customProperties.map((cp) => cp.definition.name.length),
         );
 
         // add the cp name to the main object (grouping and sorting is easier like that)
@@ -155,7 +165,9 @@ export class AppDetails {
 
         // sort the CP by the cp name
         details.customProperties = details.customProperties.sort((a, b) => {
+          //@ts-ignore
           if (a.name.toUpperCase() < b.name.toUpperCase()) return -1;
+          //@ts-ignore
           if (a.name.toUpperCase() > b.name.toUpperCase()) return 1;
           return 0;
         });
@@ -169,6 +181,7 @@ export class AppDetails {
         }, {});
 
         // loop through the newly formed keys and print what is needed
+        //@ts-ignore
         Object.entries(cpGrouped).forEach((cp: [string, [string]], i) => {
           if (i == 0) {
             consoleMessages.push([
@@ -188,18 +201,26 @@ export class AppDetails {
     }
 
     const maxPropNameLength = Math.max(
-      ...consoleMessages.map((c) => c[0].length)
+      ...consoleMessages.map((c) => c[0].length),
     );
 
+    console.log("");
+    const formattedMessages: string[] = [];
     consoleMessages.map((cm) => {
       const l = cm[0].padEnd(maxPropNameLength, " ");
 
       if (cm[0].length == 0 && cm[1].length > 1) {
-        console.log(`${l}  ${cm[1]}`);
+        const msg = `${l}  ${cm[1]}`;
+        console.log(msg);
+        formattedMessages.push(msg);
       } else {
-        console.log(`${l}: ${cm[1]}`);
+        const msg = `${l}: ${cm[1]}`;
+        console.log(msg);
+        formattedMessages.push(msg);
       }
     });
+
+    return formattedMessages.join("\n");
   }
 
   private formatBytes(bytes, decimals = 2) {

@@ -1,13 +1,13 @@
 import path from "path";
 import { writeFileSync, existsSync } from "fs";
-import { Auth } from "../lib/Auth";
-import { Checks } from "../lib/Checks";
-import { Config, IConfig } from "../lib/Config";
-import { Spin } from "../lib/Spinner";
-import { CustomError } from "../lib/CustomError";
-import { Engine } from "../lib/Engine";
-import { GetScriptOptionValues } from "../types/types";
-import { CheckScript } from "./CheckScript";
+import { Auth } from "../lib/Auth.js";
+import { Checks } from "../lib/Checks.js";
+import { Config, IConfig } from "../lib/Config.js";
+import { Spin } from "../lib/Spinner.js";
+import { CustomError } from "../lib/CustomError.js";
+import { Engine } from "../lib/Engine.js";
+import { GetScriptOptionValues } from "../types/types.js";
+import { CheckScript } from "./CheckScript.js";
 
 export class Reload {
   private auth: Auth;
@@ -40,7 +40,7 @@ export class Reload {
     if (errorsCount > 0) throw new Error("");
 
     const { global, doc, qlik } = await this.globalAndSetScript(
-      checkScript.script
+      checkScript.script,
     );
     const reloadLogComplete = await this.reloadAndGetProgress(global, doc);
 
@@ -75,7 +75,7 @@ export class Reload {
       throw new CustomError(
         `Invalid authentication method - ${this.environment.authentication.type}`,
         "error",
-        true
+        true,
       );
 
     return () => this.auth[this.environment.authentication.type]();
@@ -87,7 +87,7 @@ export class Reload {
       this.environment.appId,
       this.auth.data.headers,
       this.environment.name,
-      this.options.debug
+      this.options.debug,
     );
 
     const global = await qlik.session.open<EngineAPI.IGlobal>();
@@ -166,32 +166,34 @@ export class Reload {
    * Save the reload log once the app is reloaded
    */
   private async saveReloadLog(log: string[]) {
-    const logPath = path.resolve(
-      this.options.reloadOutput || this.options.reloadOutputOverwrite
-    );
-    const currentTime = new Date()
-      .toISOString()
-      .replace(/[^0-9]/g, "")
-      .slice(0, -3);
-
-    let fileName = "";
-
-    // if --reload-output is used then add the current timestamp to the filename
-    if (this.options.reloadOutput)
-      fileName = `${this.environment.appId}_${currentTime}.txt`;
-
-    // if --reload-output-overwrite is used then use the appid only as filename
-    if (this.options.reloadOutputOverwrite)
-      fileName = `${this.environment.appId}.txt`;
-
-    try {
-      writeFileSync(`${logPath}\\${fileName}`, log.join("\n"));
-    } catch (e) {
-      throw new CustomError(
-        `Error while saving the reload log:\n\n${e.message}`,
-        "error",
-        false
+    if (this.options.reloadOutput || this.options.reloadOutputOverwrite) {
+      const logPath = path.resolve(
+        this.options.reloadOutput || this.options.reloadOutputOverwrite || "",
       );
+      const currentTime = new Date()
+        .toISOString()
+        .replace(/[^0-9]/g, "")
+        .slice(0, -3);
+
+      let fileName = "";
+
+      // if --reload-output is used then add the current timestamp to the filename
+      if (this.options.reloadOutput)
+        fileName = `${this.environment.appId}_${currentTime}.txt`;
+
+      // if --reload-output-overwrite is used then use the appid only as filename
+      if (this.options.reloadOutputOverwrite)
+        fileName = `${this.environment.appId}.txt`;
+
+      try {
+        writeFileSync(`${logPath}\\${fileName}`, log.join("\n"));
+      } catch (e: any) {
+        throw new CustomError(
+          `Error while saving the reload log:\n\n${e.message}`,
+          "error",
+          false,
+        );
+      }
     }
   }
 }

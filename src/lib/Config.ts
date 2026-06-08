@@ -1,7 +1,7 @@
 import { readFileSync } from "fs";
 import { load as yamlLoad } from "js-yaml";
-import { AuthType } from "../types/types";
-import { CustomError } from "./CustomError";
+import { AuthType } from "../types/types.js";
+import { CustomError } from "./CustomError.js";
 
 export interface IConfig {
   name: string;
@@ -73,7 +73,7 @@ export class Config {
       }`;
 
       this.envDetails = envDetails[0];
-    } catch (e) {
+    } catch (e: any) {
       throw new CustomError(e.message, "error", true);
     }
   }

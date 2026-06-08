@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.11.0] - 2026-06-08
+
+- app details can save the result in a file (optional) [#188](https://github.com/Informatiqal/qlbuilder/issues/188)
+- dependency updates
+
 ## [2.10.0] - 2026-01-09
 
 - ability to pass different config file name (optional) [#177](https://github.com/Informatiqal/qlbuilder/issues/177)

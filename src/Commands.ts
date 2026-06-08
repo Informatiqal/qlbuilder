@@ -1,28 +1,28 @@
 import { program, Command, createArgument } from "commander";
-import { Print } from "./lib/Print";
-import { Build } from "./commands/Build";
-import { Create } from "./commands/Create";
-import { Download } from "./commands/Download";
+import { Print } from "./lib/Print.js";
+import { Build } from "./commands/Build.js";
+import { Create } from "./commands/Create.js";
+import { Download } from "./commands/Download.js";
 import {
   DownloadOptionValues,
   GetScriptOptionValues,
   WatchOptionValues,
-} from "./types/types";
-import { GetScript } from "./commands/GetScript";
-import { CreateApp } from "./commands/CreateApp";
-import { AppDetails } from "./commands/AppDetails";
-import { CheckScript } from "./commands/CheckScript";
-import { SetScript } from "./commands/SetScript";
-import { Reload } from "./commands/Reload";
-import { encryptConfig } from "./commands/Encrypt";
-import { decryptConfig } from "./commands/Decrypt";
-import { Watch } from "./commands/Watch";
-import { CredentialEnvironments } from "./commands/CredentialEnvironments";
-import { Section } from "./commands/Section";
+} from "./types/types.js";
+import { GetScript } from "./commands/GetScript.js";
+import { CreateApp } from "./commands/CreateApp.js";
+import { AppDetails } from "./commands/AppDetails.js";
+import { CheckScript } from "./commands/CheckScript.js";
+import { SetScript } from "./commands/SetScript.js";
+import { Reload } from "./commands/Reload.js";
+import { encryptConfig } from "./commands/Encrypt.js";
+import { decryptConfig } from "./commands/Decrypt.js";
+import { Watch } from "./commands/Watch.js";
+import { CredentialEnvironments } from "./commands/CredentialEnvironments.js";
+import { Section } from "./commands/Section.js";
 import { homedir } from "os";
 import { existsSync, mkdirSync, readdirSync, writeFileSync } from "fs";
 import path from "path";
-import { CustomError } from "./lib/CustomError";
+import { CustomError } from "./lib/CustomError.js";
 
 export class Commander {
   programs = program;
@@ -58,7 +58,7 @@ export class Commander {
     this.programs.version(
       "__VERSION",
       "-v, --version",
-      "Output the current version"
+      "Output the current version",
     );
   }
 
@@ -72,7 +72,7 @@ export class Commander {
         build.run();
 
         _this.print.ok("Load script created and saved (locally)");
-      } catch (e) {
+      } catch (e: any) {
         _this.print.error(e.message);
         process.exit(1);
       }
@@ -91,7 +91,7 @@ export class Commander {
     comm.option(
       "--nd, --nodata <boolean>",
       "Download the qvf without data",
-      "true"
+      "true",
     );
     comm.requiredOption("-p, --path <path>", "Location to save the file");
 
@@ -105,7 +105,7 @@ export class Commander {
           options.nodata && options.nodata == "true"
             ? "(without data)"
             : "(WITH data)"
-        }`
+        }`,
       );
     });
 
@@ -117,26 +117,26 @@ export class Commander {
     const comm = new Command("getScript");
     comm.alias("getscript");
     comm.description(
-      "Get the script from the target Qlik app and overwrite the local script"
+      "Get the script from the target Qlik app and overwrite the local script",
     );
 
     comm.argument("<env>");
 
     comm.option(
       "-y",
-      "WARNING! Using this option will automatically overwrite the local script files without any prompt"
+      "WARNING! Using this option will automatically overwrite the local script files without any prompt",
     );
 
     comm.option(
       "-d, --debug",
       "Debug. Write out enigma traffic messages",
-      false
+      false,
     );
 
     comm.option(
       "-c, --config [config_file_name]",
       "Optional. Name of the config file to use. The file sill have to be in the current folder",
-      "config.yml"
+      "config.yml",
     );
 
     comm.action(async function (name, options: GetScriptOptionValues) {
@@ -155,7 +155,7 @@ export class Commander {
     const comm = new Command("checkScript");
     comm.alias("checkscript");
     comm.description(
-      "Check the local script for syntax errors against Qlik session app"
+      "Check the local script for syntax errors against Qlik session app",
     );
 
     comm.argument("<env>");
@@ -163,13 +163,13 @@ export class Commander {
     comm.option(
       "-d, --debug",
       "Debug. Write out enigma traffic messages",
-      false
+      false,
     );
 
     comm.option(
       "-c, --config [config_file_name]",
       "Optional. Name of the config file to use. The file sill have to be in the current folder",
-      "config.yml"
+      "config.yml",
     );
 
     comm.option("-y", "Do not ask for confirmation before overwrite");
@@ -194,13 +194,13 @@ export class Commander {
     comm.option(
       "-d, --debug",
       "Debug. Write out enigma traffic messages",
-      false
+      false,
     );
 
     comm.option(
       "-c, --config [config_file_name]",
       "Optional. Name of the config file to use. The file sill have to be in the current folder",
-      "config.yml"
+      "config.yml",
     );
 
     comm.action(async function (name, options: GetScriptOptionValues) {
@@ -218,15 +218,15 @@ export class Commander {
     comm.argument("<name>");
     comm.option(
       "-t, --tasks",
-      "Create .vscode folder with pre-setup VSCods tasks"
+      "Create .vscode folder with pre-setup VSCods tasks",
     );
     comm.option(
       "-s, --script <template>",
-      `Copy the content of a template script file(s) to newly created "src" folder`
+      `Copy the content of a template script file(s) to newly created "src" folder`,
     );
     comm.option(
       "-c, --config <template>",
-      `Copy the content of a config template file to newly created folder`
+      `Copy the content of a config template file to newly created folder`,
     );
     comm.description("Create new project structure in the current directory");
     comm.action(function (name: string, options: any) {
@@ -242,12 +242,12 @@ export class Commander {
           name,
           createVSCodeStructure,
           copyTemplateScript,
-          copyTemplateConfig
+          copyTemplateConfig,
         );
         create.run();
 
         _this.print.ok("All set");
-      } catch (e) {
+      } catch (e: any) {
         _this.print.error(e.message);
         process.exit(1);
       }
@@ -265,27 +265,27 @@ export class Commander {
     comm.option(
       "-d, --debug",
       "Debug. Write out enigma traffic messages",
-      false
+      false,
     );
 
     comm.option(
       "-c, --config [config_file_name]",
       "Optional. Name of the config file to use. The file sill have to be in the current folder",
-      "config.yml"
+      "config.yml",
     );
 
     comm.description("Create new empty app and update the config.yml");
     comm.action(async function (
       name: string,
       env: string,
-      options: GetScriptOptionValues
+      options: GetScriptOptionValues,
     ) {
       try {
         const create = new CreateApp(name, env, options);
         await create.run();
 
         _this.print.ok("All set");
-      } catch (e) {
+      } catch (e: any) {
         _this.print.error(e.message);
         process.exit(1);
       }
@@ -303,13 +303,19 @@ export class Commander {
     comm.option(
       "-d, --debug",
       "Debug. Write out enigma traffic messages",
-      false
+      false,
+    );
+
+    comm.option(
+      "--output <path>",
+      "Optional. Path. Save the output to a file. (Console output is still shown)",
+      undefined,
     );
 
     comm.option(
       "-c, --config [config_file_name]",
       "Optional. Name of the config file to use. The file sill have to be in the current folder",
-      "config.yml"
+      "config.yml",
     );
 
     comm.description("Print details for the configured app");
@@ -317,7 +323,7 @@ export class Commander {
       try {
         const create = new AppDetails(env, options);
         await create.run();
-      } catch (e) {
+      } catch (e: any) {
         _this.print.error(e.message);
         process.exit(1);
       }
@@ -330,11 +336,11 @@ export class Commander {
     const _this = this;
     const comm = new Command("vscode");
     comm.description(
-      "Creates .vscode folder with pre-defined tasks.json and settings.json"
+      "Creates .vscode folder with pre-defined tasks.json and settings.json",
     );
 
     comm.action(async function () {
-      const create = new Create("", true, undefined, undefined);
+      const create = new Create("", true, "", "");
       create.createVSCodeTasks();
 
       _this.print.ok(".vscode folder was created");
@@ -355,23 +361,23 @@ export class Commander {
     comm.option(
       "-d, --debug",
       "Debug. Write out enigma traffic messages",
-      "false"
+      "false",
     );
 
     comm.option(
       "--ro, --reload-output <LOCATION>",
-      "Path. Save the reload log into the provided folder"
+      "Path. Save the reload log into the provided folder",
     );
 
     comm.option(
       "--roo, --reload-output-overwrite <LOCATION>",
-      "Path. Save the reload log into the provided folder by overwriting the existing log"
+      "Path. Save the reload log into the provided folder by overwriting the existing log",
     );
 
     comm.option(
       "-c, --config [config_file_name]",
       "Optional. Name of the config file to use. The file sill have to be in the current folder",
-      "config.yml"
+      "config.yml",
     );
 
     comm.action(async function (name, options: GetScriptOptionValues) {
@@ -379,7 +385,7 @@ export class Commander {
         throw new CustomError(
           "Both --reload-output and --reload-output-overwrite options are provided. Please provide only one of them",
           "error",
-          true
+          true,
         );
 
       // check if reload output path exists
@@ -392,7 +398,7 @@ export class Commander {
           throw new CustomError(
             `Provided reload output path do not exists - "${options.reloadOutput}" `,
             "error",
-            true
+            true,
           );
         }
       }
@@ -407,7 +413,7 @@ export class Commander {
           throw new CustomError(
             `Provided reload output path do not exists - "${options.reloadOutputOverwrite}" `,
             "error",
-            true
+            true,
           );
         }
       }
@@ -434,13 +440,13 @@ export class Commander {
     comm.option(
       "-d, --debug",
       "Debug. Write out enigma traffic messages",
-      "false"
+      "false",
     );
 
     comm.option(
       "-c, --config [config_file_name]",
       "Optional. Name of the config file to use. The file sill have to be in the current folder",
-      "config.yml"
+      "config.yml",
     );
 
     comm.argument("<env>");
@@ -465,17 +471,17 @@ export class Commander {
       process.stdout.write(" > qlbuilder watch desktop -r\n");
       process.stdout.write(" > qlbuilder watch desktop -s\n");
       process.stdout.write(
-        " > qlbuilder download desktop -p c:/path/to/folder\n"
+        " > qlbuilder download desktop -p c:/path/to/folder\n",
       );
       process.stdout.write(
-        " > qlbuilder download desktop -p c:/path/to/folder --nodata true\n"
+        " > qlbuilder download desktop -p c:/path/to/folder --nodata true\n",
       );
       process.stdout.write("\n");
       process.stdout.write("To get additional info for a specific command:\n");
       process.stdout.write(" > qlbuilder some-command --help\n");
       process.stdout.write("\n");
       process.stdout.write(
-        "More info: https://github.com/informatiqal/qlBuilder\n"
+        "More info: https://github.com/informatiqal/qlBuilder\n",
       );
       process.stdout.write("\n");
     });
@@ -485,7 +491,7 @@ export class Commander {
     const _this = this;
     const comm = new Command("cred");
     comm.description(
-      "List the name and type of all saved credential environments"
+      "List the name and type of all saved credential environments",
     );
     comm.action(async function () {
       try {
@@ -493,7 +499,7 @@ export class Commander {
         const result = await credentialEnvironments.run();
         console.table(result);
         process.exit(0);
-      } catch (e) {
+      } catch (e: any) {
         _this.print.error(e.message);
         process.exit(1);
       }
@@ -559,7 +565,7 @@ export class Commander {
 
     const create = new Command("create");
     create.description(
-      "Create the required qlBuilder template folder structure"
+      "Create the required qlBuilder template folder structure",
     );
     create.action(async () => {
       if (!existsSync(`${templateFolder}`)) {
@@ -577,7 +583,7 @@ export class Commander {
       ) {
         mkdirSync(`${templateFolder}/config`);
         _this.print.ok(
-          `Base templates folder exists. Config sub-folder was missing and now is created. ${templateFolder}/config`
+          `Base templates folder exists. Config sub-folder was missing and now is created. ${templateFolder}/config`,
         );
       }
 
@@ -586,14 +592,14 @@ export class Commander {
         !existsSync(`${templateFolder}/script`)
       ) {
         _this.print.ok(
-          `Base templates folder exists. Script sub-folder was missing and now is created. ${templateFolder}/script`
+          `Base templates folder exists. Script sub-folder was missing and now is created. ${templateFolder}/script`,
         );
         mkdirSync(`${templateFolder}/script`);
         process.exit(0);
       }
 
       _this.print.ok(
-        `Templates folder structure already exists. Nothing was changed ${templateFolder}`
+        `Templates folder structure already exists. Nothing was changed ${templateFolder}`,
       );
     });
     comm.addCommand(create);
@@ -608,7 +614,7 @@ export class Commander {
               withFileTypes: true,
             })
               .filter((dirent) => dirent.isDirectory())
-              .map((dirent) => ({ name: dirent.name, type: "SCRIPT" }))
+              .map((dirent) => ({ name: dirent.name, type: "SCRIPT" })),
           );
         }
 
@@ -619,24 +625,24 @@ export class Commander {
             })
               .filter(
                 (dirent) =>
-                  dirent.isFile &&
-                  dirent.name.toLowerCase().split(".").pop() == "yml"
+                  dirent.isFile() &&
+                  dirent.name.toLowerCase().split(".").pop() == "yml",
               )
               .map((dirent) => ({
                 name: dirent.name.replace(".yml", ""),
                 type: "CONFIG",
-              }))
+              })),
           );
         }
 
         if (templates.length == 0)
           _this.print.warn(
-            "Template folder exists but no templates were found"
+            "Template folder exists but no templates were found",
           );
         if (templates.length > 1) console.table(templates);
 
         process.exit(0);
-      } catch (e) {
+      } catch (e: any) {
         _this.print.error(e.message);
         process.exit(1);
       }
@@ -651,11 +657,11 @@ export class Commander {
 
     comm.option(
       "-p, --password <password>",
-      "WARNING! The password will stay in the shell history until cleared"
+      "WARNING! The password will stay in the shell history until cleared",
     );
 
     comm.action(async function (options: { password: string }) {
-      await encryptConfig(options?.password || undefined);
+      await encryptConfig(options?.password || "");
       console.log("Config file is now ENCRYPTED");
     });
 
@@ -668,7 +674,7 @@ export class Commander {
 
     comm.option(
       "-p, --password <password>",
-      "Provide the password with the command itself"
+      "Provide the password with the command itself",
     );
     comm.option("--view", "Preview the config content in the console");
 
@@ -697,7 +703,7 @@ export class Commander {
     this.programs.on("command:*", function () {
       console.error(
         "Invalid command: %s\nSee --help for a list of available commands.",
-        program.args.join(" ")
+        program.args.join(" "),
       );
       process.exit(1);
     });

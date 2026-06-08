@@ -1,12 +1,12 @@
-import { Spin } from "../lib/Spinner";
-import { Auth } from "../lib/Auth";
-import { Checks } from "../lib/Checks";
-import { Config, IConfig } from "../lib/Config";
-import { CustomError } from "../lib/CustomError";
-import { Engine } from "../lib/Engine";
-import { Print } from "../lib/Print";
-import { GetScriptOptionValues } from "../types/types";
-import { Build } from "./Build";
+import { Spin } from "../lib/Spinner.js";
+import { Auth } from "../lib/Auth.js";
+import { Checks } from "../lib/Checks.js";
+import { Config, IConfig } from "../lib/Config.js";
+import { CustomError } from "../lib/CustomError.js";
+import { Engine } from "../lib/Engine.js";
+import { Print } from "../lib/Print.js";
+import { GetScriptOptionValues } from "../types/types.js";
+import { Build } from "./Build.js";
 
 export class SetScript {
   private auth: Auth;
@@ -78,7 +78,7 @@ export class SetScript {
       await app.setScript(script);
       await app.doSave();
       await qlik.session.close();
-    } catch (e) {
+    } catch (e: any) {
       await qlik.session.close();
       this.spin.stop();
       throw new CustomError(e.message, "error", true);

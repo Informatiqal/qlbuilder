@@ -1,4 +1,4 @@
-import { Commander } from "./Commands";
+import { Commander } from "./Commands.js";
 
 const commands = new Commander();
 

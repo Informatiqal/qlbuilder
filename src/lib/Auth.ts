@@ -4,14 +4,14 @@ import qAuth from "qlik-sense-authenticate";
 import { load as yamlLoad } from "js-yaml";
 import chalk from "chalk";
 
-import { IConfig } from "./Config";
-import { CustomError } from "./CustomError";
+import { IConfig } from "./Config.js";
+import { CustomError } from "./CustomError.js";
 import {
   CertificatesCredentials,
   TokenCredentials,
   WinFormCredentials,
-} from "../types/types";
-import { configDecryptedOrNot } from "../commands/Decrypt";
+} from "../types/types.js";
+import { configDecryptedOrNot } from "../commands/Decrypt.js";
 
 export class Auth {
   private auth_config = {
@@ -21,6 +21,7 @@ export class Auth {
     saas: ["QLIK_TOKEN"],
   };
   config: IConfig;
+  //@ts-ignore
   httpsAgent: Agent;
   data: {
     key?: string | Buffer;
@@ -43,14 +44,14 @@ export class Auth {
       throw new CustomError(
         "QLIK_USER or QLIK_CERTS are missing/not set",
         "error",
-        true
+        true,
       );
 
     if (credentials.QLIK_USER.indexOf("\\") == -1)
       throw new CustomError(
         "The username should be in format DOMAIN\\USER",
         "error",
-        true
+        true,
       );
 
     const a = {
@@ -58,7 +59,7 @@ export class Auth {
       cert: readFileSync(`${credentials.QLIK_CERTS}/client.pem`),
       headers: {
         "X-Qlik-User": `UserDirectory=${encodeURIComponent(
-          credentials.QLIK_USER.split("\\")[0]
+          credentials.QLIK_USER.split("\\")[0],
         )};UserId=${encodeURIComponent(credentials.QLIK_USER.split("\\")[1])}`,
       },
     };
@@ -92,14 +93,14 @@ export class Auth {
       throw new CustomError(
         "QLIK_USER or QLIK_PASSWORD are missing/not set",
         "error",
-        true
+        true,
       );
 
     if (credentials.QLIK_USER.indexOf("\\") == -1)
       throw new CustomError(
         "The username should be in format DOMAIN\\USER",
         "error",
-        true
+        true,
       );
 
     // try and extract the virtual proxy (if exists)
@@ -129,7 +130,7 @@ export class Auth {
           Cookie: `${sessionHeaderName}=${sessionId}`,
         },
       };
-    } catch (e) {
+    } catch (e: any) {
       throw new CustomError(e.message, "error", true);
     }
   }
@@ -151,7 +152,7 @@ export class Auth {
     let configs: any = {};
     try {
       configs = yamlLoad(configContent);
-    } catch (e) {
+    } catch (e: any) {
       throw new Error(e.message);
     }
 
@@ -190,14 +191,14 @@ export class Auth {
 
     try {
       ymlFileCredentials = await this.localConfig();
-    } catch (e) {
+    } catch (e: any) {
       isYmlFileOk = false;
       ymlFileError = e.message;
     }
 
     try {
       envVarsCredentials = this.localVariables();
-    } catch (e) {
+    } catch (e: any) {
       isEnvVarsOk = false;
       envVarError = e.message;
     }
@@ -206,7 +207,7 @@ export class Auth {
       throw new CustomError(
         `${chalk.red(ymlFileError)} OR ${chalk.red(envVarError)}`,
         "error",
-        true
+        true,
       );
 
     if (isEnvVarsOk == true && isYmlFileOk == false)
@@ -215,5 +216,7 @@ export class Auth {
       return ymlFileCredentials as T;
     if (isEnvVarsOk == true && isYmlFileOk == true)
       return envVarsCredentials as T;
+
+    return {} as T;
   }
 }

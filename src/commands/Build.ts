@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync, writeFileSync } from "fs";
-import { Checks } from "../lib/Checks";
 import { orderBy } from "natural-orderby";
-import { Spin } from "../lib/Spinner";
+import { Checks } from "../lib/Checks.js";
+import { Spin } from "../lib/Spinner.js";
 
 export class Build {
   builtScript: string = "";

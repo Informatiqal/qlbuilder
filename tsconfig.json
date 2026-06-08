@@ -1,12 +1,13 @@
 {
     "compilerOptions": {
+        "rootDir": "./src",
         "outDir": "./dist",
         "target": "ES2020",
         "declaration": true,
-        "module": "ES6",
+        "module": "nodenext",
         "noImplicitAny": false,
         "sourceMap": true,
-        "moduleResolution": "node",
+        "moduleResolution": "nodenext",
         "resolveJsonModule": true,
         "allowSyntheticDefaultImports": true
     },
