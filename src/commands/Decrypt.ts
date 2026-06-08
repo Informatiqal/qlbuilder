@@ -3,7 +3,7 @@ import { readFileSync } from "fs";
 import prompts from "prompts";
 import { load as yamlLoad } from "js-yaml";
 
-import { decryptText, isEncrypted } from "../lib/EncryptDecrypt";
+import { decryptText, isEncrypted } from "../lib/EncryptDecrypt.js";
 
 export async function decryptConfig(key?: string): Promise<string> {
   const configPath = `${homedir}/.qlbuilder.yml`;

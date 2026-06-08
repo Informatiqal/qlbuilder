@@ -1,14 +1,14 @@
 import { readFileSync, writeFileSync } from "fs";
 import { dump, load as yamlLoad } from "js-yaml";
-import { Auth } from "../lib/Auth";
-import { Checks } from "../lib/Checks";
-import { Config, IConfig } from "../lib/Config";
-import { CustomError } from "../lib/CustomError";
-import { Engine } from "../lib/Engine";
-import { Spin } from "../lib/Spinner";
-import { GetScriptOptionValues } from "../types/types";
-import { Build } from "./Build";
-import { Print } from "../lib/Print";
+import { Auth } from "../lib/Auth.js";
+import { Checks } from "../lib/Checks.js";
+import { Config, IConfig } from "../lib/Config.js";
+import { CustomError } from "../lib/CustomError.js";
+import { Engine } from "../lib/Engine.js";
+import { Spin } from "../lib/Spinner.js";
+import { GetScriptOptionValues } from "../types/types.js";
+import { Build } from "./Build.js";
+import { Print } from "../lib/Print.js";
 
 export interface ICreateAppResponse {
   qSuccess: boolean;
@@ -20,6 +20,7 @@ export class CreateApp {
   private name: string;
   private environment: IConfig;
   private options: GetScriptOptionValues;
+  //@ts-ignore
   private session: enigmaJS.ISession;
   private spin: Spin;
   private print: Print;
@@ -67,7 +68,7 @@ export class CreateApp {
       throw new CustomError(
         `Invalid authentication method - ${this.environment.authentication.type}`,
         "error",
-        true
+        true,
       );
 
     return () => this.auth[this.environment.authentication.type]();
@@ -79,7 +80,7 @@ export class CreateApp {
       this.environment.appId,
       this.auth.data.headers,
       this.environment.name,
-      this.options.debug
+      this.options.debug,
     );
 
     this.session = qlik.session;
@@ -92,7 +93,7 @@ export class CreateApp {
 
       if (!doc.qSuccess)
         throw new CustomError("Error while creating an app", "error", true);
-    } catch (e) {
+    } catch (e: any) {
       await qlik.session.close();
       this.spin.stop();
       throw new CustomError(e.message, "error", true);
@@ -107,11 +108,11 @@ export class CreateApp {
 
   private updateConfig(appId: string) {
     const configContent = yamlLoad(
-      readFileSync(`${process.cwd()}/config.yml`).toString()
+      readFileSync(`${process.cwd()}/config.yml`).toString(),
     ) as IConfig[];
 
     const envIndex = configContent.findIndex(
-      (env) => env.name == this.environment.name
+      (env) => env.name == this.environment.name,
     );
 
     configContent[envIndex].appId = appId;
@@ -119,8 +120,8 @@ export class CreateApp {
     writeFileSync(
       `${process.cwd()}/config1.yml`,
       `# yaml-language-server: $schema=https://github.com/Informatiqal/qlbuilder/blob/master/src/schema/config.json?raw=true\n${dump(
-        configContent
-      )}`
+        configContent,
+      )}`,
     );
 
     return true;

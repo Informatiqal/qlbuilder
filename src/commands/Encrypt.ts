@@ -2,7 +2,7 @@ import { homedir } from "os";
 import { readFileSync, writeFileSync } from "fs";
 import prompts from "prompts";
 
-import { encryptText, marker } from "../lib/EncryptDecrypt";
+import { encryptText, marker } from "../lib/EncryptDecrypt.js";
 
 export async function encryptConfig(key: string) {
   const configPath = `${homedir}/.qlbuilder.yml`;

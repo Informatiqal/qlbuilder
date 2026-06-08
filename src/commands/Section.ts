@@ -1,8 +1,8 @@
 import { readdirSync, renameSync, unlinkSync, writeFileSync } from "fs";
 import { orderBy } from "natural-orderby";
 import prompts from "prompts";
-import { Checks } from "../lib/Checks";
-import { Build } from "./Build";
+import { Checks } from "../lib/Checks.js";
+import { Build } from "./Build.js";
 
 export class Section {
   private existingSections: string[] = [];
@@ -54,17 +54,17 @@ export class Section {
           console.log("");
           process.exit(0);
         },
-      }
+      },
     );
 
     try {
       writeFileSync(
         `${process.cwd()}/src/${newSection.index + 1}--${newSection.title}.qvs`,
-        `// ${newSection.title}`
+        `// ${newSection.title}`,
       );
       this.renumberInternal(newSection, true);
       this.build.run();
-    } catch (e) {
+    } catch (e: any) {
       throw new Error(`Error while creating the section script:
 ${e.message}`);
     }
@@ -101,7 +101,7 @@ ${e.message}`);
           console.log("");
           process.exit(0);
         },
-      }
+      },
     );
 
     if (section.agree == true) {
@@ -109,7 +109,7 @@ ${e.message}`);
         section.index.map((i) => {
           unlinkSync(`${process.cwd()}/src/${this.existingSections[i]}`);
         });
-      } catch (e) {
+      } catch (e: any) {
         throw new Error(`Error whole removing the script section:
 ${e.message}`);
       }
@@ -166,7 +166,7 @@ ${e.message}`);
           console.log("");
           process.exit(0);
         },
-      }
+      },
     );
 
     const fileToRenameComponents =
@@ -176,17 +176,17 @@ ${e.message}`);
     this.renumberInternal(
       { index: moveSection.index1 + 1 },
       false,
-      moveSection.index2
+      moveSection.index2,
     );
 
     try {
       renameSync(
         `${process.cwd()}/src/${this.existingSections[moveSection.index1]}`,
-        `${process.cwd()}/src/${newFileName}`
+        `${process.cwd()}/src/${newFileName}`,
       );
 
       this.build.run();
-    } catch (e) {
+    } catch (e: any) {
       throw new Error(`Error while renaming the section scripts:
 ${e.message}`);
     }
@@ -204,12 +204,12 @@ ${e.message}`);
 
         renameSync(
           `${process.cwd()}/src/${this.existingSections[i]}`,
-          `${process.cwd()}/src/${newName}`
+          `${process.cwd()}/src/${newName}`,
         );
       }
 
       this.build.run();
-    } catch (e) {
+    } catch (e: any) {
       throw new Error(`Error while renaming the script sections:
 ${e.message}`);
     }
@@ -220,11 +220,11 @@ ${e.message}`);
   private renumberInternal(
     newSection: { index: number; title?: string },
     increment: boolean,
-    stopIndex?: number
+    stopIndex?: number,
   ): boolean {
     const filesToRename = this.existingSections.slice(
       newSection.index,
-      stopIndex
+      stopIndex,
     );
 
     try {
@@ -236,10 +236,10 @@ ${e.message}`);
 
         renameSync(
           `${process.cwd()}/src/${file}`,
-          `${process.cwd()}/src/${newName}`
+          `${process.cwd()}/src/${newName}`,
         );
       }
-    } catch (e) {
+    } catch (e: any) {
       throw new Error(`Error while renaming the script sections:
 ${e.message}`);
     }

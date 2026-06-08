@@ -1,5 +1,5 @@
 import { load as yamlLoad } from "js-yaml";
-import { configDecryptedOrNot, decryptConfig } from "./Decrypt";
+import { configDecryptedOrNot, decryptConfig } from "./Decrypt.js";
 
 export class CredentialEnvironments {
   constructor() {}
@@ -38,7 +38,7 @@ export class CredentialEnvironments {
       });
 
       return environmentNames;
-    } catch (e) {
+    } catch (e: any) {
       throw new Error(e.message);
     }
   }

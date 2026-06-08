@@ -1,5 +1,5 @@
 import { existsSync } from "fs";
-import { CustomError } from "../lib/CustomError";
+import { CustomError } from "../lib/CustomError.js";
 
 export class Checks {
   constructor() {}

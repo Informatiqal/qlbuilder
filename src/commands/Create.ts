@@ -7,17 +7,17 @@ import {
   copyFileSync,
 } from "fs";
 import { dump } from "js-yaml";
-import { CustomError } from "../lib/CustomError";
-import { Build } from "./Build";
-import { Print } from "../lib/Print";
+import { CustomError } from "../lib/CustomError.js";
+import { Build } from "./Build.js";
+import { Print } from "../lib/Print.js";
 
 export class Create {
   private name: string;
   private currentFolder = process.cwd();
   private homeFolder = homedir();
   private createVSCodeStructure = false;
-  private useTemplateScript: string = undefined;
-  private useTemplateConfig: string = undefined;
+  private useTemplateScript: string;
+  private useTemplateConfig: string;
   constructor(
     name: string,
     createVSCodeStructure: boolean,

@@ -1,11 +1,11 @@
 import chalk from "chalk";
 import { FSWatcher, watch } from "chokidar";
 import { createInterface } from "readline";
-import { WatchOptionValues } from "../types/types";
-import { CheckScript } from "./CheckScript";
-import { SetScript } from "./SetScript";
-import { Reload } from "./Reload";
-import { Checks } from "../lib/Checks";
+import { WatchOptionValues } from "../types/types.js";
+import { CheckScript } from "./CheckScript.js";
+import { SetScript } from "./SetScript.js";
+import { Reload } from "./Reload.js";
+import { Checks } from "../lib/Checks.js";
 
 export class Watch {
   private name: string;

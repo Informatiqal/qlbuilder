@@ -20,6 +20,12 @@ export type WatchOptionValues = {
   config: string;
 };
 
+export type AppDetailsOptions = {
+  debug?: string;
+  output?: string;
+  config: string;
+};
+
 export interface DownloadExportRequest {
   fileName: string;
   path: string;

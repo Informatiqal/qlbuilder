@@ -1,5 +1,5 @@
 import { Chalk } from "chalk";
-import { Print } from "../lib/Print";
+import { Print } from "../lib/Print.js";
 
 const chalk = new Chalk();
 

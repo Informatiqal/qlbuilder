@@ -1,20 +1,21 @@
 import filenamify from "filenamify";
 import { readdirSync, rmSync, writeFileSync } from "fs";
 import { createInterface } from "readline";
-import { Auth } from "../lib/Auth";
-import { Checks } from "../lib/Checks";
-import { Config, IConfig } from "../lib/Config";
-import { CustomError } from "../lib/CustomError";
-import { Engine } from "../lib/Engine";
-import { Spin } from "../lib/Spinner";
-import { GetScriptOptionValues } from "../types/types";
-import { Build } from "./Build";
+import { Auth } from "../lib/Auth.js";
+import { Checks } from "../lib/Checks.js";
+import { Config, IConfig } from "../lib/Config.js";
+import { CustomError } from "../lib/CustomError.js";
+import { Engine } from "../lib/Engine.js";
+import { Spin } from "../lib/Spinner.js";
+import { GetScriptOptionValues } from "../types/types.js";
+import { Build } from "./Build.js";
 
 export class GetScript {
   private auth: Auth;
   private name: string;
   private environment: IConfig;
   private options: GetScriptOptionValues;
+  //@ts-ignore
   private session: enigmaJS.ISession;
   private spin: Spin;
   constructor(name: string, options: GetScriptOptionValues) {
@@ -64,7 +65,7 @@ export class GetScript {
       throw new CustomError(
         `Invalid authentication method - ${this.environment.authentication.type}`,
         "error",
-        true
+        true,
       );
 
     return () => this.auth[this.environment.authentication.type]();
@@ -85,8 +86,8 @@ export class GetScript {
           }
           rl.close();
           resolve(false);
-        }
-      )
+        },
+      ),
     );
   }
 
@@ -96,7 +97,7 @@ export class GetScript {
       this.environment.appId,
       this.auth.data.headers,
       this.environment.name,
-      this.options.debug
+      this.options.debug,
     );
 
     this.session = qlik.session;
@@ -107,7 +108,7 @@ export class GetScript {
       const global = await qlik.session.open<EngineAPI.IGlobal>();
       const doc = await global.openDoc(this.environment.appId);
       loadScript = await doc.getScript();
-    } catch (e) {
+    } catch (e: any) {
       await qlik.session.close();
       this.spin.stop();
       throw new CustomError(e.message, "error", true);
@@ -123,9 +124,9 @@ export class GetScript {
   private async clearLocalFiles() {
     try {
       readdirSync(`${process.cwd()}/src`).forEach((f) =>
-        rmSync(`${process.cwd()}/src/${f}`)
+        rmSync(`${process.cwd()}/src/${f}`),
       );
-    } catch (e) {
+    } catch (e: any) {
       try {
         await this.session.close();
       } catch (e) {}
@@ -147,11 +148,11 @@ export class GetScript {
 
           writeFileSync(
             `${process.cwd()}/src/${i}--${tabNameSafe}.qvs`,
-            scriptContent
+            scriptContent,
           );
         }
       }
-    } catch (e) {
+    } catch (e: any) {
       this.spin.stop();
       throw new CustomError(e.message, "error", true);
     }

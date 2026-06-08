@@ -1,12 +1,12 @@
 import { existsSync, createWriteStream } from "fs";
 import axios, { AxiosRequestConfig } from "axios";
-import { Checks } from "../lib/Checks";
-import { CustomError } from "../lib/CustomError";
-import { Config, IConfig } from "../lib/Config";
-import { Auth } from "../lib/Auth";
-import { generateXrfkey, uuid } from "../lib/common";
-import { Spin } from "../lib/Spinner";
-import { DownloadExportRequest, DownloadOptionValues } from "../types/types";
+import { Checks } from "../lib/Checks.js";
+import { CustomError } from "../lib/CustomError.js";
+import { Config, IConfig } from "../lib/Config.js";
+import { Auth } from "../lib/Auth.js";
+import { generateXrfkey, uuid } from "../lib/common.js";
+import { Spin } from "../lib/Spinner.js";
+import { DownloadExportRequest, DownloadOptionValues } from "../types/types.js";
 
 export interface ISaaSItem {
   name: string;
