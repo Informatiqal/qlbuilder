@@ -69,12 +69,19 @@ export class TablesAndFields {
       const global = await qlik.session.open<EngineAPI.IGlobal>();
       const doc = await global.openDoc(this.environment.appId);
 
-      const tablesAndKeys = await doc.getTablesAndKeys({}, {}, 0, true, false);
+      const tablesAndKeys = await doc
+        .getTablesAndKeys({}, {}, 0, true, false)
+        .then((d) =>
+          d.qtr.sort((a, b) => {
+            return a["qName"].localeCompare(b["qName"]);
+          }),
+        );
+
       await qlik.session.close();
 
       const displayData: string[] = [];
 
-      tablesAndKeys.qtr.map(function (t) {
+      tablesAndKeys.map(function (t) {
         const tags = t.qTableTags.length > 0 ? t.qTableTags.join(", ") : "-";
         const rows = parseInt(t.qNoOfRows).toLocaleString();
 
@@ -83,17 +90,25 @@ export class TablesAndFields {
         displayData.push(`\tTags: ${tags}`);
         displayData.push("\t----------------");
 
-        t.qFields.map(function (f) {
-          const tags = f.qTags.length > 0 ? f.qTags.join(", ") : "-";
+        const fieldsSorted = t.qFields.sort((a, b) => {
+          return a["qName"].localeCompare(b["qName"]);
+        });
+
+        fieldsSorted.map(function (f) {
           const rows = parseInt(f.qnRows).toLocaleString();
+          const distinctValues = parseInt(
+            f.qnTotalDistinctValues,
+          ).toLocaleString();
+          const nonNulls = parseInt(f.qnNonNulls).toLocaleString();
           const isKey = f.qKeyType == "NOT_KEY" ? false : true;
 
           displayData.push(`\t${f.qName}`);
           if (isKey) displayData.push(`\t\tKey            : ${f.qKeyType}`);
           displayData.push(`\t\tRows           : ${rows}`);
-          displayData.push(`\t\tDistinct values: ${f.qnTotalDistinctValues}`);
-          displayData.push(`\t\tNon null values: ${f.qnNonNulls}`);
-          displayData.push(`\t\tTags           : ${tags}`);
+          displayData.push(`\t\tDistinct values: ${distinctValues}`);
+          displayData.push(`\t\tNon null values: ${nonNulls}`);
+          if (f.qTags.length > 0)
+            displayData.push(`\t\tTags           : ${f.qTags.join(", ")}`);
         });
 
         displayData.push("");
