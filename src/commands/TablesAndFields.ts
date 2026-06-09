@@ -73,18 +73,28 @@ export class TablesAndFields {
       console.log("");
       tablesAndKeys.qtr.map(function (t, i) {
         const tags = t.qTableTags.length > 0 ? t.qTableTags.join(", ") : "-";
-        const tableData = `${t.qName}\n\tRows: ${t.qNoOfRows}\n\tTags: ${tags}`;
-        if (i > 0) console.log("-------------<<<");
+        const rows = parseInt(t.qNoOfRows).toLocaleString();
+        const tableData = `${t.qName}\n\tRows: ${rows}\n\tTags: ${tags}`;
+
         console.log(tableData);
-        console.log("------------->>>");
-        return t.qFields.map(function (f) {
-          const tags = t.qTableTags.length > 0 ? t.qTableTags.join(", ") : "-";
-          const name = f.qKeyType == "NOT_KEY" ? f.qKeyType : `*${f.qName}`;
-          const key = f.qKeyType == "NOT_KEY" ? "-" : f.qKeyType;
-          const fieldData = `${name}\n\t\tRows: ${f.qnRows}\n\t\tTotal distinct values: ${f.qnTotalDistinctValues}\n\t\tNon null values: ${f.qnNonNulls}\n\t\tKey: ${key}\n\t\tTags: ${tags}`;
-          console.log(`\t${fieldData}`);
-          return { table: t.qName, field: f.qName };
+        console.log("\t----------------");
+
+        t.qFields.map(function (f) {
+          const tags = f.qTags.length > 0 ? f.qTags.join(", ") : "-";
+          const rows = parseInt(f.qnRows).toLocaleString();
+          const isKey = f.qKeyType == "NOT_KEY" ? false : true;
+
+          const fieldsData: string[] = [];
+          fieldsData.push(f.qName);
+          if (isKey) fieldsData.push(`Key            : ${f.qKeyType}`);
+          fieldsData.push(`Rows           : ${rows}`);
+          fieldsData.push(`Distinct values: ${f.qnTotalDistinctValues}`);
+          fieldsData.push(`Non null values: ${f.qnNonNulls}`);
+          fieldsData.push(`Tags           : ${tags}`);
+
+          console.log(`\t${fieldsData.join("\n\t\t")}`);
         });
+        console.log("");
       });
     } catch (e: any) {
       await qlik.session.close();
