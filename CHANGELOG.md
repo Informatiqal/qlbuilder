@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.12.0] - 2026-06-09
+
+- new command to display/write the available tables and fields [#189](https://github.com/Informatiqal/qlbuilder/issues/189)
+
 ## [2.11.0] - 2026-06-08
 
 - app details can save the result in a file (optional) [#188](https://github.com/Informatiqal/qlbuilder/issues/188)
