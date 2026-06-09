@@ -92,10 +92,10 @@ Run one of the following commands from CMD/PowerShell
 - `qlbuilder vscode` - creates the `.vscode` folder (inside the current folder) with the `tasks.json` and `settings.json` files. Please check the `create` command description above for more info
 
 - `qlBuilder appDetails [env]` - display info about the configured app (command alias `details`)
-  - `--output [path]` - optional. the output will be saved into the provided path file
+  - `--output [path]` - optional. the output will be saved into the provided file path
 
 - `qlBuilder tablesAndFields [env]` - display info about the available tables and fields (command aliases `tables`, `fields`)
-  - `--output [path]` - optional. the output will be saved into the provided path file
+  - `--output [path]` - optional. the output will be saved into the provided file path
 
 - `qlBuilder createApp [env]` - creates brand new (empty) app on the specified environment. Updates `config.yml` appId for the environment
 - `qlBuilder encrypt` - encrypts `C:\Users\<USERNAME>\.qlBuilder.yml` file with user provided password
