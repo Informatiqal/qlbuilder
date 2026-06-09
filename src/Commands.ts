@@ -715,7 +715,7 @@ export class Commander {
 
     comm.option(
       "--output <path>",
-      "Optional. Path. Save the output to a file. (Console output is still shown)",
+      "Optional. Path. Save the output to a file. (Console output is still shown). If file ends in .md the file content will be formatted as markdown",
       undefined,
     );
 

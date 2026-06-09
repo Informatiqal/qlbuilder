@@ -4,7 +4,7 @@ import { Checks } from "../lib/Checks.js";
 import { Config, IConfig } from "../lib/Config.js";
 import { CustomError } from "../lib/CustomError.js";
 import { Engine } from "../lib/Engine.js";
-import { AppDetailsOptions } from "../types/types.js";
+import { AppDetailsOptions, TablesAndFieldsProcessed } from "../types/types.js";
 import { Spin } from "../lib/Spinner.js";
 
 export class TablesAndFields {
@@ -35,7 +35,19 @@ export class TablesAndFields {
 
     this.spin.start();
 
-    await this.getTablesAndFields();
+    const processedData = await this.getTablesAndFields();
+
+    if (
+      this.options.output &&
+      this.options.output.toLowerCase().endsWith("md")
+    ) {
+      const mdData = await this.formatMarkdown(processedData);
+      try {
+        writeFileSync(this.options.output, mdData.join("\n"));
+      } catch (e: any) {
+        throw new Error(e.message);
+      }
+    }
 
     this.spin.stop();
   }
@@ -81,6 +93,8 @@ export class TablesAndFields {
 
       const displayData: string[] = [];
 
+      const d: TablesAndFieldsProcessed = {};
+
       tablesAndKeys.map(function (t) {
         const tags = t.qTableTags.length > 0 ? t.qTableTags.join(", ") : "-";
         const rows = parseInt(t.qNoOfRows).toLocaleString();
@@ -89,6 +103,8 @@ export class TablesAndFields {
         displayData.push(`\tRows: ${rows}`);
         displayData.push(`\tTags: ${tags}`);
         displayData.push("\t----------------");
+
+        d[t.qName] = { table: { rows, tags }, fields: {} };
 
         const fieldsSorted = t.qFields.sort((a, b) => {
           return a["qName"].localeCompare(b["qName"]);
@@ -109,6 +125,14 @@ export class TablesAndFields {
           displayData.push(`\t\tNon null values: ${nonNulls}`);
           if (f.qTags.length > 0)
             displayData.push(`\t\tTags           : ${f.qTags.join(", ")}`);
+
+          d[t.qName].fields[f.qName] = {
+            keyType: f.qKeyType,
+            rows,
+            distinctValues,
+            nonNulls,
+            tags: f.qTags,
+          };
         });
 
         displayData.push("");
@@ -116,17 +140,58 @@ export class TablesAndFields {
 
       console.log(displayData.join("\n"));
 
-      if (_this.options.output) {
+      if (
+        _this.options.output &&
+        !_this.options.output.toLowerCase().endsWith("md")
+      ) {
         try {
           writeFileSync(_this.options.output, displayData.join("\n"));
         } catch (e: any) {
           throw new Error(e.message);
         }
       }
+
+      return d;
     } catch (e: any) {
       await qlik.session.close();
       this.spin.stop();
       throw new CustomError(e.message, "error", true);
     }
+  }
+
+  private formatMarkdown(data: TablesAndFieldsProcessed) {
+    const mdContent = ["# Tables and fields", "", "## Tables list", ""];
+
+    // tables list for ToC
+    Object.keys(data).map((t) =>
+      mdContent.push(`- [${t}](#${t.toLowerCase()})`),
+    );
+
+    mdContent.push("");
+
+    Object.entries(data).map(([t, v]) => {
+      mdContent.push(`### ${t}`);
+      mdContent.push("");
+      mdContent.push(`Rows: ${v.table.rows}`);
+      mdContent.push(`Tags: ${v.table.tags}`);
+      mdContent.push("");
+      mdContent.push(
+        `| Name  | Rows | Distinct values | Non null values | Key | Tags |`,
+      );
+      mdContent.push(
+        `|-------|------|-----------------|-----------------|-----|------|`,
+      );
+
+      Object.entries(v.fields).map(([f, v]) => {
+        const key = v.keyType == "NOT_KEY" ? "" : v.keyType;
+        mdContent.push(
+          `| ${f} | ${v.rows} | ${v.distinctValues} | ${v.nonNulls} | ${key} | ${v.tags.join(", ")} |`,
+        );
+      });
+
+      mdContent.push("");
+    });
+
+    return mdContent;
   }
 }
