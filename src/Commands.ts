@@ -19,6 +19,7 @@ import { decryptConfig } from "./commands/Decrypt.js";
 import { Watch } from "./commands/Watch.js";
 import { CredentialEnvironments } from "./commands/CredentialEnvironments.js";
 import { Section } from "./commands/Section.js";
+import { TablesAndFields } from "./commands/TablesAndFields.js";
 import { homedir } from "os";
 import { existsSync, mkdirSync, readdirSync, writeFileSync } from "fs";
 import path from "path";
@@ -47,6 +48,7 @@ export class Commander {
     this.programs.addCommand(this.appDetails());
     this.programs.addCommand(this.encrypt());
     this.programs.addCommand(this.decrypt());
+    this.programs.addCommand(this.tablesAndFields());
 
     this.onHelp();
     this.onUnknownArg();
@@ -698,6 +700,44 @@ export class Commander {
 
     return comm;
   }
+
+  private tablesAndFields() {
+    const _this = this;
+    const comm = new Command("tables");
+    comm.alias("fields");
+    comm.alias("tablesAndFields");
+    comm.argument("<env>");
+    comm.option(
+      "-d, --debug",
+      "Debug. Write out enigma traffic messages",
+      false,
+    );
+
+    comm.option(
+      "--output <path>",
+      "Optional. Path. Save the output to a file. (Console output is still shown)",
+      undefined,
+    );
+
+    comm.option(
+      "-c, --config [config_file_name]",
+      "Optional. Name of the config file to use. The file sill have to be in the current folder",
+      "config.yml",
+    );
+
+    comm.description("Print details for the tables and fields in the app");
+    comm.action(async function (env: string, options: GetScriptOptionValues) {
+      try {
+        const create = new TablesAndFields(env, options);
+        await create.run();
+      } catch (e: any) {
+        _this.print.error(e.message);
+        process.exit(1);
+      }
+    });
+
+    return comm;
+  }  
 
   private onUnknownArg() {
     this.programs.on("command:*", function () {
