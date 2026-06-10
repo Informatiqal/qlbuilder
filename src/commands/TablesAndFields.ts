@@ -160,26 +160,32 @@ export class TablesAndFields {
   }
 
   private formatMarkdown(data: TablesAndFieldsProcessed) {
-    const mdContent = ["# Tables and fields", "", "## Tables list", ""];
+    const mdContent = ["# TABLES AND FIELDS", ""];
 
     // tables list for ToC
-    Object.keys(data).map((t) =>
-      mdContent.push(`- [${t}](#${t.toLowerCase()})`),
-    );
+    mdContent.push(`| Table name | Rows |`);
+    mdContent.push(`|------------|------|`);
+
+    Object.entries(data).map(([t, v]) => {
+      // mdContent.push(`- [${t}](#${t.toLowerCase().replace(/ /g,"-")})`),
+      mdContent.push(
+        ` | [${t}](#${t.toLowerCase().replace(/ /g, "-")}) | ${v.table.rows} |`,
+      );
+    });
 
     mdContent.push("");
 
     Object.entries(data).map(([t, v]) => {
-      mdContent.push(`### ${t}`);
+      mdContent.push(`## ${t}`);
       mdContent.push("");
       mdContent.push(`Rows: ${v.table.rows}`);
-      mdContent.push(`Tags: ${v.table.tags}`);
+      if (v.table.tags != "-") mdContent.push(`Tags: ${v.table.tags}`);
       mdContent.push("");
       mdContent.push(
-        `| Name  | Rows | Distinct values | Non null values | Key | Tags |`,
+        `| Field name | Rows | Distinct values | Non null values | Key | Tags |`,
       );
       mdContent.push(
-        `|-------|------|-----------------|-----------------|-----|------|`,
+        `|------------|------|-----------------|-----------------|-----|------|`,
       );
 
       Object.entries(v.fields).map(([f, v]) => {
