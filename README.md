@@ -96,6 +96,7 @@ Run one of the following commands from CMD/PowerShell
 
 - `qlBuilder tablesAndFields [env]` - display info about the available tables and fields (command aliases `tables`, `fields`)
   - `--output [path]` - optional. the output will be saved into the provided file path
+  - if the output file extension is `md` then the saved data will be formatted as Markdown
 
 - `qlBuilder createApp [env]` - creates brand new (empty) app on the specified environment. Updates `config.yml` appId for the environment
 - `qlBuilder encrypt` - encrypts `C:\Users\<USERNAME>\.qlBuilder.yml` file with user provided password
