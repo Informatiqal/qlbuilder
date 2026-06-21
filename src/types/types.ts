@@ -100,3 +100,21 @@ export interface RepoApp {
   staticByteSize: number;
   schemaPath: string;
 }
+
+export interface TablesAndFieldsProcessed {
+  [k: string]: {
+    table: {
+      rows: string;
+      tags: string;
+    };
+    fields: {
+      [k: string]: {
+        keyType: string;
+        rows: string;
+        distinctValues: string;
+        nonNulls: string;
+        tags: string[];
+      };
+    };
+  };
+}

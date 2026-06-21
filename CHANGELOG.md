@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.13.0] - 2026-06-09
+
+- if tables and fields file ends with `.md` then the file will be extra formatted as markdown [#192](https://github.com/Informatiqal/qlbuilder/issues/192)
+- dependency updates
+
 ## [2.12.0] - 2026-06-09
 
 - new command to display/write the available tables and fields [#189](https://github.com/Informatiqal/qlbuilder/issues/189)
