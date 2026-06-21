@@ -163,13 +163,13 @@ export class TablesAndFields {
     const mdContent = ["# TABLES AND FIELDS", ""];
 
     // tables list for ToC
-    mdContent.push(`| Table name | Rows |`);
-    mdContent.push(`|------------|------|`);
+    mdContent.push(`| Table name | Rows | Fields |`);
+    mdContent.push(`|------------|------|--------|`);
 
     Object.entries(data).map(([t, v]) => {
       // mdContent.push(`- [${t}](#${t.toLowerCase().replace(/ /g,"-")})`),
       mdContent.push(
-        ` | [${t}](#${t.toLowerCase().replace(/ /g, "-")}) | ${v.table.rows} |`,
+        ` | [${t}](#${t.toLowerCase().replace(/ /g, "-")}) | ${v.table.rows} | ${Object.keys(v.fields).length}`,
       );
     });
 
