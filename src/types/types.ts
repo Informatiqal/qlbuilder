@@ -1,3 +1,8 @@
+import { IConfig } from "../lib/Config.js";
+import { Print } from "../lib/Print.js";
+import { Spin } from "../lib/Spinner.js";
+import { Build } from "../commands/Build.js";
+
 export type DownloadOptionValues = {
   path: string;
   nodata?: "true" | "false";
@@ -117,4 +122,59 @@ export interface TablesAndFieldsProcessed {
       };
     };
   };
+}
+
+export interface Plugin {
+  meta: PluginMeta;
+  action(): string;
+}
+
+export interface PluginMeta {
+  command: {
+    name: string;
+    description?: string;
+    aliases?: string[];
+    options?: {
+      flag: string;
+      description?: string;
+      defaultValue?: string | string[] | boolean;
+    }[];
+  };
+  options?: {
+    requireConnection?: boolean;
+    requireEnv?: boolean;
+    configFile?: string;
+  };
+}
+
+export interface PluginArguments {
+  environment: IConfig | undefined;
+  command: {
+    name: string | undefined;
+    options: AnyObject;
+  };
+  engine: {
+    global: AnyObject | undefined;
+    app: AnyObject | undefined;
+    session: AnyObject | undefined;
+  };
+  tools: {
+    build: typeof Build;
+    spinner: typeof Spin;
+    print: typeof Print;
+  };
+}
+
+export interface PluginConfigFile {
+  plugins: string[];
+}
+
+export type DeepRequired<T> = {
+  [P in keyof T]-?: T[P] extends object ? DeepRequired<T[P]> : T[P];
+};
+
+export type RequiredMeta = DeepRequired<PluginMeta>;
+
+export interface AnyObject {
+  [k: string]: string | number | boolean;
 }

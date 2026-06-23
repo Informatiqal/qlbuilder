@@ -24,6 +24,7 @@ import { homedir } from "os";
 import { existsSync, mkdirSync, readdirSync, writeFileSync } from "fs";
 import path from "path";
 import { CustomError } from "./lib/CustomError.js";
+import { loadExternalPlugins } from "./lib/plugins/loader.js";
 
 export class Commander {
   programs = program;
@@ -52,6 +53,13 @@ export class Commander {
 
     this.onHelp();
     this.onUnknownArg();
+  }
+
+  async loadPlugins() {
+    const pluginCommands = await loadExternalPlugins();
+    pluginCommands.map((command) => {
+      this.programs.addCommand(command);
+    });
   }
 
   private init() {
@@ -737,7 +745,7 @@ export class Commander {
     });
 
     return comm;
-  }  
+  }
 
   private onUnknownArg() {
     this.programs.on("command:*", function () {
