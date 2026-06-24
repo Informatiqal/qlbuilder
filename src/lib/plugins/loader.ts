@@ -79,7 +79,7 @@ export async function loadExternalPlugins() {
       }
 
       const comm = new Command(plugin.meta.command.name);
-      comm.description(o.command.description as string);
+      comm.description(`(External plugin) ${o.command.description}`);
 
       o.command.options.map((option) => {
         if (option.defaultValue) {
