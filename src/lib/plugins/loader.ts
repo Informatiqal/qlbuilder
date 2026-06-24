@@ -1,15 +1,14 @@
 import { Command } from "commander";
 import {
   AnyObject,
-  DeepRequired,
   Plugin,
   PluginConfigFile,
-  PluginMeta,
   RequiredMeta,
 } from "../../types/types.js";
 import { pluginActionWrapper } from "./actionWrapper.js";
 import { load } from "js-yaml";
 import { existsSync, readFileSync } from "fs";
+import { Print } from "../Print.js";
 
 async function getPluginsList(): Promise<string[]> {
   const pluginsList = load(
@@ -20,6 +19,7 @@ async function getPluginsList(): Promise<string[]> {
 }
 
 export async function loadExternalPlugins() {
+  const print = new Print();
   const pluginsList = await getPluginsList();
 
   const defaultMeta: RequiredMeta = {
@@ -38,34 +38,45 @@ export async function loadExternalPlugins() {
 
   const commands = await Promise.all(
     pluginsList.map(async (pluginPath) => {
-      if (!existsSync(pluginPath))
-        throw new Error(
-          `External plugin is missing. Fix the part or remove the reference. Tried to load "${pluginPath}"}`,
+      if (!existsSync(pluginPath)) {
+        print.error(
+          `External plugin is missing. Fix the part or remove the reference. Tried to load "${pluginPath}"`,
         );
+
+        process.exit(1);
+      }
 
       const plugin: Plugin = await import(`file:///${pluginPath}`);
       const o = { ...defaultMeta } as RequiredMeta;
       o.command = { ...o.command, ...plugin.meta.command };
       o.options = { ...o.options, ...plugin.meta.options };
 
-      if (!plugin.meta)
-        throw new Error(
-          `External plugin is missing meta section. Loaded from "${pluginPath}"}`,
+      if (!plugin.meta) {
+        print.error(
+          `External plugin is missing meta section. Loaded from "${pluginPath}"`,
         );
+        process.exit(1);
+      }
 
       // force to require environment when connection is needed
       if (o.options.requireConnection == true && o.options.requireEnv == false)
         o.options.requireEnv = true;
 
-      if (!plugin.action)
-        throw new Error(
-          `External plugin is missing an action function. Loaded from "${pluginPath}"}`,
+      if (!plugin.action) {
+        print.error(
+          `External plugin is missing an action function. Loaded from "${pluginPath}"`,
         );
 
-      if (!plugin.meta.command.name)
-        throw new Error(
-          `command.name property is mandatory for a plugin. Loaded from "${pluginPath}"}`,
+        process.exit(1);
+      }
+
+      if (!plugin.meta.command.name) {
+        print.error(
+          `command.name property is mandatory for a plugin. Loaded from "${pluginPath}"`,
         );
+
+        process.exit(1);
+      }
 
       const comm = new Command(plugin.meta.command.name);
       comm.description(o.command.description as string);
