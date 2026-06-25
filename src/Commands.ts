@@ -24,7 +24,10 @@ import { homedir } from "os";
 import { existsSync, mkdirSync, readdirSync, writeFileSync } from "fs";
 import path from "path";
 import { CustomError } from "./lib/CustomError.js";
-import { loadExternalPlugins } from "./lib/plugins/loader.js";
+import {
+  loadExternalPlugins,
+  loadInternalPlugins,
+} from "./lib/plugins/loader.js";
 
 export class Commander {
   programs = program;
@@ -56,8 +59,12 @@ export class Commander {
   }
 
   async loadPlugins() {
-    const pluginCommands = await loadExternalPlugins();
-    pluginCommands.map((command) => {
+    const [internalPLugins, externalPlugins] = await Promise.all([
+      loadInternalPlugins(),
+      loadExternalPlugins(),
+    ]);
+
+    [...internalPLugins, ...externalPlugins].map((command) => {
       this.programs.addCommand(command);
     });
   }

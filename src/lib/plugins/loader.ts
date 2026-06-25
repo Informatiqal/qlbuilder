@@ -125,3 +125,7 @@ export async function loadExternalPlugins() {
 
   return commands;
 }
+
+export async function loadInternalPlugins() {
+  return [];
+}
