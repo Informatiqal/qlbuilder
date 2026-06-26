@@ -1,3 +1,4 @@
+import { homedir } from "os";
 import { Command } from "commander";
 import {
   AnyObject,
@@ -11,11 +12,17 @@ import { existsSync, readFileSync } from "fs";
 import { Print } from "../Print.js";
 
 async function getPluginsList(): Promise<string[]> {
-  const pluginsList = load(
-    readFileSync("c:/users/countnazgul/qlbuilder/plugins.yaml", "utf-8"),
-  ) as PluginConfigFile;
+  const pluginsConfigPath = `${homedir}/qlbuilder/plugins.yaml`;
 
-  return pluginsList.plugins;
+  if (existsSync(pluginsConfigPath)) {
+    const pluginsList = load(
+      readFileSync(pluginsConfigPath, "utf-8"),
+    ) as PluginConfigFile;
+
+    return pluginsList.plugins;
+  }
+
+  return [];
 }
 
 export async function loadExternalPlugins() {

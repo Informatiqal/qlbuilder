@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.0] - 2026-0X-XX
+
+- Plugins [#193](https://github.com/Informatiqal/qlbuilder/issues/193) - it is possible to create and load external plugins. Plugins are used to define extra commands which are not part of the core qlBuilder
+- dependency updates
+
 ## [2.13.0] - 2026-06-09
 
 - if tables and fields file ends with `.md` then the file will be extra formatted as markdown [#192](https://github.com/Informatiqal/qlbuilder/issues/192)
