@@ -351,6 +351,18 @@ The arguments passed to the implementation are in the following shape:
   };
 ```
 
+#### Loading plugins
+
+The list with the available plugins is read from `C:\User\<CURRENT USER>\qlBuilder\plugins.yaml`. Create the file if do not exists.
+
+The structure of the file is simple:
+
+```yaml
+plugins:
+  - X:\path\to\some\plugin\index.js
+  - X:\path\to\another\plugin.js
+```
+
 ## Roadmap
 
 Have a look at the issues labeled as an [enhancement](https://github.com/Informatiqal/qlbuilder/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement)
