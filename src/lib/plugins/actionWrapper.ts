@@ -9,7 +9,6 @@ import { Auth } from "../Auth.js";
 import { Engine } from "../Engine.js";
 
 export async function pluginActionWrapper(
-  command: Command,
   meta: RequiredMeta,
   action,
   name: string | undefined,
