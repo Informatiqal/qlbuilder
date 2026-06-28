@@ -4,6 +4,7 @@ import json from "@rollup/plugin-json";
 import replace from "@rollup/plugin-replace";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import { readFileSync } from "fs";
+import commonjs from "@rollup/plugin-commonjs";
 
 const pkg = JSON.parse(readFileSync("./package.json"));
 
@@ -14,14 +15,7 @@ export default {
     format: "es",
     sourcemap: true,
   },
-  external: [
-    ...Object.keys(pkg.dependencies || {}),
-    ...Object.keys(pkg.peerDependencies || {}),
-    "fs",
-    "os",
-    "https",
-    "readline",
-  ],
+  external: ["fs", "os", "https", "readline"],
   plugins: [
     del({
       targets: "dist/*",
@@ -33,8 +27,9 @@ export default {
       preventAssignment: true,
     }),
     nodeResolve({
-      preferBuiltins: true
+      preferBuiltins: true,
     }),
+    commonjs(),
     typescript(),
     json({
       compact: true,
