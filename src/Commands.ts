@@ -1,4 +1,4 @@
-import { program, Command, createArgument } from "commander";
+import { program, Command } from "commander";
 import { Print } from "./lib/Print.js";
 import { Build } from "./commands/Build.js";
 import { Create } from "./commands/Create.js";
@@ -24,6 +24,10 @@ import { homedir } from "os";
 import { existsSync, mkdirSync, readdirSync, writeFileSync } from "fs";
 import path from "path";
 import { CustomError } from "./lib/CustomError.js";
+import {
+  loadExternalPlugins,
+  loadInternalPlugins,
+} from "./lib/plugins/loader.js";
 
 export class Commander {
   programs = program;
@@ -52,6 +56,17 @@ export class Commander {
 
     this.onHelp();
     this.onUnknownArg();
+  }
+
+  async loadPlugins() {
+    const [internalPLugins, externalPlugins] = await Promise.all([
+      loadInternalPlugins(),
+      loadExternalPlugins(),
+    ]);
+
+    [...internalPLugins, ...externalPlugins].map((command) => {
+      this.programs.addCommand(command);
+    });
   }
 
   private init() {
@@ -737,7 +752,7 @@ export class Commander {
     });
 
     return comm;
-  }  
+  }
 
   private onUnknownArg() {
     this.programs.on("command:*", function () {
