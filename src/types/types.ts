@@ -2,6 +2,8 @@ import { IConfig } from "../lib/Config.js";
 import { Print } from "../lib/Print.js";
 import { Spin } from "../lib/Spinner.js";
 import { Build } from "../commands/Build.js";
+import { Auth } from "../lib/Auth.js";
+import { Checks } from "../lib/Checks.js";
 
 export type DownloadOptionValues = {
   path: string;
@@ -143,6 +145,7 @@ export interface PluginMeta {
   options?: {
     requireConnection?: boolean;
     requireEnv?: boolean;
+    requireApp?: boolean;
     configFile?: string;
   };
 }
@@ -157,11 +160,13 @@ export interface PluginArguments {
     global: AnyObject | undefined;
     app: AnyObject | undefined;
     session: AnyObject | undefined;
+    auth: Auth | undefined;
   };
   tools: {
     build: typeof Build;
     spinner: typeof Spin;
     print: typeof Print;
+    checks: typeof Checks;
   };
 }
 

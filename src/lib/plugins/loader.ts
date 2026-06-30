@@ -11,6 +11,14 @@ import { load } from "js-yaml";
 import { existsSync, readFileSync } from "fs";
 import { Print } from "../Print.js";
 
+import {
+  AppDetails,
+  Build,
+  CheckScript,
+  GetScript,
+  SetScript,
+} from "../../commands/plugins/index.js";
+
 const print = new Print();
 const defaultMeta: RequiredMeta = {
   command: {
@@ -22,6 +30,7 @@ const defaultMeta: RequiredMeta = {
   options: {
     requireConnection: true,
     requireEnv: true,
+    requireApp: true,
     configFile: "config.yml",
   },
 };
@@ -38,6 +47,55 @@ async function getPluginsList(): Promise<string[]> {
   }
 
   return [];
+}
+
+function generateCommand(plugin: Plugin) {
+  const o = { ...defaultMeta } as RequiredMeta;
+  o.command = { ...o.command, ...plugin.meta.command };
+  o.options = { ...o.options, ...plugin.meta.options };
+
+  if (o.options.requireConnection == true && o.options.requireEnv == false)
+    o.options.requireEnv = true;
+
+  const comm = new Command(plugin.meta.command.name);
+  comm.description(`${o.command.description}`);
+
+  o.command.options.map((option) => {
+    if (option.defaultValue) {
+      comm.option(option.flag, option.description || "", option.defaultValue);
+    } else {
+      comm.option(option.flag, option.description || "");
+    }
+  });
+
+  comm.option(
+    "-d, --debug",
+    "Debug. Write out enigma traffic messages",
+    "false",
+  );
+
+  // add command aliases (if any)
+  o.command.aliases.map((al) => {
+    comm.alias(al);
+  });
+
+  if (o.options.requireEnv) {
+    comm.argument("<env>");
+    comm.action(async function (name: string, options: AnyObject) {
+      const n = name;
+      const o1 = options;
+
+      await pluginActionWrapper(o, plugin.action, n, o1);
+    });
+  } else {
+    comm.action(async function (options: AnyObject) {
+      const o1 = options;
+
+      await pluginActionWrapper(o, plugin.action, undefined, o1);
+    });
+  }
+
+  return comm;
 }
 
 export async function loadExternalPlugins() {
@@ -91,49 +149,46 @@ async function loadExternalPlugin(pluginPath: string) {
     process.exit(1);
   }
 
-  const comm = new Command(plugin.meta.command.name);
-  comm.description(`(External plugin) ${o.command.description}`);
+  const command = generateCommand(plugin);
 
-  o.command.options.map((option) => {
-    if (option.defaultValue) {
-      comm.option(option.flag, option.description || "", option.defaultValue);
-    } else {
-      comm.option(option.flag, option.description || "");
-    }
-  });
-
-  // add debug option to all commands
-  comm.option(
-    "-d, --debug",
-    "Debug. Write out enigma traffic messages",
-    "false",
-  );
-
-  // add command aliases (if any)
-  o.command.aliases.map((al) => {
-    comm.alias(al);
-  });
-
-  if (o.options.requireEnv) {
-    comm.argument("<env>");
-    comm.action(async function (name: string, options: AnyObject) {
-      const n = name;
-      const o1 = options;
-
-      await pluginActionWrapper(o, plugin.action, n, o1);
-    });
-  } else {
-    comm.action(async function (options: AnyObject) {
-      const o1 = options;
-
-      await pluginActionWrapper(o, plugin.action, undefined, o1);
-    });
-  }
-
-  return comm;
+  return command;
 }
 
 export async function loadInternalPlugins() {
-  // TBA
-  return [];
+  const code = {
+    build: Build,
+    // create: {},
+    // download: {},
+    getScript: GetScript,
+    checkScript: CheckScript,
+    setScript: SetScript,
+    // vsCode: {},
+    // reload: {},
+    // watch: {},
+    // credentialEnvironments: {},
+    // listTemplates: {},
+    // sectionOperations: {},
+    // createApp: {},
+    // encrypt: {},
+    // decrypt: {},
+    // tablesAndFields: {},
+    appDetails: AppDetails,
+  };
+
+  const commands: Command[] = [];
+
+  Object.keys(code).map((p) => {
+    const command = loadInternalPlugin(code[p].meta, code[p].action);
+    commands.push(command);
+  });
+
+  return commands;
+}
+
+function loadInternalPlugin(meta, action) {
+  const plugin = { meta, action };
+
+  const command = generateCommand(plugin);
+
+  return command;
 }

@@ -1,4 +1,3 @@
-import { Command } from "commander";
 import { CustomError } from "../../lib/CustomError.js";
 import { AnyObject, PluginArguments, RequiredMeta } from "../../types/types.js";
 import { Build } from "../../commands/Build.js";
@@ -7,6 +6,7 @@ import { Print } from "../Print.js";
 import { Config, IConfig } from "../Config.js";
 import { Auth } from "../Auth.js";
 import { Engine } from "../Engine.js";
+import { Checks } from "../Checks.js";
 
 export async function pluginActionWrapper(
   meta: RequiredMeta,
@@ -28,11 +28,13 @@ export async function pluginActionWrapper(
       global: undefined,
       app: undefined,
       session: undefined,
+      auth: undefined,
     },
     tools: {
       build: Build,
       spinner: Spin,
       print: Print,
+      checks: Checks
     },
   };
 
@@ -42,6 +44,7 @@ export async function pluginActionWrapper(
     const auth = authMethod(c, authInstance);
     await auth();
 
+    pluginArguments.engine.auth = authInstance;
     const qlik = new Engine(
       config.engineHost,
       config.appId,
@@ -52,7 +55,9 @@ export async function pluginActionWrapper(
 
     const session = qlik.session;
     const global = await qlik.session.open();
-    const app = await global.openDoc(c.appId);
+
+    let app = undefined;
+    if (meta.options.requireApp) app = await global.openDoc(c.appId);
 
     pluginArguments.engine.session = session;
     pluginArguments.engine.global = global;

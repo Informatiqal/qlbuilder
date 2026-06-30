@@ -36,12 +36,12 @@ export class Commander {
   constructor() {
     this.init();
 
-    this.programs.addCommand(this.build());
+    // this.programs.addCommand(this.build());
     this.programs.addCommand(this.create());
     this.programs.addCommand(this.download());
-    this.programs.addCommand(this.getScript());
-    this.programs.addCommand(this.checkScript());
-    this.programs.addCommand(this.setScript());
+    // this.programs.addCommand(this.getScript());
+    // this.programs.addCommand(this.checkScript());
+    // this.programs.addCommand(this.setScript());
     this.programs.addCommand(this.vsCode());
     this.programs.addCommand(this.reload());
     this.programs.addCommand(this.watch());
@@ -49,7 +49,7 @@ export class Commander {
     this.programs.addCommand(this.listTemplates());
     this.programs.addCommand(this.sectionOperations());
     this.programs.addCommand(this.createApp());
-    this.programs.addCommand(this.appDetails());
+    // this.programs.addCommand(this.appDetails());
     this.programs.addCommand(this.encrypt());
     this.programs.addCommand(this.decrypt());
     this.programs.addCommand(this.tablesAndFields());
