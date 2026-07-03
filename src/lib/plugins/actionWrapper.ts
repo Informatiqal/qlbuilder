@@ -1,6 +1,6 @@
 import { CustomError } from "../../lib/CustomError.js";
 import { AnyObject, PluginArguments, RequiredMeta } from "../../types/types.js";
-import { Build } from "../../commands/Build.js";
+import { Build } from "../../commands/temp/Build.js";
 import { Spin } from "../../lib/Spinner.js";
 import { Print } from "../Print.js";
 import { Config, IConfig } from "../Config.js";
@@ -29,12 +29,13 @@ export async function pluginActionWrapper(
       app: undefined,
       session: undefined,
       auth: undefined,
+      enigmaInstance: Engine,
     },
     tools: {
       build: Build,
       spinner: Spin,
       print: Print,
-      checks: Checks
+      checks: Checks,
     },
   };
 
@@ -66,11 +67,11 @@ export async function pluginActionWrapper(
 
   await action(pluginArguments);
 
-  try {
-    if (pluginArguments.engine.session)
-      //@ts-ignore
-      await pluginArguments.engine.session.close().catch((e) => {});
-  } catch (e) {}
+  // try {
+  //   if (pluginArguments.engine.session)
+  //     //@ts-ignore
+  //     await pluginArguments.engine.session.close().catch((e) => {});
+  // } catch (e) {}
 }
 
 function authMethod(config: IConfig, auth: Auth) {

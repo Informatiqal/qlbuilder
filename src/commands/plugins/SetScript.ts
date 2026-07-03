@@ -38,7 +38,7 @@ async function action(args: PluginArguments) {
   //@ts-ignore
   await args.engine.app.doSave();
   //@ts-ignore
-  await args.engine.session.close().catch((e) => {});
+  //   await args.engine.session.close().catch((e) => {});
 
   spin.stop();
 

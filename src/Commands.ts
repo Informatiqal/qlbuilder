@@ -1,6 +1,5 @@
 import { program, Command } from "commander";
 import { Print } from "./lib/Print.js";
-import { Build } from "./commands/Build.js";
 import { Create } from "./commands/Create.js";
 import { Download } from "./commands/Download.js";
 import {
@@ -8,18 +7,18 @@ import {
   GetScriptOptionValues,
   WatchOptionValues,
 } from "./types/types.js";
-import { GetScript } from "./commands/GetScript.js";
+import { GetScript } from "./commands/temp/GetScript.js";
 import { CreateApp } from "./commands/CreateApp.js";
-import { AppDetails } from "./commands/AppDetails.js";
-import { CheckScript } from "./commands/CheckScript.js";
-import { SetScript } from "./commands/SetScript.js";
-import { Reload } from "./commands/Reload.js";
+import { AppDetails } from "./commands/temp/AppDetails.js";
+import { CheckScript } from "./commands/temp/CheckScript.js";
+import { SetScript } from "./commands/temp/SetScript.js";
+import { Reload } from "./commands/temp/Reload.js";
 import { encryptConfig } from "./commands/Encrypt.js";
 import { decryptConfig } from "./commands/Decrypt.js";
-import { Watch } from "./commands/Watch.js";
+import { Watch } from "./commands/temp/Watch.js";
 import { CredentialEnvironments } from "./commands/CredentialEnvironments.js";
 import { Section } from "./commands/Section.js";
-import { TablesAndFields } from "./commands/TablesAndFields.js";
+import { TablesAndFields } from "./commands/temp/TablesAndFields.js";
 import { homedir } from "os";
 import { existsSync, mkdirSync, readdirSync, writeFileSync } from "fs";
 import path from "path";
@@ -43,8 +42,8 @@ export class Commander {
     // this.programs.addCommand(this.checkScript());
     // this.programs.addCommand(this.setScript());
     this.programs.addCommand(this.vsCode());
-    this.programs.addCommand(this.reload());
-    this.programs.addCommand(this.watch());
+    // this.programs.addCommand(this.reload());
+    // this.programs.addCommand(this.watch());
     this.programs.addCommand(this.credentialEnvironments());
     this.programs.addCommand(this.listTemplates());
     this.programs.addCommand(this.sectionOperations());
@@ -52,7 +51,7 @@ export class Commander {
     // this.programs.addCommand(this.appDetails());
     this.programs.addCommand(this.encrypt());
     this.programs.addCommand(this.decrypt());
-    this.programs.addCommand(this.tablesAndFields());
+    // this.programs.addCommand(this.tablesAndFields());
 
     this.onHelp();
     this.onUnknownArg();
@@ -79,24 +78,24 @@ export class Commander {
     );
   }
 
-  private build() {
-    const _this = this;
-    const comm = new Command("build");
-    comm.description("Combine the tab script files into one");
-    comm.action(function () {
-      try {
-        const build = new Build();
-        build.run();
+  // private build() {
+  //   const _this = this;
+  //   const comm = new Command("build");
+  //   comm.description("Combine the tab script files into one");
+  //   comm.action(function () {
+  //     try {
+  //       const build = new Build();
+  //       build.run();
 
-        _this.print.ok("Load script created and saved (locally)");
-      } catch (e: any) {
-        _this.print.error(e.message);
-        process.exit(1);
-      }
-    });
+  //       _this.print.ok("Load script created and saved (locally)");
+  //     } catch (e: any) {
+  //       _this.print.error(e.message);
+  //       process.exit(1);
+  //     }
+  //   });
 
-    return comm;
-  }
+  //   return comm;
+  // }
 
   private download() {
     const _this = this;

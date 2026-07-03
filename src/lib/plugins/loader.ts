@@ -17,6 +17,9 @@ import {
   CheckScript,
   GetScript,
   SetScript,
+  Reload,
+  Watch,
+  TablesAndFields,
 } from "../../commands/plugins/index.js";
 
 const print = new Print();
@@ -163,15 +166,15 @@ export async function loadInternalPlugins() {
     checkScript: CheckScript,
     setScript: SetScript,
     // vsCode: {},
-    // reload: {},
-    // watch: {},
+    reload: Reload,
+    watch: Watch,
     // credentialEnvironments: {},
     // listTemplates: {},
     // sectionOperations: {},
     // createApp: {},
     // encrypt: {},
     // decrypt: {},
-    // tablesAndFields: {},
+    tablesAndFields: TablesAndFields,
     appDetails: AppDetails,
   };
 

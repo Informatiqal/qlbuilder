@@ -1,9 +1,10 @@
 import { IConfig } from "../lib/Config.js";
 import { Print } from "../lib/Print.js";
 import { Spin } from "../lib/Spinner.js";
-import { Build } from "../commands/Build.js";
+import { Build } from "../commands/temp/Build.js";
 import { Auth } from "../lib/Auth.js";
 import { Checks } from "../lib/Checks.js";
+import { Engine } from "../lib/Engine.js";
 
 export type DownloadOptionValues = {
   path: string;
@@ -150,18 +151,29 @@ export interface PluginMeta {
   };
 }
 
+export interface PluginArgumentsEngine {
+  global: AnyFunction;
+  app: AnyFunction;
+  session: AnyFunction;
+  auth: Auth;
+  enigmaInstance: typeof Engine;
+}
+
 export interface PluginArguments {
   environment: IConfig | undefined;
   command: {
     name: string | undefined;
     options: AnyObject;
   };
-  engine: {
-    global: AnyObject | undefined;
-    app: AnyObject | undefined;
-    session: AnyObject | undefined;
-    auth: Auth | undefined;
-  };
+  engine:
+    | PluginArgumentsEngine
+    | {
+        global: undefined;
+        app: undefined;
+        session: undefined;
+        auth: Auth | undefined;
+        enigmaInstance: typeof Engine;
+      };
   tools: {
     build: typeof Build;
     spinner: typeof Spin;
@@ -181,5 +193,9 @@ export type DeepRequired<T> = {
 export type RequiredMeta = DeepRequired<PluginMeta>;
 
 export interface AnyObject {
-  [k: string]: string | number | boolean;
+  [k: string]: string | number | boolean | Function;
+}
+
+export interface AnyFunction {
+  [k: string]: Function;
 }

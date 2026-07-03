@@ -52,10 +52,15 @@ async function action(args: PluginArguments) {
   if (scriptErrors.length == 0) {
     print.ok("No syntax errors were found");
     spin.stop();
-    return 0;
+    return {
+      errorsCount: 0,
+      script,
+    };
   }
 
   await displayScriptErrors(scriptErrors);
+
+  return { errorsCount: scriptErrors.length, script };
 }
 
 async function setScriptAndCheckSyntax(script: string, global, session) {
