@@ -49,8 +49,8 @@ export class Commander {
     this.programs.addCommand(this.sectionOperations());
     this.programs.addCommand(this.createApp());
     // this.programs.addCommand(this.appDetails());
-    this.programs.addCommand(this.encrypt());
-    this.programs.addCommand(this.decrypt());
+    // this.programs.addCommand(this.encrypt());
+    // this.programs.addCommand(this.decrypt());
     // this.programs.addCommand(this.tablesAndFields());
 
     this.onHelp();

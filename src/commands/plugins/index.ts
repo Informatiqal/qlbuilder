@@ -6,3 +6,5 @@ export * as SetScript from "./SetScript.js";
 export * as Reload from "./Reload.js";
 export * as Watch from "./Watch.js";
 export * as TablesAndFields from "./TablesAndFields.js";
+export * as Encrypt from "./Encrypt.js";
+export * as Decrypt from "./Decrypt.js";
