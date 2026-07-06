@@ -176,10 +176,12 @@ export interface PluginArguments<T> {
         enigmaInstance: typeof Engine;
       };
   tools: {
-    build: Function;
+    build(): string;
     spinner: typeof Spin;
     print: typeof Print;
     checks: any;
+    generateXrfkey(): string;
+    uuid(): string;
   };
 }
 
