@@ -1,8 +1,9 @@
 import { readdirSync, readFileSync, writeFileSync } from "fs";
 import { orderBy } from "natural-orderby";
-import { Checks } from "../../lib/Checks.js";
 
-import { PluginArguments, PluginMeta } from "../../types/types.js";
+import { PluginMeta } from "../../types/types.js";
+import { srcAndDistExists } from "../../lib/checks.js";
+import { Print } from "../../lib/Print.js";
 
 const meta: PluginMeta = {
   command: {
@@ -17,17 +18,12 @@ const meta: PluginMeta = {
   },
 };
 
-async function action(args: PluginArguments) {
-  const print = new args.tools.print();
-  const spin = new args.tools.spinner("Building the script", "hamburger");
-  //   if (!isCreateCommand) {
-  const checks = new Checks();
-  checks.srcAndDistExists();
-  //   }
+async function action(folder: string = "", performChecks: boolean = true) {
+  const print = new Print();
+  if (performChecks == true) srcAndDistExists();
 
-  const srcParentFolder = process.cwd();
+  const srcParentFolder = folder.length > 0 ? folder : process.cwd();
 
-  spin.start();
   const scriptFiles = orderBy(
     readdirSync(`${srcParentFolder}/src`).filter((f) => f.indexOf(".qvs") > -1),
   );
@@ -45,9 +41,9 @@ async function action(args: PluginArguments) {
 
   writeFileSync(`${srcParentFolder}/dist/LoadScript.qvs`, builtScript, "utf-8");
 
-  spin.stop();
-
   print.ok("Load script created and saved (locally)");
+
+  return builtScript;
 }
 
 export { meta, action };

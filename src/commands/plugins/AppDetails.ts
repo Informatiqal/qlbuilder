@@ -7,6 +7,10 @@ import { generateXrfkey } from "../../lib/common.js";
 import { Auth } from "../../lib/Auth.js";
 import { writeFileSync } from "fs";
 
+type CommandOptions = {
+  output: string;
+};
+
 const meta: PluginMeta = {
   command: {
     name: "appDetails",
@@ -33,7 +37,7 @@ const meta: PluginMeta = {
   },
 };
 
-async function action(args: PluginArguments) {
+async function action(args: PluginArguments<CommandOptions>) {
   if (args.environment && args.engine.auth) {
     if (args.environment.host.indexOf("qlikcloud") > -1) {
       console.log(
@@ -64,6 +68,8 @@ async function action(args: PluginArguments) {
 
     return true;
   }
+
+  return true
 }
 
 async function getAppDetailsRepo(environment: IConfig, auth: Auth, spin: Spin) {

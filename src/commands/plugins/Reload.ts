@@ -6,6 +6,11 @@ import {
 } from "../../types/types.js";
 import { action as c } from "./CheckScript.js";
 
+type CommandOptions = {
+  "reload-output": string;
+  "reload-output-overwrite": string;
+};
+
 const meta: PluginMeta = {
   command: {
     name: "reload",
@@ -36,9 +41,9 @@ const meta: PluginMeta = {
   },
 };
 
-async function action(args: PluginArguments) {
-//   const build = new args.tools.build();
-//   const print = new args.tools.print();
+async function action(args: PluginArguments<CommandOptions>) {
+  //   const build = new args.tools.build();
+  //   const print = new args.tools.print();
   const spin = new args.tools.spinner("Saving ...", "circle");
 
   const checkScriptResponse = await checkScript(args);
@@ -77,7 +82,7 @@ async function action(args: PluginArguments) {
   spin.stop();
 }
 
-async function checkScript(args: PluginArguments) {
+async function checkScript(args: PluginArguments<{}>) {
   const a = new args.engine.enigmaInstance(
     args.environment?.engineHost,
     args.environment?.appId,

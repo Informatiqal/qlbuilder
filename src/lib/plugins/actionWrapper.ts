@@ -1,28 +1,30 @@
 import { CustomError } from "../../lib/CustomError.js";
 import { AnyObject, PluginArguments, RequiredMeta } from "../../types/types.js";
-import { Build } from "../../commands/temp/Build.js";
+import { Build } from "../../commands/plugins/index.js";
 import { Spin } from "../../lib/Spinner.js";
 import { Print } from "../Print.js";
 import { Config, IConfig } from "../Config.js";
 import { Auth } from "../Auth.js";
 import { Engine } from "../Engine.js";
-import { Checks } from "../Checks.js";
+import * as Checks from "../checks.js";
 
 export async function pluginActionWrapper(
   meta: RequiredMeta,
   action,
-  name: string | undefined,
+  commandArgument: string | undefined,
   options: AnyObject,
 ) {
-  const config = name
-    ? new Config(name, `${meta.options.configFile}`).envDetails
+  const config = commandArgument
+    ? meta.options.requireEnv
+      ? new Config(commandArgument, `${meta.options.configFile}`).envDetails
+      : undefined
     : undefined;
 
-  const pluginArguments: PluginArguments = {
+  const pluginArguments: PluginArguments<AnyObject> = {
     environment: config,
     command: {
-      name,
-      options,
+      argument: commandArgument,
+    options,
     },
     engine: {
       global: undefined,
@@ -32,7 +34,7 @@ export async function pluginActionWrapper(
       enigmaInstance: Engine,
     },
     tools: {
-      build: Build,
+      build: Build.action,
       spinner: Spin,
       print: Print,
       checks: Checks,

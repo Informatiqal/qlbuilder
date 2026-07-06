@@ -7,6 +7,17 @@ import { action as reloadAction } from "./Reload.js";
 
 import { PluginArguments, PluginMeta } from "../../types/types.js";
 
+type CommandOptions = {
+  reload: string;
+  set: string;
+  disable: string;
+};
+
+type CommandOptionsReload = {
+  "reload-output": string;
+  "reload-output-overwrite": string;
+};
+
 const meta: PluginMeta = {
   command: {
     name: "watch",
@@ -40,7 +51,7 @@ const meta: PluginMeta = {
   },
 };
 
-async function action(args: PluginArguments) {
+async function action(args: PluginArguments<CommandOptions>) {
   commandsMessage();
 
   if (args.command.options.reload) reloadMessage();
@@ -75,7 +86,7 @@ async function action(args: PluginArguments) {
     }
 
     if (args.command.options.reload) {
-      await reloadAction(args);
+      await reloadAction(args as any);
     }
 
     rl.prompt();
@@ -150,7 +161,7 @@ function reloadMessage() {
   ].join("");
 }
 
-async function checkScript(args: PluginArguments) {
+async function checkScript(args: PluginArguments<{}>) {
   const a = new args.engine.enigmaInstance(
     args.environment?.engineHost,
     args.environment?.appId,

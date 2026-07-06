@@ -1,5 +1,7 @@
 import { PluginArguments, PluginMeta } from "../../types/types.js";
 
+type CommandOptions = {};
+
 const meta: PluginMeta = {
   command: {
     name: "setScript",
@@ -21,8 +23,7 @@ const meta: PluginMeta = {
   },
 };
 
-async function action(args: PluginArguments) {
-  const build = new args.tools.build();
+async function action(args: PluginArguments<CommandOptions>) {
   const print = new args.tools.print();
   const spin = new args.tools.spinner(
     "Setting the script and saving ...",
@@ -31,7 +32,7 @@ async function action(args: PluginArguments) {
 
   spin.start();
 
-  build.run();
+  args.tools.build();
 
   //@ts-ignore
   await args.engine.app.setScript(build.builtScript);

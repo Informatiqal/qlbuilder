@@ -5,6 +5,10 @@ import { CustomError } from "../../lib/CustomError.js";
 import { createInterface } from "readline";
 import filenamify from "filenamify";
 
+type CommandOptions = {
+  y: string;
+};
+
 const meta: PluginMeta = {
   command: {
     name: "getScript",
@@ -32,8 +36,7 @@ const meta: PluginMeta = {
   },
 };
 
-async function action(args: PluginArguments) {
-  const build = new args.tools.build();
+async function action(args: PluginArguments<CommandOptions>) {
   const print = new args.tools.print();
   const spin = new args.tools.spinner("Building the script", "hamburger");
 
@@ -54,7 +57,7 @@ async function action(args: PluginArguments) {
 
     clearLocalFiles();
     writeLocalFiles(loadScript);
-    build.run();
+    args.tools.build();
 
     print.ok("Local script files were created");
   } else {

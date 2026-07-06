@@ -10,7 +10,6 @@ import { pluginActionWrapper } from "./actionWrapper.js";
 import { load } from "js-yaml";
 import { existsSync, readFileSync } from "fs";
 import { Print } from "../Print.js";
-
 import {
   AppDetails,
   Build,
@@ -20,6 +19,13 @@ import {
   Reload,
   Watch,
   TablesAndFields,
+  Encrypt,
+  Decrypt,
+  Create,
+  CredentialEnvironments,
+  Download,
+  Section,
+  // CreateApp,
 } from "../../commands/plugins/index.js";
 
 const print = new Print();
@@ -28,7 +34,9 @@ const defaultMeta: RequiredMeta = {
     name: "",
     description: "",
     aliases: [],
+    // subCommands: [],
     options: [],
+    argument: "",
   },
   options: {
     requireConnection: true,
@@ -64,7 +72,7 @@ function generateCommand(plugin: Plugin) {
   comm.description(`${o.command.description}`);
 
   o.command.options.map((option) => {
-    if (option.defaultValue) {
+    if (option.hasOwnProperty("defaultValue")) {
       comm.option(option.flag, option.description || "", option.defaultValue);
     } else {
       comm.option(option.flag, option.description || "");
@@ -91,11 +99,20 @@ function generateCommand(plugin: Plugin) {
       await pluginActionWrapper(o, plugin.action, n, o1);
     });
   } else {
-    comm.action(async function (options: AnyObject) {
-      const o1 = options;
+    if (o.command.argument.length > 0) {
+      comm.argument(`<${o.command.argument}>`);
+      comm.action(async function (name: string, options: AnyObject) {
+        const n = name;
+        const o1 = options;
 
-      await pluginActionWrapper(o, plugin.action, undefined, o1);
-    });
+        await pluginActionWrapper(o, plugin.action, n, o1);
+      });
+    } else {
+      comm.action(async function (options: AnyObject) {
+        const o1 = options;
+        await pluginActionWrapper(o, plugin.action, undefined, o1);
+      });
+    }
   }
 
   return comm;
@@ -122,6 +139,21 @@ async function loadExternalPlugin(pluginPath: string) {
 
   const plugin: Plugin = await import(`file:///${pluginPath}`);
   const o = { ...defaultMeta } as RequiredMeta;
+
+  if (!plugin.meta) {
+    print.error(
+      `Missing "meta" property for plugin. Loaded from ${pluginPath}`,
+    );
+    process.exit(1);
+  }
+
+  if (!plugin.action) {
+    print.error(
+      `Missing "action" property for plugin. Loaded from ${pluginPath}`,
+    );
+    process.exit(1);
+  }
+
   o.command = { ...o.command, ...plugin.meta.command };
   o.options = { ...o.options, ...plugin.meta.options };
 
@@ -160,20 +192,20 @@ async function loadExternalPlugin(pluginPath: string) {
 export async function loadInternalPlugins() {
   const code = {
     build: Build,
-    // create: {},
-    // download: {},
+    create: Create,
+    download: Download,
     getScript: GetScript,
     checkScript: CheckScript,
     setScript: SetScript,
     // vsCode: {},
     reload: Reload,
     watch: Watch,
-    // credentialEnvironments: {},
+    credentialEnvironments: CredentialEnvironments,
     // listTemplates: {},
-    // sectionOperations: {},
-    // createApp: {},
-    // encrypt: {},
-    // decrypt: {},
+    sectionOperations: Section,
+    // createApp: CreateApp,
+    encrypt: Encrypt,
+    decrypt: Decrypt,
     tablesAndFields: TablesAndFields,
     appDetails: AppDetails,
   };

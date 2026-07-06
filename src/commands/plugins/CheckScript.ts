@@ -9,6 +9,8 @@ type ScriptError = {
   qSecondaryFailure?: boolean;
 };
 
+type CommandOptions = {};
+
 const meta: PluginMeta = {
   command: {
     name: "checkScript",
@@ -31,15 +33,13 @@ const meta: PluginMeta = {
   },
 };
 
-async function action(args: PluginArguments) {
-  const build = new args.tools.build();
+async function action(args: PluginArguments<CommandOptions>) {
   const print = new args.tools.print();
   const spin = new args.tools.spinner("Building the script", "hamburger");
 
   spin.start();
 
-  build.run();
-  const script = build.builtScript;
+  const script = args.tools.build();
 
   const scriptErrors: ScriptError[] = await setScriptAndCheckSyntax(
     script,

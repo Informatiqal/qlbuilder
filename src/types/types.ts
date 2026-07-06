@@ -1,9 +1,8 @@
 import { IConfig } from "../lib/Config.js";
 import { Print } from "../lib/Print.js";
 import { Spin } from "../lib/Spinner.js";
-import { Build } from "../commands/temp/Build.js";
 import { Auth } from "../lib/Auth.js";
-import { Checks } from "../lib/Checks.js";
+
 import { Engine } from "../lib/Engine.js";
 
 export type DownloadOptionValues = {
@@ -129,7 +128,7 @@ export interface TablesAndFieldsProcessed {
 
 export interface Plugin {
   meta: PluginMeta;
-  action(): string;
+  action(): any;
 }
 
 export interface PluginMeta {
@@ -137,6 +136,8 @@ export interface PluginMeta {
     name: string;
     description?: string;
     aliases?: string[];
+    // subCommands?: string[];
+    argument?: string;
     options?: {
       flag: string;
       description?: string;
@@ -159,11 +160,11 @@ export interface PluginArgumentsEngine {
   enigmaInstance: typeof Engine;
 }
 
-export interface PluginArguments {
+export interface PluginArguments<T> {
   environment: IConfig | undefined;
   command: {
-    name: string | undefined;
-    options: AnyObject;
+    argument: string | undefined;
+    options: T;
   };
   engine:
     | PluginArgumentsEngine
@@ -175,10 +176,10 @@ export interface PluginArguments {
         enigmaInstance: typeof Engine;
       };
   tools: {
-    build: typeof Build;
+    build: Function;
     spinner: typeof Spin;
     print: typeof Print;
-    checks: typeof Checks;
+    checks: any;
   };
 }
 

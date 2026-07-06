@@ -7,6 +7,11 @@ import { PluginArguments, PluginMeta } from "../../types/types.js";
 
 const marker = "111111";
 
+type CommandOptions = {
+  password: string;
+  view: boolean;
+};
+
 const meta: PluginMeta = {
   command: {
     name: "decrypt",
@@ -39,7 +44,7 @@ const meta: PluginMeta = {
   },
 };
 
-async function action(args: PluginArguments) {
+async function action(args: PluginArguments<CommandOptions>) {
   const configPath = `${homedir}/.qlbuilder.yml`;
   const configIsEncrypted = isEncrypted();
 
@@ -49,24 +54,7 @@ async function action(args: PluginArguments) {
   }
 
   if (!args.command.options.password) {
-    const prompt: { key: string } = await prompts(
-      [
-        {
-          type: "password",
-          name: "key",
-          message: "Decryption key",
-        },
-      ],
-      {
-        onCancel: () => {
-          console.log("");
-          console.log("Aborted");
-          console.log("");
-          process.exit(0);
-        },
-      },
-    );
-
+    const prompt = await askForPassword();
     args.command.options.password = prompt.key;
   }
 
@@ -94,7 +82,7 @@ async function action(args: PluginArguments) {
   return decryptedContent;
 }
 
-function isEncrypted(): boolean {
+export function isEncrypted(): boolean {
   const configPath = `${homedir}/.qlbuilder.yml`;
   const configContent = readFileSync(configPath).toString();
 
@@ -108,7 +96,7 @@ function isEncrypted(): boolean {
   return false;
 }
 
-function decryptText(encrypted: string, secret: string) {
+export function decryptText(encrypted: string, secret: string) {
   const encryptedSplit = encrypted.split(".");
 
   if (encryptedSplit.length != 3) {
@@ -136,17 +124,48 @@ function decryptText(encrypted: string, secret: string) {
   return decrypted.toString().trim();
 }
 
-// async function configDecryptedOrNot() {
-//   const configIsEncrypted = isEncrypted();
-//   let configContent = "";
+export async function askForPassword() {
+  const prompt: { key: string } = await prompts(
+    [
+      {
+        type: "password",
+        name: "key",
+        message: "Decryption key",
+      },
+    ],
+    {
+      onCancel: () => {
+        console.log("");
+        console.log("Aborted");
+        console.log("");
+        process.exit(0);
+      },
+    },
+  );
 
-//   if (configIsEncrypted) {
-//     configContent = await action();
-//   } else {
-//     configContent = readFileSync(`${homedir}/.qlbuilder.yml`).toString();
-//   }
+  return prompt;
+}
 
-//   return configContent;
-// }
+export async function getConfigContent() {
+  let rawContent = readFileSync(`${homedir}/.qlbuilder.yml`).toString();
+
+  const isEncryptedConfig = await isEncrypted();
+  if (isEncryptedConfig) {
+    const p = await askForPassword();
+    rawContent = decryptText(rawContent, p.key);
+  }
+
+  let parsedContent: any = undefined;
+  try {
+    parsedContent = yamlLoad(rawContent);
+  } catch (e) {
+    console.log(
+      "Error while decrypting. The provided password was wrong or the encrypted file is corrupt",
+    );
+    process.exit(1);
+  }
+
+  return { rawContent, parsedContent };
+}
 
 export { meta, action };

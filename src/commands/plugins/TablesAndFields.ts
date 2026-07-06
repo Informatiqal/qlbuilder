@@ -7,6 +7,10 @@ import {
 } from "../../types/types.js";
 import { CustomError } from "../../lib/CustomError.js";
 
+type CommandOptions = {
+  output: string;
+};
+
 const meta: PluginMeta = {
   command: {
     name: "tables",
@@ -34,11 +38,11 @@ const meta: PluginMeta = {
   },
 };
 
-async function action(args: PluginArguments) {
+async function action(args: PluginArguments<CommandOptions>) {
   const spin = new args.tools.spinner("Getting tables and fields", "circle");
 
   spin.start();
-  
+
   const processedData = await getTablesAndFields(
     args.engine.session,
     args.engine.app,

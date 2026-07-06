@@ -22,6 +22,7 @@ yarn-error.log*
 src/schema/test.yml
 *.qvf
 src/plugins/
+src/commands/temp
 
 # Runtime data
 pids

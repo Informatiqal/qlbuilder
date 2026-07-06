@@ -6,6 +6,10 @@ import { PluginArguments, PluginMeta } from "../../types/types.js";
 
 const marker = "111111";
 
+type CommandOptions = {
+  password: string;
+};
+
 const meta: PluginMeta = {
   command: {
     name: "encrypt",
@@ -32,7 +36,7 @@ const meta: PluginMeta = {
   },
 };
 
-async function action(args: PluginArguments) {
+async function action(args: PluginArguments<CommandOptions>) {
   const configPath = `${homedir}/.qlbuilder.yml`;
   const configContent = readFileSync(configPath).toString();
 
