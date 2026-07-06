@@ -18,7 +18,7 @@ const meta: PluginMeta = {
   },
 };
 
-async function action(folder: string = "", performChecks: boolean = true) {
+function action(folder: string = "", performChecks: boolean = true) {
   const print = new Print();
   if (performChecks == true) srcAndDistExists();
 

@@ -36,7 +36,6 @@ const meta: PluginMeta = {
 async function action(args: PluginArguments<CommandOptions>) {
   const print = new args.tools.print();
   const spin = new args.tools.spinner("Building the script", "hamburger");
-
   spin.start();
 
   const script = args.tools.build();

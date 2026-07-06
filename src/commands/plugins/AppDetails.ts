@@ -34,6 +34,7 @@ const meta: PluginMeta = {
   options: {
     requireConnection: true,
     requireEnv: true,
+    requireApp: false,
   },
 };
 
@@ -45,10 +46,8 @@ async function action(args: PluginArguments<CommandOptions>) {
       );
       process.exit(0);
     }
-
     const spin = new args.tools.spinner("Getting app metadata ...", "arc");
     spin.start();
-
     const details = await getAppDetailsRepo(
       args.environment,
       args.engine.auth,
@@ -57,7 +56,6 @@ async function action(args: PluginArguments<CommandOptions>) {
     details.data["host"] = args.environment.host;
     spin.stop();
     const formattedDetails = printDetails(details.data);
-
     if (args.command.options.output) {
       try {
         writeFileSync(args.command.options.output as string, formattedDetails);
@@ -65,11 +63,8 @@ async function action(args: PluginArguments<CommandOptions>) {
         throw new Error(e.message);
       }
     }
-
-    return true;
   }
-
-  return true
+  return true;
 }
 
 async function getAppDetailsRepo(environment: IConfig, auth: Auth, spin: Spin) {

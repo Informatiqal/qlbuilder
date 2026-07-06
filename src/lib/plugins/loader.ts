@@ -98,6 +98,7 @@ function generateCommand(plugin: Plugin) {
       const o1 = options;
 
       await pluginActionWrapper(o, plugin.action, n, o1);
+      return;
     });
   } else {
     if (o.command.argument.length > 0) {

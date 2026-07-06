@@ -24,7 +24,7 @@ export async function pluginActionWrapper(
     environment: config,
     command: {
       argument: commandArgument,
-    options,
+      options,
     },
     engine: {
       global: undefined,
@@ -69,11 +69,12 @@ export async function pluginActionWrapper(
 
   await action(pluginArguments);
 
-  // try {
-  //   if (pluginArguments.engine.session)
-  //     //@ts-ignore
-  //     await pluginArguments.engine.session.close().catch((e) => {});
-  // } catch (e) {}
+  try {
+    if (pluginArguments.engine.session)
+      await pluginArguments.engine.session.close().catch((e) => {});
+  } catch (e) {}
+
+  return;
 }
 
 function authMethod(config: IConfig, auth: Auth) {

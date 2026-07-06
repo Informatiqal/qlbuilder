@@ -38,15 +38,12 @@ const meta: PluginMeta = {
 
 async function action(args: PluginArguments<CommandOptions>) {
   const print = new args.tools.print();
-  const spin = new args.tools.spinner("Building the script", "hamburger");
 
   let overwrite: Boolean = true;
 
   if (!args.command.options.y) overwrite = await askOverwrite();
 
   if (overwrite === true) {
-    spin.start();
-
     const loadScript = await retrieveQlikScript(
       args.engine.session,
       args.engine.app,
@@ -57,14 +54,12 @@ async function action(args: PluginArguments<CommandOptions>) {
 
     clearLocalFiles();
     writeLocalFiles(loadScript);
-    args.tools.build();
-
     print.ok("Local script files were created");
+
+    args.tools.build();
   } else {
     print.warn("Nothing was changed");
   }
-
-  spin.stop();
 }
 
 async function askOverwrite() {
