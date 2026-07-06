@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync } from "fs";
+import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { PluginArguments, PluginMeta } from "../../types/types.js";
 
 type CommandOptions = {};
@@ -100,6 +100,14 @@ async function action(args: PluginArguments<CommandOptions>) {
     null,
     4,
   );
+
+  if (!existsSync(`${currentFolder}/config.yaml`)) {
+    const print = new args.tools.print();
+    print.error(
+      "Please run this command from the root project folder (where config.yaml) file is",
+    );
+    process.exit(1);
+  }
 
   mkdirSync(`${currentFolder}/.vscode`);
   writeFileSync(`${currentFolder}/.vscode/tasks.json`, tasks);
