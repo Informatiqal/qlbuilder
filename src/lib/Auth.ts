@@ -1,7 +1,6 @@
 import { readFileSync } from "fs";
 import { Agent } from "https";
 import qAuth from "qlik-sense-authenticate";
-import { load as yamlLoad } from "js-yaml";
 import chalk from "chalk";
 
 import { IConfig } from "./Config.js";
@@ -11,11 +10,7 @@ import {
   TokenCredentials,
   WinFormCredentials,
 } from "../types/types.js";
-import {
-  getConfigContent,
-} from "../commands/plugins/Decrypt.js";
-import { isEncrypted } from "./EncryptDecrypt.js";
-import { homedir } from "os";
+import { getConfigContent } from "../commands/plugins/Decrypt.js";
 
 export class Auth {
   private auth_config = {

@@ -37,6 +37,9 @@ const meta: PluginMeta = {
 };
 
 async function action(args: PluginArguments<CommandOptions>) {
+  const checks = args.tools.checks;
+  checks.all();
+
   const print = new args.tools.print();
 
   let overwrite: Boolean = true;

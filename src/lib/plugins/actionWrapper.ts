@@ -7,6 +7,7 @@ import { Config, IConfig } from "../Config.js";
 import { Auth } from "../Auth.js";
 import { Engine } from "../Engine.js";
 import * as Checks from "../checks.js";
+import { generateXrfkey, uuid } from "../common.js";
 
 export async function pluginActionWrapper(
   meta: RequiredMeta,
@@ -38,6 +39,8 @@ export async function pluginActionWrapper(
       spinner: Spin,
       print: Print,
       checks: Checks,
+      generateXrfkey,
+      uuid,
     },
   };
 
