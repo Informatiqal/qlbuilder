@@ -25,6 +25,7 @@ import {
   CredentialEnvironments,
   Download,
   Section,
+  VScode,
   // CreateApp,
 } from "../../commands/plugins/index.js";
 
@@ -197,11 +198,10 @@ export async function loadInternalPlugins() {
     getScript: GetScript,
     checkScript: CheckScript,
     setScript: SetScript,
-    // vsCode: {},
+    vsCode: VScode,
     reload: Reload,
     watch: Watch,
     credentialEnvironments: CredentialEnvironments,
-    // listTemplates: {},
     sectionOperations: Section,
     // createApp: CreateApp,
     encrypt: Encrypt,

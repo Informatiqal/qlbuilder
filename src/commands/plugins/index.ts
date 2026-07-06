@@ -13,3 +13,4 @@ export * as Create from "./Create.js";
 export * as CredentialEnvironments from "./CredentialEnvironments.js";
 export * as Download from "./Download.js";
 export * as Section from "./Section.js";
+export * as VScode from "./VSCode.js";
