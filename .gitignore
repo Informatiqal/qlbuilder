@@ -87,3 +87,7 @@ src/test.yml
 .vscode/launch.json
 .vscode/settings.json
 tests/config.yml
+
+# [epiq]: local hydrated state is never committed
+.epiq/events/
+.epiq/log/
