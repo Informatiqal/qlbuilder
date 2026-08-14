@@ -56,7 +56,7 @@
     "enigma-mixin": "^1.8.0",
     "enigma.js": "^2.14.0",
     "filenamify": "^7.0.2",
-    "js-yaml": "^4.2.0",
+    "js-yaml": "^5.0.0",
     "natural-orderby": "^5.0.0",
     "prompts": "^2.4.2",
     "qlik-sense-authenticate": "^0.2.0",
