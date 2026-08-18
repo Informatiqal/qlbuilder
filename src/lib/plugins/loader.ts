@@ -22,10 +22,11 @@ import {
   Encrypt,
   Decrypt,
   Create,
-  CredentialEnvironments,
   Download,
   Section,
   VScode,
+  ListTemplates,
+  ListCredentials,
   // CreateApp,
 } from "../../commands/plugins/index.js";
 
@@ -202,13 +203,14 @@ export async function loadInternalPlugins() {
     vsCode: VScode,
     reload: Reload,
     watch: Watch,
-    credentialEnvironments: CredentialEnvironments,
+    credentialEnvironments: ListCredentials,
     sectionOperations: Section,
     // createApp: CreateApp,
     encrypt: Encrypt,
     decrypt: Decrypt,
     tablesAndFields: TablesAndFields,
     appDetails: AppDetails,
+    templates: ListTemplates
   };
 
   const commands: Command[] = [];
