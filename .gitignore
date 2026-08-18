@@ -3,6 +3,7 @@
 dist/
 temp/
 test/_playground.spec.js
+test/_testing_constants.js
 test1/
 test2/
 test3/
