@@ -32,6 +32,10 @@ export class Commander {
       "-v, --version",
       "Output the current version",
     );
+
+    this.programs.configureHelp({
+      sortSubcommands: true,
+    });
   }
 
   private onHelp() {
