@@ -1,5 +1,6 @@
 import { copyFileSync, readFileSync } from "fs";
 import { describe, it, expect } from "vitest";
+import { constants } from "./_testing_constants";
 
 export function copySessionID(targetPath, subFolder) {
   copyFileSync(
@@ -23,3 +24,7 @@ export function expect_subStringExistsInArray(input, subString, exact = false) {
 }
 
 export const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+export function copySessionToExecEnvironment(path) {
+  copyFileSync(constants.SESSION_ID_PATH, `${path}\\temp\\session.txt`);
+}

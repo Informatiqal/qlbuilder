@@ -15,6 +15,7 @@ const meta: PluginMeta = {
   options: {
     requireConnection: false,
     requireEnv: false,
+    requireApp: false,
   },
 };
 

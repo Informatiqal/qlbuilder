@@ -32,14 +32,18 @@ async function action(args: PluginArguments<CommandOptions>) {
 
   spin.start();
 
-  args.tools.build();
+  const builtScript = args.tools.build();
 
   //@ts-ignore
-  await args.engine.app.setScript(build.builtScript);
+  await args.engine.app.setScript(builtScript).catch((e) => {
+    throw new Error(e.message);
+  });
   //@ts-ignore
-  await args.engine.app.doSave();
+  await args.engine.app.doSave().catch((e) => {
+    throw new Error(e.message);
+  });
   //@ts-ignore
-  //   await args.engine.session.close().catch((e) => {});
+  await args.engine.session.close().catch((e) => {});
 
   spin.stop();
 
