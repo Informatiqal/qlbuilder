@@ -21,3 +21,5 @@ export function expect_subStringExistsInArray(input, subString, exact = false) {
 
   return expect(subStringExists).to.equals(true);
 }
+
+export const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));

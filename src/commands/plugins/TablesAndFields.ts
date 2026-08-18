@@ -50,22 +50,25 @@ async function action(args: PluginArguments<CommandOptions>) {
 
   spin.stop();
 
-  console.log(processedData.displayData.join("\n"));
+  const joinedProcessedData = processedData.displayData.join("\n");
+  console.log(joinedProcessedData);
 
   if (args.command.options.output) {
     if (!(args.command.options.output as string).toLowerCase().endsWith("md")) {
       try {
         writeFileSync(
           args.command.options.output as string,
-          processedData.displayData.join("\n"),
+          joinedProcessedData,
         );
       } catch (e: any) {
         throw new Error(e.message);
       }
     } else {
       try {
-        const mdData = await formatMarkdown(processedData.tablesAndFields);
-        writeFileSync(args.command.options.output as string, mdData.join("\n"));
+        const mdData = await formatMarkdown(processedData.tablesAndFields).join(
+          "\n",
+        );
+        writeFileSync(args.command.options.output as string, mdData);
       } catch (e: any) {
         throw new Error(e.message);
       }
