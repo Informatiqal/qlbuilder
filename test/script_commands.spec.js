@@ -34,7 +34,12 @@ describe("Script related commands", function () {
 
     await cleanup();
 
-    expect(code).to.be.equal(0);
+    expect(code).to.be.equal(0) &&
+      expect_subStringExistsInArray(
+        stdout,
+        "Local script files were created",
+        true,
+      );
   });
 
   it("Get script (manual confirm)", async function () {

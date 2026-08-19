@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { prepareEnvironment } from "@gmrchk/cli-testing-library";
 import { constants } from "./_testing_constants";
+import { expect_subStringExistsInArray } from "./util";
 
 describe("Create command", function () {
   it("Create an empty project", async function () {
@@ -18,9 +19,7 @@ describe("Create command", function () {
     expect(code).to.be.equal(0) &&
       expect(stderr.length == 2 || stderr.length == 0).to.be.true &&
       expect(stdout.length).to.be.greaterThan(0) &&
-      expect(
-        stdout.filter((s) => s.indexOf("All set") > -1).length,
-      ).to.be.equal(1) &&
+      expect_subStringExistsInArray(stdout, "All set", true) &&
       expect(structure.length).to.be.equal(5);
   });
 
@@ -35,11 +34,11 @@ describe("Create command", function () {
     await cleanup();
 
     expect(code).to.be.equal(1) &&
-      expect(
-        stderr.filter((s) =>
-          s.indexOf("error: missing required argument 'name'"),
-        ).length > -1,
-      ).to.be.equal(true);
+      expect_subStringExistsInArray(
+        stderr,
+        "error: missing required argument 'name'",
+        true,
+      );
   });
 
   it("With vscode argument)", async function () {
@@ -75,9 +74,7 @@ describe("Create command", function () {
     expect(code).to.be.equal(0) &&
       expect(structure.length).to.be.equal(3) &&
       expect(builtScript.length).to.be.equal(4) &&
-      expect(
-        stdout.filter((s) => s.indexOf("All set") > -1).length == 1,
-      ).to.equals(true);
+      expect_subStringExistsInArray(stdout, "All set", true);
   });
 
   it("With script template - missing template)", async function () {
@@ -91,9 +88,7 @@ describe("Create command", function () {
     await cleanup();
 
     expect(code).to.be.equal(1) &&
-      expect(
-        stderr.filter((s) => s.indexOf("not found") > -1).length == 1,
-      ).to.equals(true);
+      expect_subStringExistsInArray(stderr, "not found", true);
   });
 
   it("With config template)", async function () {
@@ -110,9 +105,7 @@ describe("Create command", function () {
 
     expect(code).to.be.equal(0) &&
       expect(configContent.indexOf("TEST_USER")).to.be.greaterThan(-1) &&
-      expect(
-        stdout.filter((s) => s.indexOf("All set") > -1).length == 1,
-      ).to.equals(true);
+      expect_subStringExistsInArray(stdout, "All set", true);
   });
 
   it("With config template - missing template)", async function () {
@@ -126,9 +119,7 @@ describe("Create command", function () {
     await cleanup();
 
     expect(code).to.be.equal(1) &&
-      expect(
-        stderr.filter((s) => s.indexOf("not found") > -1).length == 1,
-      ).to.equals(true);
+      expect_subStringExistsInArray(stderr, "not found", true);
   });
 
   it("With all optional arguments)", async function () {
@@ -157,8 +148,6 @@ describe("Create command", function () {
       expect(structure.length).to.be.equal(3) &&
       expect(builtScript.length).to.be.equal(4) &&
       expect(configContent.indexOf("TEST_USER")).to.be.greaterThan(-1) &&
-      expect(
-        stdout.filter((s) => s.indexOf("All set") > -1).length == 1,
-      ).to.equals(true);
+      expect_subStringExistsInArray(stdout, "All set", true);
   });
 });

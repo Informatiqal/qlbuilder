@@ -1,6 +1,10 @@
 import { describe, it, expect } from "vitest";
 import { prepareEnvironment } from "@gmrchk/cli-testing-library";
-import { expect_subStringExistsInArray, sleep } from "./util";
+import {
+  copySessionToExecEnvironment,
+  expect_subStringExistsInArray,
+  sleep,
+} from "./util";
 import { readFileSync } from "node:fs";
 
 describe("Tables and fields", function () {
@@ -12,6 +16,8 @@ describe("Tables and fields", function () {
       "node",
       "./dist/index.js create temp -c configTemplate",
     );
+
+    copySessionToExecEnvironment(path);
 
     const { code, stdout, stderr } = await execute(
       "node",
