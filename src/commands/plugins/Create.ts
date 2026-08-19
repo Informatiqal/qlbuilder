@@ -271,7 +271,7 @@ SET LongDayNames='Monday;Tuesday;Wednesday;Thursday;Friday;Saturday;Sunday';
 SET NumericalAbbreviation='3:k;6:M;9:G;12:T;15:P;18:E;21:Z;24:Y;-3:m;-6:μ;-9:n;-12:p;-15:f;-18:a;-21:z;-24:y';
 `;
 
-  writeFileSync(`${currentFolder}/${name}/src/0--Main.qvs`, rawScript);
+  writeFileSync(`${currentFolder}/${name}/src/1--Main.qvs`, rawScript);
 
   build(`${currentFolder}/${name}`, false);
   console.log("");

@@ -164,7 +164,7 @@ async function move(): Promise<boolean> {
         name: "index1",
         initial: 0,
         optionsPerPage: 15,
-        message: "Which sections should be moved?",
+        message: "Which section should be moved?",
         choices: existingSections.map((s) => ({
           title: s,
         })),
@@ -196,6 +196,7 @@ async function move(): Promise<boolean> {
 
   const fileToRenameComponents =
     existingSections[moveSection.index1].split("--");
+
   const newFileName = `${moveSection.index2}--${fileToRenameComponents[1]}`;
 
   renumberInternal(
@@ -210,6 +211,7 @@ async function move(): Promise<boolean> {
       `${process.cwd()}/src/${newFileName}`,
     );
 
+    // renumber();
     print.ok("Section moved");
     build();
   } catch (e: any) {
