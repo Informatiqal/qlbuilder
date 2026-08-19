@@ -55,6 +55,11 @@ const meta: PluginMeta = {
 async function action(args: PluginArguments<CommandOptions>) {
   downloadFolderExists(args.command.options.path);
 
+  const print = new args.tools.print();
+  const spin = new args.tools.spinner("Downloading ...", "arc");
+
+  spin.start();
+
   let appName = "";
 
   if (args.environment?.authentication.type == "saas") {
@@ -89,6 +94,9 @@ async function action(args: PluginArguments<CommandOptions>) {
       args.engine.auth?.data.headers,
     );
   }
+
+  spin.stop();
+  print.ok("Download was complete");
 
   return true;
 }

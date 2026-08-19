@@ -84,10 +84,10 @@ describe("Script related commands", function () {
       );
   });
 
-  it("Set script", async function () {
+  it("Set/Get/Check script", async function () {
     const newTabName = "TESTING LIBRARY";
     const newScript = `Load 'running test' as SomeField Autogenerate(1);`;
-    const rollbackScript = `Load 'PLACEHOLDER value' as TempField Autogenerate(1);`;
+    const rollbackScript = `Load 'PLACEHOLDER value' as TempField Autogenerate(1); 123`;
 
     const { execute, cleanup, writeFile, readFile, path } =
       await prepareEnvironment();
@@ -117,6 +117,12 @@ describe("Script related commands", function () {
       `.\\temp`,
     );
 
+    const checkScriptResult1 = await execute(
+      "node",
+      `./dist/index.js checkScript local-empty`,
+      `.\\temp`,
+    );
+
     unlinkSync(`${path}\\temp\\src\\1--${newTabName}.qvs`);
 
     const getScriptResult = await execute(
@@ -139,6 +145,12 @@ describe("Script related commands", function () {
     writeFileSync(`${path}\\temp\\src\\1--Main.qvs`, rollbackScript);
     await execute("node", `./dist/index.js setScript local-empty`, `.\\temp`);
 
+    const checkScriptResult2 = await execute(
+      "node",
+      `./dist/index.js checkScript local-empty`,
+      `.\\temp`,
+    );
+
     await cleanup();
 
     expect(setScriptResult.code).to.be.equal(0) &&
@@ -156,6 +168,16 @@ describe("Script related commands", function () {
       expect_subStringExistsInArray(
         getScriptResult.stdout,
         "Local script files were created",
+        true,
+      ) &&
+      expect_subStringExistsInArray(
+        checkScriptResult1.stdout,
+        "No syntax errors were found",
+        true,
+      ) &&
+      expect_subStringExistsInArray(
+        checkScriptResult2.stdout,
+        "1 Syntax error(s) were found",
         true,
       );
   });
