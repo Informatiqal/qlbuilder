@@ -25,11 +25,11 @@ describe("Download commands", function () {
       "./temp",
     );
 
-    await cleanup();
-
     const qvfPresent = existsSync(
       `${path}\\temp\\${constants.SCRIPT_TESTS_APP_NAME}`,
     );
+
+    await cleanup();
 
     expect(code).to.be.equal(0) &&
       expect(qvfPresent).to.be.equal(true) &&

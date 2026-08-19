@@ -28,7 +28,7 @@
     "start": "node out/app.js",
     "prestart": "npm run build-tsc",
     "build:tsc": "tsc",
-    "test": "mocha --require ts-node/esm test/**/*.spec.js --exclude test/_playground.spec.js"
+    "test": "vitest"
   },
   "homepage": "https://github.com/informatiqal/qlbuilder",
   "repository": {

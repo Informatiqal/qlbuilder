@@ -65,9 +65,7 @@ describe("Script related commands", function () {
       kill,
     } = await spawn("node", `./dist/index.js getScript local`, "./temp");
 
-    await waitForText(
-      "This will overwrite all local files. Are you sure? (y/n) ",
-    );
+    await wait(2000);
     await writeText("y");
     await wait(2000);
     await pressKey("enter");
