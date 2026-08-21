@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [4.0.0] - 2026-0X-XX
+## [4.0.0] - 2026-08-21
 
 - [#200](https://github.com/Informatiqal/qlbuilder/issues/200) All existing commands are now "internal plugins". Their code is compatible and loaded as a plugin. It is possible that they will be moved to a separate package that qlBuilder will load.
 - dependency updates

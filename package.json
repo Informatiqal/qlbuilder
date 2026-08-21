@@ -23,7 +23,7 @@
     "README.md"
   ],
   "scripts": {
-    "build": "rollup -c",
+    "build": "set NODE_ENV=prod && rollup -c",
     "build-debug": "rollup -c rollup.config.debug.js",
     "start": "node out/app.js",
     "prestart": "npm run build-tsc",
