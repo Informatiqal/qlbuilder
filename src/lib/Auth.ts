@@ -1,7 +1,6 @@
 import { readFileSync } from "fs";
 import { Agent } from "https";
 import qAuth from "qlik-sense-authenticate";
-import { load as yamlLoad } from "js-yaml";
 import chalk from "chalk";
 
 import { IConfig } from "./Config.js";
@@ -11,7 +10,7 @@ import {
   TokenCredentials,
   WinFormCredentials,
 } from "../types/types.js";
-import { configDecryptedOrNot } from "../commands/Decrypt.js";
+import { getConfigContent } from "../commands/plugins/Decrypt.js";
 
 export class Auth {
   private auth_config = {
@@ -146,20 +145,12 @@ export class Auth {
 
   private async localConfig() {
     const envName = this.config.name;
+    const { parsedContent } = await getConfigContent();
 
-    const configContent = await configDecryptedOrNot();
-
-    let configs: any = {};
-    try {
-      configs = yamlLoad(configContent);
-    } catch (e: any) {
-      throw new Error(e.message);
-    }
-
-    if (!configs[envName])
+    if (!parsedContent[envName])
       throw new Error(`"${envName}" not found in .qlBuilder.yml`);
 
-    return configs[envName];
+    return parsedContent[envName];
   }
 
   private localVariables() {

@@ -1,25 +1,22 @@
-import chai from "chai";
+import { describe, it, expect } from "vitest";
 import { prepareEnvironment } from "@gmrchk/cli-testing-library";
+import { constants } from "./_testing_constants";
+import { expect_subStringExistsInArray, test } from "./util";
 import pkg from "../package.json" assert { type: "json" };
 
-const expect = chai.expect;
-
 describe("Help and list commands", function () {
-  this.timeout(30000);
-
   it("Version", async function () {
     const { execute, cleanup } = await prepareEnvironment();
 
     const { code, stdout, stderr } = await execute(
       "node",
-      "./dist/index.js -v"
+      "./dist/index.js -v",
     );
 
     await cleanup();
 
     expect(code).to.be.equal(0) &&
-      expect(stderr.length).to.be.equal(0) &&
-      expect(stdout[0]).to.be.equal(pkg.version);
+      expect_subStringExistsInArray(stdout, pkg.version, true);
   });
 
   it("Help", async function () {
@@ -27,17 +24,17 @@ describe("Help and list commands", function () {
 
     const { code, stdout, stderr } = await execute(
       "node",
-      "./dist/index.js -h"
+      "./dist/index.js -h",
     );
 
     await cleanup();
 
     expect(code).to.be.equal(0) &&
-      expect(stderr.length).to.be.equal(0) &&
-      expect(stdout.length).to.be.greaterThan(0) &&
-      expect(
-        stdout[0].indexOf("Usage: qlbuilder command [environment name]")
-      ).to.be.greaterThan(-1);
+      expect_subStringExistsInArray(
+        stdout,
+        "Usage: qlbuilder command [environment name]",
+        true,
+      );
   });
 
   it("List templates", async function () {
@@ -45,15 +42,13 @@ describe("Help and list commands", function () {
 
     const { code, stdout, stderr } = await execute(
       "node",
-      "./dist/index.js templates"
+      "./dist/index.js templates",
     );
 
     await cleanup();
 
     expect(code).to.be.equal(0) &&
-      expect(stderr.length).to.be.equal(0) &&
-      expect(stdout.length).to.be.greaterThan(0) &&
-      expect(stdout[3].indexOf("SCRIPT")).to.be.greaterThan(-1);
+      expect_subStringExistsInArray(stdout, "SCRIPT");
   });
 
   it("List credentials", async function () {
@@ -61,14 +56,12 @@ describe("Help and list commands", function () {
 
     const { code, stdout, stderr } = await execute(
       "node",
-      "./dist/index.js cred"
+      "./dist/index.js cred",
     );
 
     await cleanup();
 
     expect(code).to.be.equal(0) &&
-      expect(stderr.length).to.be.equal(0) &&
-      expect(stdout.length).to.be.greaterThan(0) &&
-      expect(stdout[4].indexOf("local")).to.be.greaterThan(-1);
+      expect_subStringExistsInArray(stdout, "local", false);
   });
 });

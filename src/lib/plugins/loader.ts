@@ -10,6 +10,25 @@ import { pluginActionWrapper } from "./actionWrapper.js";
 import { load } from "js-yaml";
 import { existsSync, readFileSync } from "fs";
 import { Print } from "../Print.js";
+import {
+  AppDetails,
+  Build,
+  CheckScript,
+  GetScript,
+  SetScript,
+  Reload,
+  Watch,
+  TablesAndFields,
+  Encrypt,
+  Decrypt,
+  Create,
+  Download,
+  Section,
+  VScode,
+  ListTemplates,
+  ListCredentials,
+  // CreateApp,
+} from "../../commands/plugins/index.js";
 
 const print = new Print();
 const defaultMeta: RequiredMeta = {
@@ -17,11 +36,14 @@ const defaultMeta: RequiredMeta = {
     name: "",
     description: "",
     aliases: [],
+    // subCommands: [],
     options: [],
+    argument: "",
   },
   options: {
     requireConnection: true,
     requireEnv: true,
+    requireApp: true,
     configFile: "config.yml",
   },
 };
@@ -38,6 +60,65 @@ async function getPluginsList(): Promise<string[]> {
   }
 
   return [];
+}
+
+function generateCommand(plugin: Plugin) {
+  const o = { ...defaultMeta } as RequiredMeta;
+  o.command = { ...o.command, ...plugin.meta.command };
+  o.options = { ...o.options, ...plugin.meta.options };
+
+  if (o.options.requireConnection == true && o.options.requireEnv == false)
+    o.options.requireEnv = true;
+
+  const comm = new Command(plugin.meta.command.name);
+  comm.description(`${o.command.description}`);
+
+  o.command.options.map((option) => {
+    if (option.hasOwnProperty("defaultValue")) {
+      comm.option(option.flag, option.description || "", option.defaultValue);
+    } else {
+      comm.option(option.flag, option.description || "");
+    }
+  });
+
+  comm.option(
+    "-d, --debug",
+    "Debug. Write out enigma traffic messages",
+    "false",
+  );
+
+  // add command aliases (if any)
+  o.command.aliases.map((al) => {
+    comm.alias(al);
+  });
+
+  if (o.options.requireEnv) {
+    comm.argument("<env>");
+    comm.action(async function (name: string, options: AnyObject) {
+      const n = name;
+      const o1 = options;
+
+      await pluginActionWrapper(o, plugin.action, n, o1);
+      return;
+    });
+  } else {
+    if (o.command.argument.length > 0) {
+      comm.argument(`<${o.command.argument}>`);
+      comm.action(async function (name: string, options: AnyObject) {
+        const n = name;
+        const o1 = options;
+
+        await pluginActionWrapper(o, plugin.action, n, o1);
+      });
+    } else {
+      comm.action(async function (options: AnyObject) {
+        const o1 = options;
+        await pluginActionWrapper(o, plugin.action, undefined, o1);
+      });
+    }
+  }
+
+  return comm;
 }
 
 export async function loadExternalPlugins() {
@@ -61,6 +142,21 @@ async function loadExternalPlugin(pluginPath: string) {
 
   const plugin: Plugin = await import(`file:///${pluginPath}`);
   const o = { ...defaultMeta } as RequiredMeta;
+
+  if (!plugin.meta) {
+    print.error(
+      `Missing "meta" property for plugin. Loaded from ${pluginPath}`,
+    );
+    process.exit(1);
+  }
+
+  if (!plugin.action) {
+    print.error(
+      `Missing "action" property for plugin. Loaded from ${pluginPath}`,
+    );
+    process.exit(1);
+  }
+
   o.command = { ...o.command, ...plugin.meta.command };
   o.options = { ...o.options, ...plugin.meta.options };
 
@@ -91,49 +187,46 @@ async function loadExternalPlugin(pluginPath: string) {
     process.exit(1);
   }
 
-  const comm = new Command(plugin.meta.command.name);
-  comm.description(`(External plugin) ${o.command.description}`);
+  const command = generateCommand(plugin);
 
-  o.command.options.map((option) => {
-    if (option.defaultValue) {
-      comm.option(option.flag, option.description || "", option.defaultValue);
-    } else {
-      comm.option(option.flag, option.description || "");
-    }
-  });
-
-  // add debug option to all commands
-  comm.option(
-    "-d, --debug",
-    "Debug. Write out enigma traffic messages",
-    "false",
-  );
-
-  // add command aliases (if any)
-  o.command.aliases.map((al) => {
-    comm.alias(al);
-  });
-
-  if (o.options.requireEnv) {
-    comm.argument("<env>");
-    comm.action(async function (name: string, options: AnyObject) {
-      const n = name;
-      const o1 = options;
-
-      await pluginActionWrapper(o, plugin.action, n, o1);
-    });
-  } else {
-    comm.action(async function (options: AnyObject) {
-      const o1 = options;
-
-      await pluginActionWrapper(o, plugin.action, undefined, o1);
-    });
-  }
-
-  return comm;
+  return command;
 }
 
 export async function loadInternalPlugins() {
-  // TBA
-  return [];
+  const code = {
+    build: Build,
+    create: Create,
+    download: Download,
+    getScript: GetScript,
+    checkScript: CheckScript,
+    setScript: SetScript,
+    vsCode: VScode,
+    reload: Reload,
+    watch: Watch,
+    credentialEnvironments: ListCredentials,
+    sectionOperations: Section,
+    // createApp: CreateApp,
+    encrypt: Encrypt,
+    decrypt: Decrypt,
+    tablesAndFields: TablesAndFields,
+    appDetails: AppDetails,
+    templates: ListTemplates
+  };
+
+  const commands: Command[] = [];
+
+  Object.keys(code).map((p) => {
+    const command = loadInternalPlugin(code[p].meta, code[p].action);
+    commands.push(command);
+  });
+
+  return commands;
+}
+
+function loadInternalPlugin(meta, action) {
+  const plugin = { meta, action };
+
+  const command = generateCommand(plugin);
+
+  return command;
 }

@@ -1,38 +1,46 @@
-import { Command } from "commander";
 import { CustomError } from "../../lib/CustomError.js";
 import { AnyObject, PluginArguments, RequiredMeta } from "../../types/types.js";
-import { Build } from "../../commands/Build.js";
+import { Build } from "../../commands/plugins/index.js";
 import { Spin } from "../../lib/Spinner.js";
 import { Print } from "../Print.js";
 import { Config, IConfig } from "../Config.js";
 import { Auth } from "../Auth.js";
 import { Engine } from "../Engine.js";
+import * as Checks from "../checks.js";
+import { generateXrfkey, uuid } from "../common.js";
 
 export async function pluginActionWrapper(
   meta: RequiredMeta,
   action,
-  name: string | undefined,
+  commandArgument: string | undefined,
   options: AnyObject,
 ) {
-  const config = name
-    ? new Config(name, `${meta.options.configFile}`).envDetails
+  const config = commandArgument
+    ? meta.options.requireEnv
+      ? new Config(commandArgument, `${meta.options.configFile}`).envDetails
+      : undefined
     : undefined;
 
-  const pluginArguments: PluginArguments = {
+  const pluginArguments: PluginArguments<AnyObject> = {
     environment: config,
     command: {
-      name,
+      argument: commandArgument,
       options,
     },
     engine: {
       global: undefined,
       app: undefined,
       session: undefined,
+      auth: undefined,
+      enigmaInstance: Engine,
     },
     tools: {
-      build: Build,
+      build: Build.action,
       spinner: Spin,
       print: Print,
+      checks: Checks,
+      generateXrfkey,
+      uuid,
     },
   };
 
@@ -42,6 +50,7 @@ export async function pluginActionWrapper(
     const auth = authMethod(c, authInstance);
     await auth();
 
+    pluginArguments.engine.auth = authInstance;
     const qlik = new Engine(
       config.engineHost,
       config.appId,
@@ -52,7 +61,9 @@ export async function pluginActionWrapper(
 
     const session = qlik.session;
     const global = await qlik.session.open();
-    const app = await global.openDoc(c.appId);
+
+    let app = undefined;
+    if (meta.options.requireApp) app = await global.openDoc(c.appId);
 
     pluginArguments.engine.session = session;
     pluginArguments.engine.global = global;
@@ -63,9 +74,10 @@ export async function pluginActionWrapper(
 
   try {
     if (pluginArguments.engine.session)
-      //@ts-ignore
       await pluginArguments.engine.session.close().catch((e) => {});
   } catch (e) {}
+
+  return;
 }
 
 function authMethod(config: IConfig, auth: Auth) {

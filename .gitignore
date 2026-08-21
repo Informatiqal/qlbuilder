@@ -3,6 +3,7 @@
 dist/
 temp/
 test/_playground.spec.js
+test/_testing_constants.js
 test1/
 test2/
 test3/
@@ -22,6 +23,7 @@ yarn-error.log*
 src/schema/test.yml
 *.qvf
 src/plugins/
+src/commands/temp
 
 # Runtime data
 pids
@@ -86,3 +88,7 @@ src/test.yml
 .vscode/launch.json
 .vscode/settings.json
 tests/config.yml
+
+# [epiq]: local hydrated state is never committed
+.epiq/events/
+.epiq/log/

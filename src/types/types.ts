@@ -1,7 +1,9 @@
 import { IConfig } from "../lib/Config.js";
 import { Print } from "../lib/Print.js";
 import { Spin } from "../lib/Spinner.js";
-import { Build } from "../commands/Build.js";
+import { Auth } from "../lib/Auth.js";
+
+import { Engine } from "../lib/Engine.js";
 
 export type DownloadOptionValues = {
   path: string;
@@ -126,7 +128,7 @@ export interface TablesAndFieldsProcessed {
 
 export interface Plugin {
   meta: PluginMeta;
-  action(): string;
+  action(): any;
 }
 
 export interface PluginMeta {
@@ -134,6 +136,8 @@ export interface PluginMeta {
     name: string;
     description?: string;
     aliases?: string[];
+    // subCommands?: string[];
+    argument?: string;
     options?: {
       flag: string;
       description?: string;
@@ -143,25 +147,41 @@ export interface PluginMeta {
   options?: {
     requireConnection?: boolean;
     requireEnv?: boolean;
+    requireApp?: boolean;
     configFile?: string;
   };
 }
 
-export interface PluginArguments {
+export interface PluginArgumentsEngine {
+  global: AnyFunction;
+  app: AnyFunction;
+  session: AnyFunction;
+  auth: Auth;
+  enigmaInstance: typeof Engine;
+}
+
+export interface PluginArguments<T> {
   environment: IConfig | undefined;
   command: {
-    name: string | undefined;
-    options: AnyObject;
+    argument: string | undefined;
+    options: T;
   };
-  engine: {
-    global: AnyObject | undefined;
-    app: AnyObject | undefined;
-    session: AnyObject | undefined;
-  };
+  engine:
+    | PluginArgumentsEngine
+    | {
+        global: undefined;
+        app: undefined;
+        session: undefined;
+        auth: Auth | undefined;
+        enigmaInstance: typeof Engine;
+      };
   tools: {
-    build: typeof Build;
+    build(): string;
     spinner: typeof Spin;
     print: typeof Print;
+    checks: any;
+    generateXrfkey(): string;
+    uuid(): string;
   };
 }
 
@@ -176,5 +196,9 @@ export type DeepRequired<T> = {
 export type RequiredMeta = DeepRequired<PluginMeta>;
 
 export interface AnyObject {
-  [k: string]: string | number | boolean;
+  [k: string]: string | number | boolean | Function;
+}
+
+export interface AnyFunction {
+  [k: string]: Function;
 }

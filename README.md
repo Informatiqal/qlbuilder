@@ -363,6 +363,8 @@ plugins:
   - X:\path\to\another\plugin.js
 ```
 
+Plugins are loader in order of appearance.
+
 ## Roadmap
 
 Have a look at the issues labeled as an [enhancement](https://github.com/Informatiqal/qlbuilder/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement)
