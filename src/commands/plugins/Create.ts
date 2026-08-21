@@ -155,24 +155,22 @@ function createInitConfig(currentFolder, name) {
       appId: "12345678-1234-1234-1234-12345678901",
       authentication: {
         type: "certificates",
-        certLocation: "C:/path/to/cert/folder",
-        user: "DOMAIN\\username",
       },
     },
     {
       name: "jwt",
-      host: "my-qs-engine-host/virtual-proxy-prefix",
+      host: "my-qs-host/virtual-proxy-prefix",
       secure: true,
       trustAllCerts: true,
       appId: "12345678-1234-1234-1234-12345678901",
       authentication: {
         type: "jwt",
-        sessionHeaderName: "X-Qlik-Session",
+        sessionHeaderName: "X-Qlik-Session-JWT",
       },
     },
     {
       name: "winform",
-      host: "my-qs-proxy",
+      host: "my-qs-host",
       secure: true,
       trustAllCerts: true,
       appId: "12345678-1234-1234-1234-12345678901",
@@ -183,7 +181,7 @@ function createInitConfig(currentFolder, name) {
     },
     {
       name: "saas",
-      host: "my-qs-proxy",
+      host: "my-tenant-url",
       secure: true,
       trustAllCerts: true,
       appId: "12345678-1234-1234-1234-12345678901",

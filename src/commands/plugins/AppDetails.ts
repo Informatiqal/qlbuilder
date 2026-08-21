@@ -14,7 +14,7 @@ type CommandOptions = {
 const meta: PluginMeta = {
   command: {
     name: "appDetails",
-    description: "Some description",
+    description: "Print information about the application (file size, publish time, stream etc.)",
     aliases: ["appdetails", "details"],
     options: [
       {
