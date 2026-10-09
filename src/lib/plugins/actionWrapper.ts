@@ -1,3 +1,4 @@
+import prompts from "prompts";
 import { CustomError } from "../../lib/CustomError.js";
 import { AnyObject, PluginArguments, RequiredMeta } from "../../types/types.js";
 import { Build } from "../../commands/plugins/index.js";
@@ -41,6 +42,7 @@ export async function pluginActionWrapper(
       checks: Checks,
       generateXrfkey,
       uuid,
+      prompts
     },
   };
 

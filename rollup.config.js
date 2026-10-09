@@ -9,30 +9,30 @@ import commonjs from "@rollup/plugin-commonjs";
 const pkg = JSON.parse(readFileSync("./package.json"));
 
 export default {
-  input: "src/index.ts",
-  output: {
-    file: pkg.module,
-    format: "es",
-    sourcemap: process.env.NODE_ENV == "prod" ? true : false,
-  },
-  external: ["fs", "os", "https", "readline"],
-  plugins: [
-    del({
-      targets: "dist/*",
-    }),
-    replace({
-      values: {
-        __VERSION: pkg.version,
-      },
-      preventAssignment: true,
-    }),
-    nodeResolve({
-      preferBuiltins: true,
-    }),
-    commonjs(),
-    typescript(),
-    json({
-      compact: true,
-    }),
-  ],
+    input: "src/index.ts",
+    output: {
+        file: pkg.module,
+        format: "es",
+        sourcemap: process.env.NODE_ENV == "prod" ? false : true,
+    },
+    external: ["fs", "os", "https", "readline"],
+    plugins: [
+        del({
+            targets: "dist/*",
+        }),
+        replace({
+            values: {
+                __VERSION: pkg.version,
+            },
+            preventAssignment: true,
+        }),
+        nodeResolve({
+            preferBuiltins: true,
+        }),
+        commonjs(),
+        typescript(),
+        json({
+            compact: true,
+        }),
+    ],
 };

@@ -1,3 +1,4 @@
+import prompts from "prompts";
 import { IConfig } from "../lib/Config.js";
 import { Print } from "../lib/Print.js";
 import { Spin } from "../lib/Spinner.js";
@@ -182,6 +183,7 @@ export interface PluginArguments<T> {
     checks: any;
     generateXrfkey(): string;
     uuid(): string;
+    prompts:  typeof prompts;
   };
 }
 
