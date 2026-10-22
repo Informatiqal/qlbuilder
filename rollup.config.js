@@ -7,6 +7,9 @@ import { readFileSync } from "fs";
 import commonjs from "@rollup/plugin-commonjs";
 
 const pkg = JSON.parse(readFileSync("./package.json"));
+const buildTime = new Date().toLocaleString("en-GB", {
+    timeZone: "Europe/London",
+});
 
 export default {
     input: "src/index.ts",
@@ -22,7 +25,7 @@ export default {
         }),
         replace({
             values: {
-                __VERSION: pkg.version,
+                __VERSION: `v${pkg.version} (${buildTime} en-GB) `,
             },
             preventAssignment: true,
         }),

@@ -3,204 +3,212 @@ import { IConfig } from "../lib/Config.js";
 import { Print } from "../lib/Print.js";
 import { Spin } from "../lib/Spinner.js";
 import { Auth } from "../lib/Auth.js";
+import { decryptText } from "../commands/plugins/Decrypt.js";
+import { encryptText } from "../commands/plugins/Encrypt.js";
 
 import { Engine } from "../lib/Engine.js";
 
 export type DownloadOptionValues = {
-  path: string;
-  nodata?: "true" | "false";
-  config: string;
+    path: string;
+    nodata?: "true" | "false";
+    config: string;
 };
 
 export type GetScriptOptionValues = {
-  debug?: string;
-  y?: string;
-  reloadOutput?: string;
-  reloadOutputOverwrite?: string;
-  config: string;
+    debug?: string;
+    y?: string;
+    reloadOutput?: string;
+    reloadOutputOverwrite?: string;
+    config: string;
 };
 
 export type WatchOptionValues = {
-  debug?: string;
-  reload?: string;
-  disable?: string;
-  set?: string;
-  config: string;
+    debug?: string;
+    reload?: string;
+    disable?: string;
+    set?: string;
+    config: string;
 };
 
 export type AppDetailsOptions = {
-  debug?: string;
-  output?: string;
-  config: string;
+    debug?: string;
+    output?: string;
+    config: string;
 };
 
 export interface DownloadExportRequest {
-  fileName: string;
-  path: string;
+    fileName: string;
+    path: string;
 }
 
 export type AuthType = "saas" | "winform" | "desktop" | "jwt" | "certificates";
 
 export interface WinFormCredentials {
-  QLIK_USER: string;
-  QLIK_PASSWORD: string;
+    QLIK_USER: string;
+    QLIK_PASSWORD: string;
 }
 
 export interface CertificatesCredentials {
-  QLIK_CERTS: string;
-  QLIK_USER: string;
+    QLIK_CERTS: string;
+    QLIK_USER: string;
 }
 
 export interface TokenCredentials {
-  QLIK_TOKEN: string;
+    QLIK_TOKEN: string;
 }
 
 export interface RepoApp {
-  id: string;
-  createdDate: string;
-  modifiedDate: string;
-  modifiedByUserName: string;
-  customProperties: {
-    name?: string;
     id: string;
     createdDate: string;
     modifiedDate: string;
     modifiedByUserName: string;
-    value: string;
-    definition: {
-      id: string;
-      name: string;
-      valueType: string;
-      choiceValues: string[];
+    customProperties: {
+        name?: string;
+        id: string;
+        createdDate: string;
+        modifiedDate: string;
+        modifiedByUserName: string;
+        value: string;
+        definition: {
+            id: string;
+            name: string;
+            valueType: string;
+            choiceValues: string[];
+        };
+        schemaPath: string;
+    }[];
+    owner: {
+        id: string;
+        userId: string;
+        userDirectory: string;
+        userDirectoryConnectorName: string;
+        name: string;
     };
+    name: string;
+    appId: string;
+    sourceAppId: string;
+    targetAppId: string;
+    publishTime: string;
+    published: boolean;
+    tags: {
+        id: string;
+        name: string;
+    }[];
+    description: "";
+    stream: {
+        id: string;
+        name: string;
+    };
+    fileSize: number;
+    lastReloadTime: string;
+    thumbnail: string;
+    savedInProductVersion: string;
+    migrationHash: string;
+    dynamicColor: string;
+    availabilityStatus: number;
+    lastDataDistribution: string;
+    staticByteSize: number;
     schemaPath: string;
-  }[];
-  owner: {
-    id: string;
-    userId: string;
-    userDirectory: string;
-    userDirectoryConnectorName: string;
-    name: string;
-  };
-  name: string;
-  appId: string;
-  sourceAppId: string;
-  targetAppId: string;
-  publishTime: string;
-  published: boolean;
-  tags: {
-    id: string;
-    name: string;
-  }[];
-  description: "";
-  stream: {
-    id: string;
-    name: string;
-  };
-  fileSize: number;
-  lastReloadTime: string;
-  thumbnail: string;
-  savedInProductVersion: string;
-  migrationHash: string;
-  dynamicColor: string;
-  availabilityStatus: number;
-  lastDataDistribution: string;
-  staticByteSize: number;
-  schemaPath: string;
 }
 
 export interface TablesAndFieldsProcessed {
-  [k: string]: {
-    table: {
-      rows: string;
-      tags: string;
+    [k: string]: {
+        table: {
+            rows: string;
+            tags: string;
+        };
+        fields: {
+            [k: string]: {
+                keyType: string;
+                rows: string;
+                distinctValues: string;
+                nonNulls: string;
+                tags: string[];
+            };
+        };
     };
-    fields: {
-      [k: string]: {
-        keyType: string;
-        rows: string;
-        distinctValues: string;
-        nonNulls: string;
-        tags: string[];
-      };
-    };
-  };
 }
 
 export interface Plugin {
-  meta: PluginMeta;
-  action(): any;
+    meta: PluginMeta;
+    action(): any;
 }
 
 export interface PluginMeta {
-  command: {
-    name: string;
-    description?: string;
-    aliases?: string[];
-    // subCommands?: string[];
-    argument?: string;
-    options?: {
-      flag: string;
-      description?: string;
-      defaultValue?: string | string[] | boolean;
+    command: {
+        name: string;
+        description?: string;
+        aliases?: string[];
+        // subCommands?: string[];
+        argument?: string;
+        options?: {
+            flag: string;
+            description?: string;
+            defaultValue?: string | string[] | boolean;
+        }[];
+    };
+    subCommands?: {
+        meta: PluginMeta;
+        action(): any;
     }[];
-  };
-  options?: {
-    requireConnection?: boolean;
-    requireEnv?: boolean;
-    requireApp?: boolean;
-    configFile?: string;
-  };
+    options?: {
+        requireConnection?: boolean;
+        requireEnv?: boolean;
+        requireApp?: boolean;
+        configFile?: string;
+    };
 }
 
 export interface PluginArgumentsEngine {
-  global: AnyFunction;
-  app: AnyFunction;
-  session: AnyFunction;
-  auth: Auth;
-  enigmaInstance: typeof Engine;
+    global: AnyFunction;
+    app: AnyFunction;
+    session: AnyFunction;
+    auth: Auth;
+    enigmaInstance: typeof Engine;
 }
 
 export interface PluginArguments<T> {
-  environment: IConfig | undefined;
-  command: {
-    argument: string | undefined;
-    options: T;
-  };
-  engine:
-    | PluginArgumentsEngine
-    | {
-        global: undefined;
-        app: undefined;
-        session: undefined;
-        auth: Auth | undefined;
-        enigmaInstance: typeof Engine;
-      };
-  tools: {
-    build(): string;
-    spinner: typeof Spin;
-    print: typeof Print;
-    checks: any;
-    generateXrfkey(): string;
-    uuid(): string;
-    prompts:  typeof prompts;
-  };
+    environment: IConfig | undefined;
+    command: {
+        argument: string | undefined;
+        options: T;
+    };
+    engine:
+        | PluginArgumentsEngine
+        | {
+              global: undefined;
+              app: undefined;
+              session: undefined;
+              auth: Auth | undefined;
+              enigmaInstance: typeof Engine;
+          };
+    tools: {
+        build(): string;
+        spinner: typeof Spin;
+        print: typeof Print;
+        checks: any;
+        generateXrfkey(): string;
+        uuid(): string;
+        prompts: typeof prompts;
+        decryptText: typeof decryptText;
+        encryptText: typeof encryptText;
+    };
 }
 
 export interface PluginConfigFile {
-  plugins: string[];
+    plugins: string[];
 }
 
 export type DeepRequired<T> = {
-  [P in keyof T]-?: T[P] extends object ? DeepRequired<T[P]> : T[P];
+    [P in keyof T]-?: T[P] extends object ? DeepRequired<T[P]> : T[P];
 };
 
 export type RequiredMeta = DeepRequired<PluginMeta>;
 
 export interface AnyObject {
-  [k: string]: string | number | boolean | Function;
+    [k: string]: string | number | boolean | Function;
 }
 
 export interface AnyFunction {
-  [k: string]: Function;
+    [k: string]: Function;
 }

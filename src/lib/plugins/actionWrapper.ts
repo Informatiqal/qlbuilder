@@ -9,88 +9,93 @@ import { Auth } from "../Auth.js";
 import { Engine } from "../Engine.js";
 import * as Checks from "../checks.js";
 import { generateXrfkey, uuid } from "../common.js";
+import { decryptText } from "../../commands/plugins/Decrypt.js";
+import { encryptText } from "../../commands/plugins/Encrypt.js";
 
 export async function pluginActionWrapper(
-  meta: RequiredMeta,
-  action,
-  commandArgument: string | undefined,
-  options: AnyObject,
+    meta: RequiredMeta,
+    action,
+    commandArgument: string | undefined,
+    options: AnyObject,
 ) {
-  const config = commandArgument
-    ? meta.options.requireEnv
-      ? new Config(commandArgument, `${meta.options.configFile}`).envDetails
-      : undefined
-    : undefined;
+    const config = commandArgument
+        ? meta.options.requireEnv
+            ? new Config(commandArgument, `${meta.options.configFile}`)
+                  .envDetails
+            : undefined
+        : undefined;
 
-  const pluginArguments: PluginArguments<AnyObject> = {
-    environment: config,
-    command: {
-      argument: commandArgument,
-      options,
-    },
-    engine: {
-      global: undefined,
-      app: undefined,
-      session: undefined,
-      auth: undefined,
-      enigmaInstance: Engine,
-    },
-    tools: {
-      build: Build.action,
-      spinner: Spin,
-      print: Print,
-      checks: Checks,
-      generateXrfkey,
-      uuid,
-      prompts
-    },
-  };
+    const pluginArguments: PluginArguments<AnyObject> = {
+        environment: config,
+        command: {
+            argument: commandArgument,
+            options,
+        },
+        engine: {
+            global: undefined,
+            app: undefined,
+            session: undefined,
+            auth: undefined,
+            enigmaInstance: Engine,
+        },
+        tools: {
+            build: Build.action,
+            spinner: Spin,
+            print: Print,
+            checks: Checks,
+            generateXrfkey,
+            uuid,
+            prompts,
+            decryptText,
+            encryptText,
+        },
+    };
 
-  if (meta.options.requireConnection == true && config) {
-    const c = config as IConfig;
-    const authInstance = new Auth(c);
-    const auth = authMethod(c, authInstance);
-    await auth();
+    if (meta.options.requireConnection == true && config) {
+        const c = config as IConfig;
+        const authInstance = new Auth(c);
+        const auth = authMethod(c, authInstance);
+        await auth();
 
-    pluginArguments.engine.auth = authInstance;
-    const qlik = new Engine(
-      config.engineHost,
-      config.appId,
-      authInstance.data.headers,
-      config.name,
-      options.debug,
-    );
+        pluginArguments.engine.auth = authInstance;
+        const qlik = new Engine(
+            config.engineHost,
+            config.appId,
+            authInstance.data.headers,
+            config.name,
+            options.debug,
+        );
 
-    const session = qlik.session;
-    const global = await qlik.session.open();
+        const session = qlik.session;
+        const global = await qlik.session.open();
 
-    let app = undefined;
-    if (meta.options.requireApp) app = await global.openDoc(c.appId);
+        let app = undefined;
+        if (meta.options.requireApp) app = await global.openDoc(c.appId);
 
-    pluginArguments.engine.session = session;
-    pluginArguments.engine.global = global;
-    pluginArguments.engine.app = app;
-  }
+        pluginArguments.engine.session = session;
+        pluginArguments.engine.global = global;
+        pluginArguments.engine.app = app;
+    }
 
-  await action(pluginArguments);
+    await action(pluginArguments);
 
-  try {
-    if (pluginArguments.engine.session)
-      await pluginArguments.engine.session.close().catch((e) => {});
-  } catch (e) {}
+    try {
+        if (pluginArguments.engine.session)
+            await pluginArguments.engine.session.close().catch((e) => {});
+    } catch (e) {}
 
-  return;
+    return;
 }
 
 function authMethod(config: IConfig, auth: Auth) {
-  if (config.host.indexOf(":4848") > -1) return auth.desktop;
+    if (config.host.indexOf(":4848") > -1) return auth.desktop;
 
-  if (!auth[config.authentication.type])
-    throw new CustomError(
-      `Invalid authentication method - ${config.authentication.type}`,
-      "error",
-      true,
-    );
+    if (!auth[config.authentication.type])
+        throw new CustomError(
+            `Invalid authentication method - ${config.authentication.type}`,
+            "error",
+            true,
+        );
 
-  return () => auth[config.authentication.type]();
+    return () => auth[config.authentication.type]();
 }

@@ -22,58 +22,58 @@ Once the global package is installed you can use `qlbuilder` command from any fo
 Run one of the following commands from CMD/PowerShell
 
 - `qlbuilder create [name]` - create the initial folders and files in the current folder. `name` is used as root folder name
-  - `-t --task` (optional) - supplying this argument will create `VSCode` specific files inside `.vscode` folder as well. The `tasks.json` file describe all tasks that can be ran with `qlbuilder`. Change the environment name in `settings.json` file and use `VSCode` to start the tasks. (`tasks.json` can be left as it is. No need for editing there)
-  - `-s --script` (optional) - the creation process will copy the script files from the specified template folder [using Templates](#templates)
-  - `-c --config` (optional) - the creation process will copy the template yml from the template folder as `config.yml` into the current folder [using Templates](#templates)
+    - `-t --task` (optional) - supplying this argument will create `VSCode` specific files inside `.vscode` folder as well. The `tasks.json` file describe all tasks that can be ran with `qlbuilder`. Change the environment name in `settings.json` file and use `VSCode` to start the tasks. (`tasks.json` can be left as it is. No need for editing there)
+    - `-s --script` (optional) - the creation process will copy the script files from the specified template folder [using Templates](#templates)
+    - `-c --config` (optional) - the creation process will copy the template yml from the template folder as `config.yml` into the current folder [using Templates](#templates)
 
 - `qlbuilder build`
-  - builds the full load script from `/src/*.qvs` files. The produced script is saved in `dist` folder (`LoadScript.qvs`)
+    - builds the full load script from `/src/*.qvs` files. The produced script is saved in `dist` folder (`LoadScript.qvs`)
 
 - `qlbuilder checkscript [env]`
-  - builds the script (from `/src/*.qvs` files)
-  - connects to Qlik and checks the script for syntax errors - `env` is the environment name from `config.yml`. The check is performed against temporary session app.
+    - builds the script (from `/src/*.qvs` files)
+    - connects to Qlik and checks the script for syntax errors - `env` is the environment name from `config.yml`. The check is performed against temporary session app.
 
 - `qlbuilder reload [env]`
-  - connects to Qlik and reload the app - `env` is the environment name from `config.yml`. Once the reload has started `qlbuilder` will display the progress in the same console.
-  - `-ro, --reload-output <LOCATION>` - after the app is reload (with or without errors) the reload log will be saved in `<LOCATION>` folder. The reload log file name will be in `appId_timestamp.txt` format.
-  - `-roo, --reload-output-overwrite <LOCATION>` - similar functionality to `--reload-output` but the file name will be `appId.txt`. With this option only the last reload log will be kept.
+    - connects to Qlik and reload the app - `env` is the environment name from `config.yml`. Once the reload has started `qlbuilder` will display the progress in the same console.
+    - `-ro, --reload-output <LOCATION>` - after the app is reload (with or without errors) the reload log will be saved in `<LOCATION>` folder. The reload log file name will be in `appId_timestamp.txt` format.
+    - `-roo, --reload-output-overwrite <LOCATION>` - similar functionality to `--reload-output` but the file name will be `appId.txt`. With this option only the last reload log will be kept.
 
 - `qlbuilder setscript [env]`
-  - builds the script (from `/src/*.qvs` files)
-  - connects to Qlik and checks the script for syntax errors - `env` is the environment name from `config.yml`
-  - sets the new script
-  - saves the app
+    - builds the script (from `/src/*.qvs` files)
+    - connects to Qlik and checks the script for syntax errors - `env` is the environment name from `config.yml`
+    - sets the new script
+    - saves the app
 
 - `qlbuilder getscript [env]` - (the opposite of `setscript`) get the remote script, splits it into tabs and save the files inside `scr` folder. `config.yml` should present to indicate from which env/app to extract the script
-  - `-y` - optional flag. The `getscript` command will always ask for confirmation before overwrite the files into `src` folder. Passing `-y` will skip this confirmation and will directly execute `getscript` command.
+    - `-y` - optional flag. The `getscript` command will always ask for confirmation before overwrite the files into `src` folder. Passing `-y` will skip this confirmation and will directly execute `getscript` command.
 
-  Steps:
-  - connects to Qlik and get the script from desired app - `env` is the environment name from `config.yml`
-  - split the script into tabs/files
-  - saves the `qvs` files into `src` folder
+    Steps:
+    - connects to Qlik and get the script from desired app - `env` is the environment name from `config.yml`
+    - split the script into tabs/files
+    - saves the `qvs` files into `src` folder
 
 - `qlbuilder watch [env]` - enters in watch mode. The default behavior is to build and check the script syntax on any `*.qvs` file inside `src` folder. Can accept three additional flags:
-  - `-r` - reloads the script on any `qvs` file change
-  - `-s` - sets the script (and save the app) on any `qvs` file change
-  - `-d` - disable the auto check for syntax errors. By default the script will check for syntax errors on each save (connects to QS and checks the script for errors against session/temp app)
+    - `-r` - reloads the script on any `qvs` file change
+    - `-s` - sets the script (and save the app) on any `qvs` file change
+    - `-d` - disable the auto check for syntax errors. By default the script will check for syntax errors on each save (connects to QS and checks the script for errors against session/temp app)
 
-  Inside `watch` mode the console is active and the developer can perform additional actions. Just type one of the letters/commands below in the console to trigger them:
-  - `s` or `set` - build, syntax check and set script
-  - `r` or `rl` - build and set the script, reload the app and save. If any syntax error (during the build and set) the reload is not triggered
-  - `c` or `clr` - clear console
-  - `e` or `err` - check for syntax errors (**useful only if the watch mode is started with `-d` argument**)
-  - `?` - print these commands
-  - `x` - exit
+    Inside `watch` mode the console is active and the developer can perform additional actions. Just type one of the letters/commands below in the console to trigger them:
+    - `s` or `set` - build, syntax check and set script
+    - `r` or `rl` - build and set the script, reload the app and save. If any syntax error (during the build and set) the reload is not triggered
+    - `c` or `clr` - clear console
+    - `e` or `err` - check for syntax errors (**useful only if the watch mode is started with `-d` argument**)
+    - `?` - print these commands
+    - `x` - exit
 
 - `qlBuilder section [sub-command]` - main commands for **interactive** section operations
-  - `add` - adds new script section at specified position
-  - `remove` - remove one or many script sections. Once the sections/files are removed the rest of the files are re-numbered (see `renumber` operation)
-  - `move` - move specific script section up/down. After the file is moved (in reality the file is actually renamed) the files are re-numbered
-  - `renumber` - ideally all files are prefixed with an index (`1--`, `2--`, `3--` etc.) if section/file is deleted/renamed manually this index can appear "broken". Executing `renumber` command will re-index the files so the prefix will be continous
+    - `add` - adds new script section at specified position
+    - `remove` - remove one or many script sections. Once the sections/files are removed the rest of the files are re-numbered (see `renumber` operation)
+    - `move` - move specific script section up/down. After the file is moved (in reality the file is actually renamed) the files are re-numbered
+    - `renumber` - ideally all files are prefixed with an index (`1--`, `2--`, `3--` etc.) if section/file is deleted/renamed manually this index can appear "broken". Executing `renumber` command will re-index the files so the prefix will be continuous
 
 - `qlbuilder download [env]` - download the specified Qlik app. Optional parameter to include or exclude the data in the exported app/file
-  - `-p` or `--path` (**mandatory**) - path to the folder where the qvf will be downloaded
-  - `-nd` or `--nodata` - optional parameter indicating if the exported app should include the data or not. Default is `true`
+    - `-p` or `--path` (**mandatory**) - path to the folder where the qvf will be downloaded
+    - `-nd` or `--nodata` - optional parameter indicating if the exported app should include the data or not. Default is `true`
 
 - `qlbuilder templates` - list all available script and config templates
   `-c --create` (optional) - creates empty templates folder structure (if it doesn't exists) [using Templates](#templates)
@@ -81,11 +81,11 @@ Run one of the following commands from CMD/PowerShell
 - `qlbuilder vscode` - creates the `.vscode` folder (inside the current folder) with the `tasks.json` and `settings.json` files. Please check the `create` command description above for more info
 
 - `qlBuilder appDetails [env]` - display info about the configured app (command alias `details`)
-  - `--output [path]` - optional. the output will be saved into the provided file path
+    - `--output [path]` - optional. the output will be saved into the provided file path
 
 - `qlBuilder tablesAndFields [env]` - display info about the available tables and fields (command aliases `tables`, `fields`)
-  - `--output [path]` - optional. the output will be saved into the provided file path
-  - if the output file extension is `md` then the saved data will be formatted as Markdown
+    - `--output [path]` - optional. the output will be saved into the provided file path
+    - if the output file extension is `md` then the saved data will be formatted as Markdown
 
 - `qlBuilder createApp [env]` - creates brand new (empty) app on the specified environment. Updates `config.yml` appId for the environment
 - `qlBuilder encrypt` - encrypts `C:\Users\<USERNAME>\.qlBuilder.yml` file with user provided password
@@ -113,7 +113,7 @@ For `QSE` with certificates the config will be:
   host: 192.168.0.100:4747 # IP/FQDN of QS engine (central node)
   appId: 12345678-1234-1234-1234-12345678901 # app ID
   authentication:
-    type: certificates
+      type: certificates
 ```
 
 For `QSE` with `JWT` the config will be:
@@ -123,8 +123,8 @@ For `QSE` with `JWT` the config will be:
   host: 192.168.0.100/virtual-proxy-prefix # IP/FQDN with of the virtual proxy (see below)
   appId: 12345678-1234-1234-1234-12345678901a # app ID
   authentication:
-    type: jwt
-    sessionHeaderName: X-Qlik-Session-jwt # (optional) see below
+      type: jwt
+      sessionHeaderName: X-Qlik-Session-jwt # (optional) see below
 ```
 
 When working with `jwt` port is not required. If `JWТ` is not the main method for authentication then the Virtual Proxy prefix need to be provided. For more information how to set this please check this  
@@ -137,8 +137,8 @@ For `QSE` with Windows/Form the config will be:
   host: 192.168.0.100/virtual-proxy-prefix # IP/FQDN with of the virtual proxy (if needed)
   appId: 12345678-1234-1234-1234-12345678901a # app ID
   authentication:
-    type: winform
-    sessionHeaderName: X-Qlik-Session-Win # (optional) see below
+      type: winform
+      sessionHeaderName: X-Qlik-Session-Win # (optional) see below
 ```
 
 For `Qlik Saas` with Windows/Form the config will be:
@@ -148,7 +148,7 @@ For `Qlik Saas` with Windows/Form the config will be:
   host: tenant-name.eu.qlikcloud.com
   appId: 12345678-1234-1234-1234-12345678901a # app ID
   authentication:
-    type: saas
+      type: saas
 ```
 
 By default `qlbuilder` will try and connect through `https`/`wss`. If the environment is QS Desktop or the communication is done via `http`/`ws` then `secure: false` need to be added to the environment configuration
@@ -162,21 +162,21 @@ For security reasons (mainly to avoid commit users and password) `qlbuilder` exp
 ### Environment variables
 
 - `Windows`
-  - `QLIK_USER` - in format DOMAIN\username
-  - `QLIK_PASSWORD`
+    - `QLIK_USER` - in format DOMAIN\username
+    - `QLIK_PASSWORD`
 
-  > To set env variables:
-  >
-  > - in CMD - `set QLIK_USER=DOMAIN\UserName`
-  > - in PowerShell - `$env:QLIK_PASSWORD="my_password"`
+    > To set env variables:
+    >
+    > - in CMD - `set QLIK_USER=DOMAIN\UserName`
+    > - in PowerShell - `$env:QLIK_PASSWORD="my_password"`
 
 - `JWT` requires one environment variable to be set
-  - `QLIK_TOKEN` - the content of the jwt token
+    - `QLIK_TOKEN` - the content of the jwt token
 - `Cert`
-  - `QLIK_CERTS`- the folder location where the certificates are stored. The script will search for 3 certificates - `root.pem`, `client_key.pem` and `client.pem`
-  - `QLIK_USER` - username in format `DOMAIN\UserName`
+    - `QLIK_CERTS`- the folder location where the certificates are stored. The script will search for 3 certificates - `root.pem`, `client_key.pem` and `client.pem`
+    - `QLIK_USER` - username in format `DOMAIN\UserName`
 - `Saas`
-  - `QLIK_TOKEN` - the API key, generated from the user settings panel
+    - `QLIK_TOKEN` - the API key, generated from the user settings panel
 
 ### Home config
 
@@ -184,16 +184,16 @@ For security reasons (mainly to avoid commit users and password) `qlbuilder` exp
 
 ```yml
 dev:
-  QLIK_USER: DOMAIN\my-dev-user
-  QLIK_PASSWORD: my-dev-password
+    QLIK_USER: DOMAIN\my-dev-user
+    QLIK_PASSWORD: my-dev-password
 prod:
-  QLIK_USER: DOMAIN\my-prod-user
-  QLIK_PASSWORD: my-prod-password
+    QLIK_USER: DOMAIN\my-prod-user
+    QLIK_PASSWORD: my-prod-password
 dev_jwt:
-  QLIK_TOKEN: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiw...
+    QLIK_TOKEN: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiw...
 prod_cert:
-  QLIK_CERTS: c:\path\to\cert\folder
-  QLIK_USER: DOMAIN\UserName
+    QLIK_CERTS: c:\path\to\cert\folder
+    QLIK_USER: DOMAIN\UserName
 ```
 
 The environment name is used as an command argument (so try not to have spaces in the environment names)
@@ -298,28 +298,70 @@ The plugins should be ES6 JavaScript files. Each file should expose the plugin m
 
 ```js
 export const meta = {
-  command: {
-    name: "myCommand", // command name. Ex: qlbuilder myCommand
-    description: "Some description", // (optional) shown in the help screen
-    aliases: ["personalCommand", "otherValue"], // (optional) aliases that will trigger the same command
-    options: [
-      // optional
-      {
-        flag: "-f --flag", // additional flags that can be provided to the main command
-        description: "flag description", // (optional) shown in the help screen
-        defaultValue: "", // string or string[] or boolean
-      },
-    ],
-  },
-  options: {
-    // optional
-    requireConnection: true, // (optional) default is true. Qlik Engine connection is needed or not
-    requireEnv: true, // (optional) default is true. Env value is needed or not
-  },
+    command: {
+        name: "myCommand", // command name. Ex: qlbuilder myCommand
+        description: "Some description", // (optional) shown in the help screen
+        aliases: ["personalCommand", "otherValue"], // (optional) aliases that will trigger the same command
+        options: [
+            // optional
+            {
+                flag: "-f --flag", // additional flags that can be provided to the main command
+                description: "flag description", // (optional) shown in the help screen
+                defaultValue: "", // string or string[] or boolean
+            },
+        ],
+    },
+    options: {
+        // optional
+        requireConnection: true, // (optional) default is true. Qlik Engine connection is needed or not
+        requireEnv: true, // (optional) default is true. Env value is needed or not
+    },
 };
 ```
 
 In the background qlBuilder is using [commander.js](https://github.com/tj/commander.js/). The `command` section of the `meta` is passing its values to `commander.js` instance. Have a look at its documentation for more info on `flags` and command setup.
+
+##### Sub-commands
+
+It is possible to specify sub-commands:
+
+```
+qlBuilder mainCommand another something
+```
+
+Each command can have its own action. If no action is specified then `qlBuilder` will print the help for that command.
+
+The sub-commands section is optional and its specified into the `meta` object:
+
+````js
+export const meta = {
+  command: {
+    name: "mainCommand",
+    description: "Some description",
+    ...
+  },
+  options: {...},
+  subCommands: [
+      {
+          meta: {
+              command: {
+                  name: "another"
+              },
+              action: async function() {...} // optional. without it will just show the help for the command
+              subCommands: [
+                  {
+                      meta: {
+                          command: {
+                              name: "something"
+                          },
+                      },
+                      action: async function() {...}
+                  }
+              ]
+          }
+      }
+  ]
+};
 
 #### Action function
 
@@ -327,7 +369,7 @@ In the background qlBuilder is using [commander.js](https://github.com/tj/comman
 export async function action(arg) {
   // plugin implementation executed when the meta command name is ran
 }
-```
+````
 
 The arguments passed to the implementation are in the following shape:
 
@@ -359,11 +401,11 @@ The structure of the file is simple:
 
 ```yaml
 plugins:
-  - X:\path\to\some\plugin\index.js
-  - X:\path\to\another\plugin.js
+    - X:\path\to\some\plugin\index.js
+    - X:\path\to\another\plugin.js
 ```
 
-Plugins are loader in order of appearance.
+Plugins are loaded in order of appearance.
 
 ## Roadmap
 

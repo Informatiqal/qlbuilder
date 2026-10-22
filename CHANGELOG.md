@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.2.0] - 2026-10-20
+
+- allow plugins to provide sub-commands
+- dependency updates
+
 ## [4.1.0] - 2026-10-09
 
 - `prompt` is exposed to the plugins (inside `tools` property)
