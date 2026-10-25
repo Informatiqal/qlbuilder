@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.2.1] - 2026-10-25
+
+- fix issue with `decrypt` command - final buffer was not written
+- `encrypt` and `decrypt` commands are using `aes-256-gcm` algorithm
+
 ## [4.2.0] - 2026-10-20
 
 - allow plugins to provide sub-commands
