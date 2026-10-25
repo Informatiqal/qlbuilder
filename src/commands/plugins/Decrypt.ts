@@ -128,11 +128,14 @@ export function decryptText(encrypted: string, secret: string) {
     decipher.setAutoPadding(true);
     decipher.setAuthTag(authTag);
 
-    let decrypted = decipher.update(encryptedData, "hex", "utf8");
-
-    decrypted += decipher.final("utf8");
-
-    return decrypted.toString().trim();
+    try {
+        let decrypted = decipher.update(encryptedData, "hex", "utf8");
+        decrypted += decipher.final("utf8");
+        return decrypted.toString().trim();
+    } catch (e) {
+        console.log("Error while decrypting. Wrong password or corrupt config");
+        process.exit(1);
+    }
 }
 
 export async function askForPassword() {
