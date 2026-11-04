@@ -1,3 +1,6 @@
+TEST*/**/*
+codebook.toml
+debug.json
 .npmrc
 .mocharc.yml
 dist/

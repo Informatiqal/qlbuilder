@@ -18,6 +18,8 @@ export async function pluginActionWrapper(
     commandArgument: string | undefined,
     options: AnyObject,
 ) {
+    const print = new Print();
+
     const config = commandArgument
         ? meta.options.requireEnv
             ? new Config(commandArgument, `${meta.options.configFile}`)
@@ -67,7 +69,10 @@ export async function pluginActionWrapper(
         );
 
         const session = qlik.session;
-        const global = await qlik.session.open();
+        const global = await qlik.session.open().catch((e) => {
+            print.error(e.message);
+            process.exit(1);
+        });
 
         let app = undefined;
         if (meta.options.requireApp) app = await global.openDoc(c.appId);

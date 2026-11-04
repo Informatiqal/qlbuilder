@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.2.2] - 2026-11-04
+
+- better error handling for Engine connection issues
+- dependency updates
+
 ## [4.2.1] - 2026-10-25
 
 - fix issue with `decrypt` command - final buffer was not written

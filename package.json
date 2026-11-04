@@ -1,6 +1,6 @@
 {
   "name": "qlbuilder",
-  "version": "4.2.1",
+  "version": "4.2.2",
   "description": "CLI helper tool for Qlik Sense developers to allow write script locally and update in remote app",
   "author": {
     "email": "info@informatiqal.com",
@@ -50,16 +50,16 @@
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-replace": "^6.0.3",
-    "@rollup/plugin-typescript": "^12.3.0",
+    "@rollup/plugin-typescript": "^12.3.1",
     "@types/cli-spinner": "0.2.3",
     "@types/enigma.js": "2.15.0",
     "@types/js-yaml": "4.0.9",
     "@types/mocha": "10.0.10",
-    "@types/node": "26.6.5",
+    "@types/node": "26.6.6",
     "@types/prompts": "^2.4.9",
     "@types/qlik-engineapi": "^12.67.16",
     "@types/ws": "8.18.2",
-    "axios": "^1.20.0",
+    "axios": "^1.21.0",
     "chalk": "^6.0.1",
     "chokidar": "^5.0.0",
     "cli-spinner": "^0.2.10",
@@ -73,14 +73,14 @@
     "nyc": "18.0.0",
     "prompts": "^2.4.2",
     "qlik-sense-authenticate": "^0.2.0",
-    "rollup": "^4.64.12",
+    "rollup": "^4.67.4",
     "rollup-plugin-delete": "^3.0.2",
     "rollup-plugin-typescript2": "^0.37.0",
     "ts-node": "10.9.2",
-    "tslib": "^2.8.1",
+    "tslib": "^2.9.1",
     "tsx": "^4.23.15",
     "typescript": "~6.0.3",
     "vitest": "^4.1.10",
-    "ws": "^8.22.0"
+    "ws": "^8.22.1"
   }
 }
