@@ -80,14 +80,19 @@ function generateCommand(plugin: Plugin) {
     }
 
     o.command.options.map((option) => {
+        if (!option.hasOwnProperty("required")) option["required"] = false;
+
+        const optionType =
+            option.required == true ? "requiredOption" : "option";
+
         if (option.hasOwnProperty("defaultValue")) {
-            comm.option(
+            comm[optionType](
                 option.flag,
                 option.description || "",
                 option.defaultValue,
             );
         } else {
-            comm.option(option.flag, option.description || "");
+            comm[optionType](option.flag, option.description || "");
         }
     });
 
