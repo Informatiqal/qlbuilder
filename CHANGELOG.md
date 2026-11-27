@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.2.3] - 2026-11-27
+
+- plugins - option to specifiy if the plugin option is required or not. default is `false`
+- dependency updates
+
 ## [4.2.2] - 2026-11-04
 
 - better error handling for Engine connection issues

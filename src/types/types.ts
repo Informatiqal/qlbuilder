@@ -145,6 +145,7 @@ export interface PluginMeta {
             flag: string;
             description?: string;
             defaultValue?: string | string[] | boolean;
+            required?: boolean;
         }[];
     };
     subCommands?: {
